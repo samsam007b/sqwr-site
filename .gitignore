@@ -31,3 +31,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# reference files (temporary analysis)
+reference-1/
+reference-2/
+reference-3/
+references/
+figma-exports/
+design-references/
