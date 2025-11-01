@@ -1,20 +1,19 @@
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import AsymmetricProjectGrid from '@/components/AsymmetricProjectGrid';
-import ImageCarousel from '@/components/ImageCarousel';
+import AnimatedGradient from '@/components/AnimatedGradient';
 import MagneticButton from '@/components/MagneticButton';
 import TextReveal from '@/components/TextReveal';
-import { getFeaturedProjects, projects } from '@/app/data/projects';
+import { getFeaturedProjects } from '@/app/data/projects';
 
 export default function Home() {
   // Select top 6 projects for asymmetric grid (1 full + 2 pairs)
   const topProjects = getFeaturedProjects().slice(0, 6);
-  const carouselImages = projects.map(p => p.image);
 
   return (
     <>
-      {/* Background Carousel */}
-      <ImageCarousel images={carouselImages} interval={8000} />
+      {/* Animated Gradient Background */}
+      <AnimatedGradient />
 
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-6 lg:px-16 pt-24">
