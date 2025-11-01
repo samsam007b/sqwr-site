@@ -62,7 +62,7 @@ export default function AboutPage() {
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 px-6 lg:px-12">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <p className="text-sm uppercase tracking-wider text-gray-500 mb-6">
+            <p className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-6">
               À propos
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-8 leading-tight text-balance">
@@ -71,7 +71,7 @@ export default function AboutPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-xl text-gray-600 max-w-3xl leading-relaxed">
+            <p className="text-xl text-secondary/70 max-w-3xl leading-relaxed">
               Créative Design est une agence de communication visuelle et design
               graphique basée sur la passion de la création et l'excellence du
               détail.
@@ -81,7 +81,7 @@ export default function AboutPage() {
       </section>
 
       {/* Story Section */}
-      <section className="py-20 px-6 lg:px-12 bg-gray-50">
+      <section className="py-20 px-6 lg:px-12 bg-paper">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
             <ScrollReveal>
@@ -93,7 +93,7 @@ export default function AboutPage() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
-              <div className="space-y-6 text-gray-600 leading-relaxed">
+              <div className="space-y-6 text-secondary/70 leading-relaxed">
                 <p>
                   Fondée en 2016, Créative Design est née d'une vision simple :
                   faire du design un levier de transformation pour les marques
@@ -131,7 +131,7 @@ export default function AboutPage() {
                   <div className="text-5xl md:text-6xl font-display font-bold mb-3">
                     {stat.value}
                   </div>
-                  <p className="text-gray-600 text-sm uppercase tracking-wider">
+                  <p className="text-secondary/60 text-xs font-mono uppercase tracking-wider">
                     {stat.label}
                   </p>
                 </div>
@@ -142,11 +142,11 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-gray-50">
+      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-paper">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-4">
                 Nos valeurs
               </p>
               <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
@@ -158,11 +158,11 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             {values.map((value, index) => (
               <ScrollReveal key={value.title} delay={index * 0.1}>
-                <div className="bg-white p-8 lg:p-10">
+                <div className="glass-surface p-8 lg:p-10 rounded-lg">
                   <h3 className="text-2xl font-display font-bold mb-4">
                     {value.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-secondary/70 leading-relaxed">
                     {value.description}
                   </p>
                 </div>
@@ -177,13 +177,13 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-4">
                 L'équipe
               </p>
               <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
                 Les talents derrière les créations
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-secondary/70 max-w-2xl mx-auto">
                 Une équipe passionnée et talentueuse au service de votre vision
               </p>
             </div>
@@ -194,15 +194,15 @@ export default function AboutPage() {
               <ScrollReveal key={member.name} delay={index * 0.1}>
                 <div className="text-center lg:text-left">
                   {/* Placeholder for team member photo */}
-                  <div className="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 mb-6" />
+                  <div className="aspect-square bg-gradient-to-br from-tertiary/20 to-secondary/30 mb-6 rounded-lg grain-overlay" />
 
                   <h3 className="text-2xl font-display font-bold mb-2">
                     {member.name}
                   </h3>
-                  <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+                  <p className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-4">
                     {member.role}
                   </p>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-secondary/70 leading-relaxed">
                     {member.bio}
                   </p>
                 </div>
@@ -213,7 +213,7 @@ export default function AboutPage() {
       </section>
 
       {/* Philosophy Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-primary text-secondary">
+      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-foreground text-paper">
         <div className="max-w-4xl mx-auto">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-8 text-center text-balance">
@@ -222,7 +222,7 @@ export default function AboutPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-lg text-secondary/80 text-center max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-paper/70 text-center max-w-2xl mx-auto leading-relaxed">
               Notre philosophie est ancrée dans le minimalisme fonctionnel.
               Nous croyons que la simplicité bien exécutée crée l'impact le
               plus puissant et les expériences les plus mémorables.
@@ -241,7 +241,7 @@ export default function AboutPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
+            <p className="text-lg text-secondary/70 mb-10 max-w-2xl mx-auto">
               Nous serions ravis de discuter de votre prochain projet et de
               vous montrer comment nous pouvons vous aider à atteindre vos
               objectifs.
@@ -251,7 +251,7 @@ export default function AboutPage() {
           <ScrollReveal delay={0.4}>
             <a
               href="/contact"
-              className="inline-block px-10 py-5 bg-primary text-secondary hover:bg-primary/90 transition-colors duration-200"
+              className="inline-block px-10 py-5 bg-primary text-paper hover:bg-primary/90 transition-colors duration-200 rounded-lg"
             >
               Nous contacter
             </a>

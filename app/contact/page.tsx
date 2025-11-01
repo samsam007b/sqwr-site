@@ -88,7 +88,7 @@ export default function ContactPage() {
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 px-6 lg:px-12">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <p className="text-sm uppercase tracking-wider text-gray-500 mb-6">
+            <p className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-6">
               Contact
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-8 leading-tight text-balance">
@@ -97,7 +97,7 @@ export default function ContactPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-xl text-gray-600 max-w-3xl leading-relaxed">
+            <p className="text-xl text-secondary/70 max-w-3xl leading-relaxed">
               Que vous ayez un projet précis en tête ou simplement envie
               d'explorer les possibilités, nous sommes là pour vous écouter.
             </p>
@@ -115,7 +115,7 @@ export default function ContactPage() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm uppercase tracking-wider text-gray-700 mb-3">
+                      <label htmlFor="name" className="block text-xs font-mono uppercase tracking-wider text-secondary/70 mb-3">
                         Nom complet *
                       </label>
                       <input
@@ -125,13 +125,13 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 focus:border-primary focus:outline-none transition-colors"
+                        className="w-full px-4 py-3 border border-secondary/20 focus:border-primary focus:outline-none transition-colors rounded-lg bg-paper"
                         placeholder="Votre nom"
                       />
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm uppercase tracking-wider text-gray-700 mb-3">
+                      <label htmlFor="email" className="block text-xs font-mono uppercase tracking-wider text-secondary/70 mb-3">
                         Email *
                       </label>
                       <input
@@ -141,14 +141,14 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-gray-300 focus:border-primary focus:outline-none transition-colors"
+                        className="w-full px-4 py-3 border border-secondary/20 focus:border-primary focus:outline-none transition-colors rounded-lg bg-paper"
                         placeholder="votre@email.com"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="company" className="block text-sm uppercase tracking-wider text-gray-700 mb-3">
+                    <label htmlFor="company" className="block text-xs font-mono uppercase tracking-wider text-secondary/70 mb-3">
                       Entreprise
                     </label>
                     <input
@@ -157,14 +157,14 @@ export default function ContactPage() {
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-primary focus:outline-none transition-colors"
+                      className="w-full px-4 py-3 border border-secondary/20 focus:border-primary focus:outline-none transition-colors rounded-lg bg-paper"
                       placeholder="Nom de votre entreprise"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="service" className="block text-sm uppercase tracking-wider text-gray-700 mb-3">
+                      <label htmlFor="service" className="block text-xs font-mono uppercase tracking-wider text-secondary/70 mb-3">
                         Service souhaité *
                       </label>
                       <select
@@ -183,7 +183,7 @@ export default function ContactPage() {
                     </div>
 
                     <div>
-                      <label htmlFor="budget" className="block text-sm uppercase tracking-wider text-gray-700 mb-3">
+                      <label htmlFor="budget" className="block text-xs font-mono uppercase tracking-wider text-secondary/70 mb-3">
                         Budget estimé
                       </label>
                       <select
@@ -202,7 +202,7 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm uppercase tracking-wider text-gray-700 mb-3">
+                    <label htmlFor="message" className="block text-xs font-mono uppercase tracking-wider text-secondary/70 mb-3">
                       Message *
                     </label>
                     <textarea
@@ -212,7 +212,7 @@ export default function ContactPage() {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full px-4 py-3 border border-gray-300 focus:border-primary focus:outline-none transition-colors resize-none"
+                      className="w-full px-4 py-3 border border-secondary/20 focus:border-primary focus:outline-none transition-colors resize-none rounded-lg bg-paper"
                       placeholder="Parlez-nous de votre projet..."
                     />
                   </div>
@@ -220,19 +220,19 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full md:w-auto px-10 py-4 bg-primary text-secondary hover:bg-primary/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full md:w-auto px-10 py-4 bg-foreground text-paper hover:bg-foreground/90 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
                   >
                     {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
                   </button>
 
                   {submitStatus === 'success' && (
-                    <div className="p-4 bg-green-50 border border-green-200 text-green-800">
+                    <div className="p-4 glass-surface border border-primary/20 text-foreground rounded-lg">
                       Merci ! Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.
                     </div>
                   )}
 
                   {submitStatus === 'error' && (
-                    <div className="p-4 bg-red-50 border border-red-200 text-red-800">
+                    <div className="p-4 glass-surface border border-primary text-foreground rounded-lg">
                       Une erreur s'est produite. Veuillez réessayer ou nous contacter directement par email.
                     </div>
                   )}
@@ -252,18 +252,18 @@ export default function ContactPage() {
                     <div className="space-y-8">
                       {contactInfo.map((info) => (
                         <div key={info.title}>
-                          <p className="text-sm uppercase tracking-wider text-gray-500 mb-2">
+                          <p className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-2">
                             {info.title}
                           </p>
                           {info.link ? (
                             <a
                               href={info.link}
-                              className="text-lg text-gray-900 hover:opacity-70 transition-opacity"
+                              className="text-lg text-foreground hover:text-primary transition-colors"
                             >
                               {info.value}
                             </a>
                           ) : (
-                            <p className="text-lg text-gray-900 whitespace-pre-line">
+                            <p className="text-lg text-foreground whitespace-pre-line">
                               {info.value}
                             </p>
                           )}
@@ -275,27 +275,27 @@ export default function ContactPage() {
 
                 <ScrollReveal delay={0.4}>
                   <div>
-                    <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+                    <h3 className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-4">
                       Suivez-nous
                     </h3>
                     <div className="flex space-x-4">
                       <a
                         href="#"
-                        className="w-12 h-12 border border-gray-300 flex items-center justify-center text-sm hover:bg-primary hover:text-secondary hover:border-primary transition-all duration-200"
+                        className="w-12 h-12 border border-secondary/20 flex items-center justify-center text-sm font-mono hover:bg-primary hover:text-paper hover:border-primary transition-all duration-200 rounded-lg"
                         aria-label="Instagram"
                       >
                         IG
                       </a>
                       <a
                         href="#"
-                        className="w-12 h-12 border border-gray-300 flex items-center justify-center text-sm hover:bg-primary hover:text-secondary hover:border-primary transition-all duration-200"
+                        className="w-12 h-12 border border-secondary/20 flex items-center justify-center text-sm font-mono hover:bg-primary hover:text-paper hover:border-primary transition-all duration-200 rounded-lg"
                         aria-label="LinkedIn"
                       >
                         LI
                       </a>
                       <a
                         href="#"
-                        className="w-12 h-12 border border-gray-300 flex items-center justify-center text-sm hover:bg-primary hover:text-secondary hover:border-primary transition-all duration-200"
+                        className="w-12 h-12 border border-secondary/20 flex items-center justify-center text-sm font-mono hover:bg-primary hover:text-paper hover:border-primary transition-all duration-200 rounded-lg"
                         aria-label="Behance"
                       >
                         BE
@@ -305,11 +305,11 @@ export default function ContactPage() {
                 </ScrollReveal>
 
                 <ScrollReveal delay={0.6}>
-                  <div className="bg-gray-50 p-8">
+                  <div className="glass-surface p-8 rounded-lg">
                     <h3 className="font-display font-bold mb-3">
                       Horaires d'ouverture
                     </h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <p className="text-secondary/70 text-sm leading-relaxed">
                       Lundi - Vendredi : 9h00 - 18h00<br />
                       Samedi - Dimanche : Fermé
                     </p>
@@ -325,8 +325,8 @@ export default function ContactPage() {
       <section className="pb-24 lg:pb-32 px-6 lg:px-12">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <div className="aspect-[16/9] lg:aspect-[21/9] bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-              <p className="text-gray-500">[ Google Maps Embed Placeholder ]</p>
+            <div className="aspect-[16/9] lg:aspect-[21/9] bg-gradient-to-br from-tertiary/20 to-secondary/30 flex items-center justify-center rounded-lg grain-overlay">
+              <p className="text-secondary/60 font-mono text-sm">[ Google Maps Embed Placeholder ]</p>
             </div>
           </ScrollReveal>
         </div>

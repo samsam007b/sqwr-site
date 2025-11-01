@@ -99,7 +99,7 @@ export default function ServicesPage() {
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 px-6 lg:px-12">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <p className="text-sm uppercase tracking-wider text-gray-500 mb-6">
+            <p className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-6">
               Nos services
             </p>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-8 leading-tight text-balance">
@@ -108,7 +108,7 @@ export default function ServicesPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-xl text-gray-600 max-w-3xl leading-relaxed">
+            <p className="text-xl text-secondary/70 max-w-3xl leading-relaxed">
               De la conception d'identités visuelles au design web, nous offrons
               une gamme complète de services pour propulser votre marque.
             </p>
@@ -117,7 +117,7 @@ export default function ServicesPage() {
       </section>
 
       {/* Services Grid */}
-      <section className="py-20 px-6 lg:px-12 bg-gray-50">
+      <section className="py-20 px-6 lg:px-12 bg-paper">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 gap-16 lg:gap-20">
             {services.map((service, index) => (
@@ -127,21 +127,21 @@ export default function ServicesPage() {
                     <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
                       {service.title}
                     </h2>
-                    <p className="text-gray-600 leading-relaxed">
+                    <p className="text-secondary/70 leading-relaxed">
                       {service.description}
                     </p>
                   </div>
 
                   <div className="lg:col-span-7">
-                    <div className="bg-white p-8 lg:p-10">
-                      <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-6">
+                    <div className="glass-surface p-8 lg:p-10 rounded-lg">
+                      <h3 className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-6">
                         Prestations incluses
                       </h3>
                       <ul className="space-y-4">
                         {service.features.map((feature) => (
                           <li
                             key={feature}
-                            className="flex items-start text-gray-700"
+                            className="flex items-start text-secondary/80"
                           >
                             <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 mr-4 flex-shrink-0" />
                             <span>{feature}</span>
@@ -162,13 +162,13 @@ export default function ServicesPage() {
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-20">
-              <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-4">
                 Notre méthodologie
               </p>
               <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
                 Comment nous travaillons
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-secondary/70 max-w-2xl mx-auto">
                 Un processus éprouvé pour garantir des résultats exceptionnels
               </p>
             </div>
@@ -178,13 +178,13 @@ export default function ServicesPage() {
             {process.map((step, index) => (
               <ScrollReveal key={step.number} delay={index * 0.1}>
                 <div className="text-center">
-                  <div className="text-6xl font-display font-bold text-gray-200 mb-4">
+                  <div className="text-6xl font-display font-bold text-tertiary/30 mb-4">
                     {step.number}
                   </div>
                   <h3 className="text-xl font-display font-semibold mb-3">
                     {step.title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-secondary/70 text-sm leading-relaxed">
                     {step.description}
                   </p>
                 </div>
@@ -195,7 +195,7 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-primary text-secondary">
+      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-foreground text-paper">
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-balance">
@@ -204,7 +204,7 @@ export default function ServicesPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-lg text-secondary/80 mb-10 max-w-2xl mx-auto">
+            <p className="text-lg text-paper/70 mb-10 max-w-2xl mx-auto">
               Quel que soit votre besoin, nous avons l'expertise pour le
               concrétiser. Contactez-nous pour un devis personnalisé.
             </p>
@@ -213,7 +213,7 @@ export default function ServicesPage() {
           <ScrollReveal delay={0.4}>
             <a
               href="/contact"
-              className="inline-block px-10 py-5 bg-secondary text-primary hover:bg-secondary/90 transition-colors duration-200"
+              className="inline-block px-10 py-5 bg-primary text-paper hover:bg-primary/90 transition-colors duration-200 rounded-lg"
             >
               Obtenir un devis
             </a>
