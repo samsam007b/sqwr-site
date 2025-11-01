@@ -13,9 +13,41 @@ interface ProjectCardProps {
   color: string;
   image?: string;
   href: string;
+  aspectRatio?: string; // e.g., "16/9", "4/3", "4/5"
+  size?: 'small' | 'medium' | 'large';
 }
 
-const ProjectCard = ({ title, client, category, year, color, image, href }: ProjectCardProps) => {
+const ProjectCard = ({
+  title,
+  client,
+  category,
+  year,
+  color,
+  image,
+  href,
+  aspectRatio = '4/5',
+  size = 'medium'
+}: ProjectCardProps) => {
+  // Dynamic sizing based on size prop
+  const titleSize = {
+    small: 'text-xl',
+    medium: 'text-2xl',
+    large: 'text-3xl lg:text-4xl'
+  }[size];
+
+  // Dynamic image quality based on size
+  const imageQuality = {
+    small: 75,
+    medium: 80,
+    large: 90
+  }[size];
+
+  // Dynamic sizes attribute for responsive images
+  const imageSizes = {
+    small: '(max-width: 768px) 100vw, 33vw',
+    medium: '(max-width: 768px) 100vw, 50vw',
+    large: '100vw'
+  }[size];
   return (
     <Link href={href} className="group block">
       <Card3D intensity={3}>
@@ -25,7 +57,10 @@ const ProjectCard = ({ title, client, category, year, color, image, href }: Proj
           className="relative"
         >
         {/* Image Container */}
-        <div className="relative aspect-[4/5] overflow-hidden rounded-lg grain-overlay">
+        <div
+          className="relative overflow-hidden rounded-lg grain-overlay"
+          style={{ aspectRatio }}
+        >
           {image ? (
             <>
               {/* Real Image */}
@@ -34,7 +69,9 @@ const ProjectCard = ({ title, client, category, year, color, image, href }: Proj
                 alt={title}
                 fill
                 className="object-cover transition-all duration-700 group-hover:scale-[1.02]"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes={imageSizes}
+                quality={imageQuality}
+                priority={size === 'large'}
               />
               {/* Dark overlay for better text contrast */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80" />
@@ -76,7 +113,7 @@ const ProjectCard = ({ title, client, category, year, color, image, href }: Proj
               <span className="text-xs font-mono text-secondary/40">{client}</span>
             )}
           </div>
-          <h3 className="text-2xl font-display font-normal text-foreground group-hover:text-primary transition-colors duration-400">
+          <h3 className={`${titleSize} font-display font-normal text-foreground group-hover:text-primary transition-colors duration-400`}>
             {title}
           </h3>
         </div>

@@ -1,14 +1,14 @@
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
-import ProjectCard from '@/components/ProjectCard';
+import AsymmetricProjectGrid from '@/components/AsymmetricProjectGrid';
 import ImageCarousel from '@/components/ImageCarousel';
 import MagneticButton from '@/components/MagneticButton';
 import TextReveal from '@/components/TextReveal';
 import { getFeaturedProjects, projects } from '@/app/data/projects';
 
 export default function Home() {
-  // Select only top 4 premium projects
-  const topProjects = getFeaturedProjects().slice(0, 4);
+  // Select top 6 projects for asymmetric grid (1 full + 2 pairs)
+  const topProjects = getFeaturedProjects().slice(0, 6);
   const carouselImages = projects.map(p => p.image);
 
   return (
@@ -102,7 +102,7 @@ export default function Home() {
       <section className="py-40 lg:py-48 px-6 lg:px-16 glass-surface">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
-            <div className="mb-20">
+            <div className="mb-32 lg:mb-40">
               <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-6">
                 Projets sélectionnés
               </p>
@@ -112,24 +112,10 @@ export default function Home() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-20">
-            {topProjects.map((project, index) => (
-              <ScrollReveal key={project.id} delay={index * 0.1}>
-                <ProjectCard
-                  title={project.title}
-                  client={project.client}
-                  category={project.categoryLabel}
-                  year={project.year}
-                  color={project.color}
-                  image={project.image}
-                  href={`/portfolio/${project.id}`}
-                />
-              </ScrollReveal>
-            ))}
-          </div>
+          <AsymmetricProjectGrid projects={topProjects} />
 
           <ScrollReveal delay={0.4}>
-            <div className="text-center">
+            <div className="text-center mt-20">
               <Link
                 href="/portfolio"
                 className="inline-block text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors duration-300"
