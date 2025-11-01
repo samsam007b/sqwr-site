@@ -7,14 +7,34 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showLogo, setShowLogo] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
+    // Check if intro has already been seen
+    const introSeen = sessionStorage.getItem('intro-seen') === 'true';
+    if (introSeen || window.location.hash) {
+      setShowLogo(true);
+    }
+
+    // Listen for intro complete event
+    const handleIntroComplete = () => {
+      // Small delay to let the morph animation finish
+      setTimeout(() => {
+        setShowLogo(true);
+      }, 200);
+    };
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('intro-complete', handleIntroComplete);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('intro-complete', handleIntroComplete);
+    };
   }, []);
 
   const menuItems = [
@@ -33,16 +53,27 @@ const Header = () => {
     >
       <nav className="container mx-auto px-6 lg:px-12 py-6">
         <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link
-            href="/"
-            className="text-2xl font-display font-normal tracking-tight text-foreground hover:text-primary transition-colors duration-200"
+          {/* Logo - fades in after intro */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showLogo ? 1 : 0 }}
+            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            Créative Design
-          </Link>
+            <Link
+              href="/"
+              className="text-2xl font-display font-normal tracking-tight text-foreground hover:text-primary transition-colors duration-200"
+            >
+              Créative Design
+            </Link>
+          </motion.div>
 
-          {/* Desktop Menu */}
-          <ul className="hidden md:flex items-center space-x-10">
+          {/* Desktop Menu - fades in after intro */}
+          <motion.ul
+            className="hidden md:flex items-center space-x-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showLogo ? 1 : 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+          >
             {menuItems.map((item) => (
               <li key={item.href}>
                 <Link
@@ -53,14 +84,17 @@ const Header = () => {
                 </Link>
               </li>
             ))}
-          </ul>
+          </motion.ul>
 
-          {/* Mobile Menu Button - Larger touch target (44x44px minimum) */}
-          <button
+          {/* Mobile Menu Button - Larger touch target (44x44px minimum) - fades in after intro */}
+          <motion.button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden relative w-11 h-11 flex items-center justify-center focus:outline-none group"
             aria-label="Toggle menu"
             aria-expanded={isMenuOpen}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: showLogo ? 1 : 0 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <div className="relative w-6 h-6">
               <span
@@ -79,7 +113,7 @@ const Header = () => {
                 }`}
               />
             </div>
-          </button>
+          </motion.button>
         </div>
       </nav>
 

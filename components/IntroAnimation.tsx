@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const IntroAnimation = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
+  const [isMorphing, setIsMorphing] = useState(false);
 
   useEffect(() => {
     // Check if user has already seen the intro
@@ -15,22 +16,36 @@ const IntroAnimation = () => {
     if (window.location.hash || seen === 'true') {
       setIsVisible(false);
       setHasSeenIntro(true);
+      // Emit event that intro is done
+      window.dispatchEvent(new CustomEvent('intro-complete'));
       return;
     }
 
-    // Auto-hide after animation completes
-    const timer = setTimeout(() => {
+    // Start morphing animation before hiding
+    const morphTimer = setTimeout(() => {
+      setIsMorphing(true);
+    }, 3500); // Start morphing at 3.5s
+
+    // Hide completely after morph completes
+    const hideTimer = setTimeout(() => {
       setIsVisible(false);
       sessionStorage.setItem('intro-seen', 'true');
-    }, 4000); // 4 seconds total
+      // Emit event that intro is done
+      window.dispatchEvent(new CustomEvent('intro-complete'));
+    }, 4800); // Total: 3.5s intro + 1.3s morph
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(morphTimer);
+      clearTimeout(hideTimer);
+    };
   }, []);
 
   // Allow user to skip by clicking/pressing key
   const handleSkip = () => {
     setIsVisible(false);
     sessionStorage.setItem('intro-seen', 'true');
+    // Emit event that intro is done
+    window.dispatchEvent(new CustomEvent('intro-complete'));
   };
 
   // Don't render if already seen
@@ -42,19 +57,46 @@ const IntroAnimation = () => {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-background cursor-pointer"
           onClick={handleSkip}
           onKeyDown={(e) => e.key === 'Escape' && handleSkip()}
           tabIndex={0}
           role="button"
           aria-label="Skip intro animation"
+          style={{ pointerEvents: isMorphing ? 'none' : 'auto' }}
         >
-          {/* Grain overlay */}
-          <div className="absolute inset-0 grain-overlay opacity-30" />
+          {/* Grain overlay - fades out during morph */}
+          <motion.div
+            className="absolute inset-0 grain-overlay opacity-30"
+            animate={{ opacity: isMorphing ? 0 : 0.3 }}
+            transition={{ duration: 0.6 }}
+          />
 
-          {/* Logo Container */}
-          <div className="relative z-10 flex flex-col items-center">
+          {/* Background - fades out during morph */}
+          <motion.div
+            className="absolute inset-0 bg-background"
+            animate={{ opacity: isMorphing ? 0 : 1 }}
+            transition={{ duration: 0.6 }}
+          />
+
+          {/* Logo Container - morphs to header position */}
+          <motion.div
+            className="relative z-10 flex flex-col items-center"
+            animate={
+              isMorphing
+                ? {
+                    x: 'calc(-50vw + 100px)', // Move to left side
+                    y: 'calc(-50vh + 50px)', // Move to top
+                    scale: 0.4, // Shrink significantly
+                  }
+                : { x: 0, y: 0, scale: 1 }
+            }
+            transition={{
+              duration: 1.2,
+              ease: [0.76, 0, 0.24, 1],
+            }}
+          >
             {/* CD Monogram - Line Drawing Animation */}
             <motion.svg
               width="120"
@@ -100,11 +142,19 @@ const IntroAnimation = () => {
               />
             </motion.svg>
 
-            {/* Text "Créative Design" */}
+            {/* Text "Créative Design" - fades out during morph */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 2.5, ease: [0.25, 0.1, 0.25, 1] }}
+              animate={
+                isMorphing
+                  ? { opacity: 0, y: -10 }
+                  : { opacity: 1, y: 0 }
+              }
+              transition={
+                isMorphing
+                  ? { duration: 0.4 }
+                  : { duration: 0.8, delay: 2.5, ease: [0.25, 0.1, 0.25, 1] }
+              }
               className="mt-8"
             >
               <h1 className="font-display text-2xl text-foreground tracking-wider">
@@ -112,16 +162,24 @@ const IntroAnimation = () => {
               </h1>
             </motion.div>
 
-            {/* Skip hint */}
+            {/* Skip hint - fades out during morph */}
             <motion.p
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.4 }}
-              transition={{ duration: 0.5, delay: 1.5 }}
+              animate={
+                isMorphing
+                  ? { opacity: 0 }
+                  : { opacity: 0.4 }
+              }
+              transition={
+                isMorphing
+                  ? { duration: 0.3 }
+                  : { duration: 0.5, delay: 1.5 }
+              }
               className="absolute bottom-12 text-xs font-mono uppercase tracking-[0.2em] text-secondary/40"
             >
               Cliquez pour passer
             </motion.p>
-          </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
