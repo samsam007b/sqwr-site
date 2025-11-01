@@ -76,6 +76,7 @@ export default function PortfolioPage() {
                   category={project.categoryLabel}
                   year={project.year}
                   color={project.color}
+                  image={project.image}
                   href={`/portfolio/${project.id}`}
                 />
               </ScrollReveal>

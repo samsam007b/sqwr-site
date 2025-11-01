@@ -8,6 +8,7 @@ export interface Project {
   description: string;
   services: string[];
   color: string;
+  image: string;
   featured: boolean;
 }
 
@@ -22,6 +23,7 @@ export const projects: Project[] = [
     description: 'Identité visuelle complète pour un restaurant gastronomique fusion. Logo, charte graphique, menu, signalétique.',
     services: ['Identité Visuelle', 'Logo', 'Charte Graphique', 'Menu Design'],
     color: '#2C5F2D',
+    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=1000&fit=crop',
     featured: true,
   },
   {
@@ -34,6 +36,7 @@ export const projects: Project[] = [
     description: 'Site web premium pour une agence immobilière de luxe. Design élégant, animations subtiles, recherche avancée.',
     services: ['Web Design', 'UI/UX', 'Développement'],
     color: '#1A1A2E',
+    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=1000&fit=crop',
     featured: true,
   },
   {
@@ -46,6 +49,7 @@ export const projects: Project[] = [
     description: 'Campagne print pour un festival de lumière. Affiches, flyers, programme, merchandising.',
     services: ['Affiches', 'Flyers', 'Programme', 'Merchandising'],
     color: '#FFB400',
+    image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=1000&fit=crop',
     featured: true,
   },
   {
@@ -58,6 +62,7 @@ export const projects: Project[] = [
     description: 'Stratégie de contenu et templates pour Instagram et Facebook. Posts, stories, réels.',
     services: ['Content Strategy', 'Templates Instagram', 'Community Management'],
     color: '#E8DED2',
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=1000&fit=crop',
     featured: false,
   },
   {
@@ -70,6 +75,7 @@ export const projects: Project[] = [
     description: 'Refonte complète de l\'identité d\'un coffee shop artisanal. Packaging, signalétique, merchandising.',
     services: ['Rebranding', 'Packaging', 'Signalétique'],
     color: '#6F4E37',
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=1000&fit=crop',
     featured: true,
   },
   {
@@ -82,6 +88,7 @@ export const projects: Project[] = [
     description: 'Landing page et dashboard pour une startup tech B2B. Design moderne, data visualisation.',
     services: ['Landing Page', 'Dashboard Design', 'Illustrations'],
     color: '#4A90E2',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=1000&fit=crop',
     featured: false,
   },
   {
@@ -94,6 +101,7 @@ export const projects: Project[] = [
     description: 'Collection de couvertures de livres pour une maison d\'édition contemporaine.',
     services: ['Couvertures', 'Typographie', 'Mise en Page'],
     color: '#8B4513',
+    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&h=1000&fit=crop',
     featured: false,
   },
   {
@@ -106,6 +114,7 @@ export const projects: Project[] = [
     description: 'Campagne social media pour le lancement d\'une nouvelle salle de sport premium.',
     services: ['Campagne Digitale', 'Vidéos', 'Stories'],
     color: '#E01919',
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&h=1000&fit=crop',
     featured: false,
   },
   {
@@ -118,6 +127,7 @@ export const projects: Project[] = [
     description: 'Identité et packaging pour une ligne de cosmétiques biologiques haut de gamme.',
     services: ['Branding', 'Packaging', 'Photographie'],
     color: '#A8D5BA',
+    image: 'https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&h=1000&fit=crop',
     featured: true,
   },
   {
@@ -130,6 +140,7 @@ export const projects: Project[] = [
     description: 'Portfolio en ligne pour un cabinet d\'architecture. Design minimaliste, focus sur les projets.',
     services: ['Portfolio Web', 'Photographie', 'Motion Design'],
     color: '#2D3436',
+    image: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&h=1000&fit=crop',
     featured: true,
   },
   {
@@ -142,6 +153,7 @@ export const projects: Project[] = [
     description: 'Direction artistique et mise en page d\'un magazine culturel trimestriel.',
     services: ['Direction Artistique', 'Mise en Page', 'Typographie'],
     color: '#95A5A6',
+    image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=800&h=1000&fit=crop',
     featured: false,
   },
   {
@@ -154,6 +166,7 @@ export const projects: Project[] = [
     description: 'Identité visuelle pour une startup dans les énergies renouvelables.',
     services: ['Logo', 'Charte Graphique', 'Site Web'],
     color: '#27AE60',
+    image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=800&h=1000&fit=crop',
     featured: false,
   },
 ];

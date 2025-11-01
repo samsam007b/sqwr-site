@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import ProjectCard from '@/components/ProjectCard';
-import { getFeaturedProjects } from '@/app/data/projects';
+import ImageCarousel from '@/components/ImageCarousel';
+import { getFeaturedProjects, projects } from '@/app/data/projects';
 
 export default function Home() {
   const services = [
@@ -14,9 +15,13 @@ export default function Home() {
   ];
 
   const featuredProjects = getFeaturedProjects();
+  const carouselImages = projects.map(p => p.image);
 
   return (
     <>
+      {/* Background Carousel */}
+      <ImageCarousel images={carouselImages} interval={6000} />
+
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-6 lg:px-12 pt-24">
         <div className="max-w-6xl w-full">
@@ -165,6 +170,7 @@ export default function Home() {
                   category={project.categoryLabel}
                   year={project.year}
                   color={project.color}
+                  image={project.image}
                   href={`/portfolio/${project.id}`}
                 />
               </ScrollReveal>
