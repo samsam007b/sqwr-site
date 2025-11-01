@@ -48,29 +48,29 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   return (
     <>
       {/* Hero Section with Image */}
-      <section className="pt-24 pb-12 lg:pt-32 lg:pb-16">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <section className="pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
-            <div className="mb-8">
+            <div className="mb-12">
               <Link
                 href="/portfolio"
-                className="inline-flex items-center text-sm font-mono uppercase tracking-wider text-secondary hover:text-primary transition-colors"
+                className="inline-flex items-center text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 hover:text-primary transition-colors duration-300"
               >
                 <span className="mr-2">←</span>
-                Retour au portfolio
+                Retour
               </Link>
             </div>
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <div className="mb-12">
-              <p className="text-xs font-mono uppercase tracking-wider text-primary mb-4">
+            <div className="mb-16 max-w-4xl">
+              <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary mb-6">
                 {project.categoryLabel} · {project.year}
               </p>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-6 leading-tight">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-normal mb-8 leading-[0.95]">
                 {project.title}
               </h1>
-              <p className="text-2xl md:text-3xl text-secondary/70 font-light">
+              <p className="text-2xl md:text-3xl text-secondary/60 font-light">
                 {project.client}
               </p>
             </div>
@@ -92,71 +92,85 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </section>
 
       {/* Project Details */}
-      <section className="py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+      <section className="py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-6 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             {/* Description */}
             <div className="lg:col-span-8">
               <ScrollReveal>
-                <h2 className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-6">
-                  À propos du projet
+                <h2 className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
+                  Le projet
                 </h2>
-                <p className="text-xl md:text-2xl leading-relaxed text-secondary/80 font-light">
+                <p className="text-2xl leading-relaxed text-foreground font-light mb-16">
                   {project.description}
                 </p>
               </ScrollReveal>
 
               <ScrollReveal delay={0.1}>
-                <div className="mt-16">
-                  <h3 className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-8">
-                    Services fournis
+                <div className="mb-16">
+                  <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
+                    Services réalisés
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {project.services.map((service) => (
                       <div
                         key={service}
-                        className="glass-surface px-6 py-4 rounded-lg"
+                        className="glass-surface px-8 py-6 rounded-lg"
                       >
-                        <p className="font-medium">{service}</p>
+                        <p className="font-light text-foreground">{service}</p>
                       </div>
                     ))}
                   </div>
+                </div>
+              </ScrollReveal>
+
+              <ScrollReveal delay={0.2}>
+                <div className="mt-20">
+                  <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
+                    Impact
+                  </h3>
+                  <p className="text-lg text-secondary/70 leading-relaxed font-light">
+                    Ce projet a permis de créer une identité visuelle forte et cohérente,
+                    renforçant la présence de marque et créant une connexion authentique
+                    avec l'audience cible. Les solutions créatives mises en place ont
+                    contribué à atteindre les objectifs stratégiques du client.
+                  </p>
                 </div>
               </ScrollReveal>
             </div>
 
             {/* Project Info */}
             <div className="lg:col-span-4">
-              <ScrollReveal delay={0.2}>
-                <div className="glass-surface p-8 rounded-lg sticky top-32">
-                  <h3 className="text-xs font-mono uppercase tracking-wider text-secondary/60 mb-8">
-                    Informations
+              <ScrollReveal delay={0.3}>
+                <div className="glass-surface p-10 rounded-lg sticky top-32">
+                  <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-10">
+                    Détails
                   </h3>
 
-                  <div className="space-y-6">
+                  <div className="space-y-8">
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-wider text-secondary/40 mb-2">
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
                         Client
                       </p>
-                      <p className="text-lg font-display font-semibold">
+                      <p className="text-lg font-display font-normal text-foreground">
                         {project.client}
                       </p>
                     </div>
 
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-wider text-secondary/40 mb-2">
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
                         Année
                       </p>
-                      <p className="text-lg font-display font-semibold">
+                      <p className="text-lg font-display font-normal text-foreground">
                         {project.year}
                       </p>
                     </div>
 
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-wider text-secondary/40 mb-2">
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
                         Catégorie
                       </p>
-                      <p className="text-lg font-display font-semibold">
+                      <p className="text-lg font-display font-normal text-foreground">
                         {project.categoryLabel}
                       </p>
                     </div>
@@ -168,11 +182,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         </div>
       </section>
 
-      {/* Gallery Section - Additional images could go here */}
-      <section className="py-16 lg:py-24 bg-paper">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      {/* Gallery Section */}
+      <section className="py-24 lg:py-32 bg-paper">
+        <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
               <div className="relative aspect-[4/5] overflow-hidden rounded-lg grain-overlay">
                 <Image
                   src={project.image}
@@ -196,67 +210,79 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </section>
 
       {/* Next/Previous Projects Navigation */}
-      <section className="py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <section className="py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-              {/* Previous Project */}
+            <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-12">
+              Autres projets
+            </p>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+            {/* Previous Project */}
+            <ScrollReveal delay={0.1}>
               <Link
                 href={`/portfolio/${prevProject.id}`}
-                className="group glass-surface p-8 rounded-lg hover:shadow-lg transition-shadow"
+                className="group block"
               >
-                <p className="text-xs font-mono uppercase tracking-wider text-secondary/40 mb-4">
-                  ← Projet précédent
-                </p>
-                <h3 className="text-2xl font-display font-bold mb-2 group-hover:text-primary transition-colors">
-                  {prevProject.title}
-                </h3>
-                <p className="text-secondary/60">
-                  {prevProject.client}
-                </p>
+                <div className="mb-6">
+                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                    ← Précédent
+                  </p>
+                  <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
+                    {prevProject.title}
+                  </h3>
+                  <p className="text-secondary/60 font-light">
+                    {prevProject.client}
+                  </p>
+                </div>
               </Link>
+            </ScrollReveal>
 
-              {/* Next Project */}
+            {/* Next Project */}
+            <ScrollReveal delay={0.2}>
               <Link
                 href={`/portfolio/${nextProject.id}`}
-                className="group glass-surface p-8 rounded-lg hover:shadow-lg transition-shadow text-right"
+                className="group block text-right"
               >
-                <p className="text-xs font-mono uppercase tracking-wider text-secondary/40 mb-4">
-                  Projet suivant →
-                </p>
-                <h3 className="text-2xl font-display font-bold mb-2 group-hover:text-primary transition-colors">
-                  {nextProject.title}
-                </h3>
-                <p className="text-secondary/60">
-                  {nextProject.client}
-                </p>
+                <div className="mb-6">
+                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                    Suivant →
+                  </p>
+                  <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
+                    {nextProject.title}
+                  </h3>
+                  <p className="text-secondary/60 font-light">
+                    {nextProject.client}
+                  </p>
+                </div>
               </Link>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 lg:py-32 bg-foreground text-paper">
-        <div className="max-w-4xl mx-auto px-6 lg:px-12 text-center">
+      <section className="py-32 lg:py-40 bg-foreground text-paper">
+        <div className="max-w-4xl mx-auto px-6 lg:px-16 text-center">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-balance">
-              Vous avez un projet similaire ?
+            <h2 className="text-4xl md:text-5xl font-display font-normal mb-10 text-balance leading-tight">
+              Un projet en tête ?
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-lg text-paper/70 mb-10 max-w-2xl mx-auto">
-              Discutons de la façon dont nous pouvons transformer votre vision en réalité.
+            <p className="text-xl text-paper/70 mb-14 max-w-2xl mx-auto font-light leading-relaxed">
+              Créons ensemble une identité visuelle qui marque les esprits.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.4}>
             <Link
               href="/contact"
-              className="inline-block px-10 py-5 bg-primary text-paper hover:bg-primary/90 transition-colors duration-200 rounded-lg"
+              className="inline-block px-10 py-5 bg-primary text-paper hover:opacity-90 transition-opacity duration-300 rounded-lg text-lg"
             >
-              Démarrer un projet
+              Démarrer une conversation
             </Link>
           </ScrollReveal>
         </div>

@@ -18,8 +18,8 @@ const ProjectCard = ({ title, client, category, year, color, image, href }: Proj
   return (
     <Link href={href} className="group block">
       <motion.div
-        whileHover={{ y: -4 }}
-        transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+        whileHover={{ y: -2 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         className="relative"
       >
         {/* Image Container */}
@@ -31,17 +31,17 @@ const ProjectCard = ({ title, client, category, year, color, image, href }: Proj
                 src={image}
                 alt={title}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover transition-all duration-700 group-hover:scale-[1.02]"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
               {/* Dark overlay for better text contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80" />
             </>
           ) : (
             <>
               {/* Fallback gradient */}
               <div
-                className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
+                className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.02]"
                 style={{
                   background: `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)`,
                 }}
@@ -56,14 +56,9 @@ const ProjectCard = ({ title, client, category, year, color, image, href }: Proj
             </>
           )}
 
-          {/* Glass overlay on hover */}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div className="absolute inset-0 glass-hover" />
-          </div>
-
           {/* Year badge */}
           {year && (
-            <div className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-10">
+            <div className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-10 transition-opacity duration-300 group-hover:opacity-90">
               <span className="text-xs font-mono text-foreground">{year}</span>
             </div>
           )}
@@ -71,15 +66,15 @@ const ProjectCard = ({ title, client, category, year, color, image, href }: Proj
 
         {/* Project Info */}
         <div className="mt-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-mono uppercase tracking-wider text-secondary">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">
               {category}
             </span>
             {client && (
-              <span className="text-xs font-sans text-tertiary">{client}</span>
+              <span className="text-xs font-mono text-secondary/40">{client}</span>
             )}
           </div>
-          <h3 className="text-2xl font-display font-normal text-foreground group-hover:text-primary transition-colors duration-200">
+          <h3 className="text-2xl font-display font-normal text-foreground group-hover:text-primary transition-colors duration-400">
             {title}
           </h3>
         </div>
