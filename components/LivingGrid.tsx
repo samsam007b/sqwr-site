@@ -33,10 +33,11 @@ const LivingGrid = () => {
 
   return (
     <div
-      className="fixed inset-0 -z-20 overflow-hidden pointer-events-none"
+      className="fixed inset-0 overflow-hidden pointer-events-none"
       style={{
         perspective: '1000px',
         perspectiveOrigin: '50% 50%',
+        zIndex: -1,
       }}
     >
       {/* Grid container */}
