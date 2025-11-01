@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import Card3D from './Card3D';
 
 interface ProjectCardProps {
   title: string;
@@ -17,11 +18,12 @@ interface ProjectCardProps {
 const ProjectCard = ({ title, client, category, year, color, image, href }: ProjectCardProps) => {
   return (
     <Link href={href} className="group block">
-      <motion.div
-        whileHover={{ y: -2 }}
-        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-        className="relative"
-      >
+      <Card3D intensity={3}>
+        <motion.div
+          whileHover={{ y: -2 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          className="relative"
+        >
         {/* Image Container */}
         <div className="relative aspect-[4/5] overflow-hidden rounded-lg grain-overlay">
           {image ? (
@@ -78,7 +80,8 @@ const ProjectCard = ({ title, client, category, year, color, image, href }: Proj
             {title}
           </h3>
         </div>
-      </motion.div>
+        </motion.div>
+      </Card3D>
     </Link>
   );
 };

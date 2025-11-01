@@ -2,6 +2,8 @@ import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import ProjectCard from '@/components/ProjectCard';
 import ImageCarousel from '@/components/ImageCarousel';
+import MagneticButton from '@/components/MagneticButton';
+import TextReveal from '@/components/TextReveal';
 import { getFeaturedProjects, projects } from '@/app/data/projects';
 
 export default function Home() {
@@ -21,33 +23,39 @@ export default function Home() {
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary mb-12">
               Depuis 2016
             </p>
-            <h1 className="font-display font-normal leading-[0.95] mb-12 text-balance text-foreground">
-              Où les marques<br />
-              trouvent leur <span className="text-primary">essence</span>
-            </h1>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.2}>
+          <TextReveal
+            className="font-display font-normal leading-[0.95] mb-12 text-balance text-foreground text-5xl md:text-6xl lg:text-7xl"
+            delay={0.1}
+            staggerDelay={0.05}
+          >
+            {`Où les marques\ntrouvent leur essence`}
+          </TextReveal>
+
+          <ScrollReveal delay={0.3}>
             <p className="text-2xl max-w-2xl text-secondary mb-16 leading-relaxed font-light">
               Nous créons des identités visuelles qui connectent,
               émotionnellement, visuellement, stratégiquement.
             </p>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.4}>
+          <ScrollReveal delay={0.5}>
             <div className="flex flex-col sm:flex-row gap-6">
-              <Link
+              <MagneticButton
                 href="/portfolio"
+                strength={0.2}
                 className="px-10 py-5 bg-foreground text-paper text-center rounded-lg hover:opacity-90 transition-opacity duration-300 font-sans"
               >
                 Découvrir nos projets
-              </Link>
-              <Link
+              </MagneticButton>
+              <MagneticButton
                 href="/contact"
+                strength={0.2}
                 className="px-10 py-5 glass-surface text-foreground text-center hover:bg-foreground hover:text-paper transition-all duration-300 font-sans rounded-lg"
               >
                 Démarrer une conversation
-              </Link>
+              </MagneticButton>
             </div>
           </ScrollReveal>
         </div>
