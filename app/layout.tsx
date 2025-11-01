@@ -6,6 +6,7 @@ import SmoothScroll from "@/components/SmoothScroll";
 import IntroAnimation from "@/components/IntroAnimation";
 import CustomCursorTrail from "@/components/CustomCursorTrail";
 import CursorManager from "@/components/CursorManager";
+import LivingGrid from "@/components/LivingGrid";
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -70,6 +71,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className="min-h-screen flex flex-col font-sans relative">
+        <LivingGrid />
         <CursorManager />
         <CustomCursorTrail />
         <IntroAnimation />

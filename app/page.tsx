@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import AsymmetricProjectGrid from '@/components/AsymmetricProjectGrid';
-import AnimatedGradient from '@/components/AnimatedGradient';
 import MagneticButton from '@/components/MagneticButton';
 import TextReveal from '@/components/TextReveal';
 import { getFeaturedProjects } from '@/app/data/projects';
@@ -12,9 +11,6 @@ export default function Home() {
 
   return (
     <>
-      {/* Animated Gradient Background */}
-      <AnimatedGradient />
-
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-6 lg:px-16 pt-24">
         <div className="max-w-6xl w-full">
