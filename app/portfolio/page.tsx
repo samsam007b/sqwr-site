@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Metadata } from 'next';
 import ScrollReveal from '@/components/ScrollReveal';
 import ProjectCard from '@/components/ProjectCard';
+import { projects, getProjectsByCategory } from '@/app/data/projects';
 
 export default function PortfolioPage() {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -16,84 +16,7 @@ export default function PortfolioPage() {
     { id: 'social', label: 'Social Media' },
   ];
 
-  const projects = [
-    {
-      id: 1,
-      title: 'Identité Visuelle Moderne',
-      category: 'branding',
-      categoryLabel: 'Branding',
-      image: '',
-      href: '/portfolio/projet-1'
-    },
-    {
-      id: 2,
-      title: 'Site E-commerce Minimaliste',
-      category: 'web',
-      categoryLabel: 'Web Design',
-      image: '',
-      href: '/portfolio/projet-2'
-    },
-    {
-      id: 3,
-      title: 'Campagne Réseaux Sociaux',
-      category: 'social',
-      categoryLabel: 'Social Media',
-      image: '',
-      href: '/portfolio/projet-3'
-    },
-    {
-      id: 4,
-      title: 'Création Logo & Charte',
-      category: 'branding',
-      categoryLabel: 'Branding',
-      image: '',
-      href: '/portfolio/projet-4'
-    },
-    {
-      id: 5,
-      title: 'Magazine Print Editorial',
-      category: 'print',
-      categoryLabel: 'Print',
-      image: '',
-      href: '/portfolio/projet-5'
-    },
-    {
-      id: 6,
-      title: 'Application Mobile UI/UX',
-      category: 'web',
-      categoryLabel: 'Web Design',
-      image: '',
-      href: '/portfolio/projet-6'
-    },
-    {
-      id: 7,
-      title: 'Packaging Premium',
-      category: 'branding',
-      categoryLabel: 'Branding',
-      image: '',
-      href: '/portfolio/projet-7'
-    },
-    {
-      id: 8,
-      title: 'Flyers & Affiches',
-      category: 'print',
-      categoryLabel: 'Print',
-      image: '',
-      href: '/portfolio/projet-8'
-    },
-    {
-      id: 9,
-      title: 'Content Instagram',
-      category: 'social',
-      categoryLabel: 'Social Media',
-      image: '',
-      href: '/portfolio/projet-9'
-    },
-  ];
-
-  const filteredProjects = activeFilter === 'all'
-    ? projects
-    : projects.filter(project => project.category === activeFilter);
+  const filteredProjects = getProjectsByCategory(activeFilter);
 
   return (
     <>
@@ -101,16 +24,16 @@ export default function PortfolioPage() {
       <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 px-6 lg:px-12">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <p className="text-sm uppercase tracking-wider text-gray-500 mb-6">
+            <p className="text-xs font-mono uppercase tracking-wider text-primary mb-6">
               Portfolio
             </p>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-bold mb-8 leading-tight text-balance">
+            <h1 className="font-display font-normal mb-8 text-balance text-foreground">
               Nos réalisations créatives
             </h1>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-xl text-gray-600 max-w-3xl leading-relaxed">
+            <p className="text-xl text-secondary max-w-3xl leading-relaxed font-light">
               Découvrez une sélection de projets qui illustrent notre approche
               créative et notre expertise en design.
             </p>
@@ -127,10 +50,10 @@ export default function PortfolioPage() {
                 <button
                   key={category.id}
                   onClick={() => setActiveFilter(category.id)}
-                  className={`px-6 py-3 text-sm tracking-wide transition-all duration-200 ${
+                  className={`px-6 py-3 rounded-lg text-sm font-sans transition-all duration-200 ${
                     activeFilter === category.id
-                      ? 'bg-primary text-secondary'
-                      : 'border border-gray-300 text-gray-700 hover:border-primary'
+                      ? 'bg-primary text-paper'
+                      : 'glass-surface text-foreground hover:bg-primary/10'
                   }`}
                 >
                   {category.label}
@@ -149,9 +72,11 @@ export default function PortfolioPage() {
               <ScrollReveal key={project.id} delay={index * 0.05}>
                 <ProjectCard
                   title={project.title}
+                  client={project.client}
                   category={project.categoryLabel}
-                  image={project.image}
-                  href={project.href}
+                  year={project.year}
+                  color={project.color}
+                  href={`/portfolio/${project.id}`}
                 />
               </ScrollReveal>
             ))}
@@ -159,7 +84,7 @@ export default function PortfolioPage() {
 
           {filteredProjects.length === 0 && (
             <div className="text-center py-20">
-              <p className="text-gray-500">
+              <p className="text-secondary">
                 Aucun projet trouvé dans cette catégorie.
               </p>
             </div>
@@ -167,17 +92,65 @@ export default function PortfolioPage() {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="py-24 lg:py-32 px-6 lg:px-12 glass-surface">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+            <ScrollReveal>
+              <div className="text-center">
+                <div className="text-5xl font-display font-normal text-foreground mb-2">
+                  {projects.length}+
+                </div>
+                <p className="text-sm font-mono uppercase tracking-wider text-secondary">
+                  Projets Réalisés
+                </p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.1}>
+              <div className="text-center">
+                <div className="text-5xl font-display font-normal text-foreground mb-2">
+                  50+
+                </div>
+                <p className="text-sm font-mono uppercase tracking-wider text-secondary">
+                  Clients Satisfaits
+                </p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.2}>
+              <div className="text-center">
+                <div className="text-5xl font-display font-normal text-foreground mb-2">
+                  5
+                </div>
+                <p className="text-sm font-mono uppercase tracking-wider text-secondary">
+                  Années d'Expérience
+                </p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.3}>
+              <div className="text-center">
+                <div className="text-5xl font-display font-normal text-foreground mb-2">
+                  100%
+                </div>
+                <p className="text-sm font-mono uppercase tracking-wider text-secondary">
+                  Engagement Qualité
+                </p>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-gray-50">
+      <section className="py-24 lg:py-32 px-6 lg:px-12">
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 text-balance">
+            <h2 className="font-display font-normal mb-6 text-balance text-foreground">
               Votre projet mérite le même niveau d'excellence
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
+            <p className="text-lg text-secondary mb-10 max-w-2xl mx-auto font-light">
               Travaillons ensemble pour créer quelque chose d'unique et
               mémorable.
             </p>
@@ -186,7 +159,7 @@ export default function PortfolioPage() {
           <ScrollReveal delay={0.4}>
             <a
               href="/contact"
-              className="inline-block px-10 py-5 bg-primary text-secondary hover:bg-primary/90 transition-colors duration-200"
+              className="inline-block px-10 py-5 bg-primary text-paper rounded-lg hover:bg-primary/90 transition-colors duration-200 font-sans"
             >
               Démarrer un projet
             </a>

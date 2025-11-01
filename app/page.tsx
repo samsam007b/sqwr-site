@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import ProjectCard from '@/components/ProjectCard';
+import { getFeaturedProjects } from '@/app/data/projects';
 
 export default function Home() {
   const services = [
@@ -12,36 +13,7 @@ export default function Home() {
     'Design réseaux sociaux'
   ];
 
-  const featuredProjects = [
-    {
-      id: 1,
-      title: 'Identité Visuelle Moderne',
-      category: 'Branding',
-      image: '',
-      href: '/portfolio/projet-1'
-    },
-    {
-      id: 2,
-      title: 'Site E-commerce Minimaliste',
-      category: 'Web Design',
-      image: '',
-      href: '/portfolio/projet-2'
-    },
-    {
-      id: 3,
-      title: 'Campagne Réseaux Sociaux',
-      category: 'Social Media',
-      image: '',
-      href: '/portfolio/projet-3'
-    },
-    {
-      id: 4,
-      title: 'Création Logo & Charte',
-      category: 'Branding',
-      image: '',
-      href: '/portfolio/projet-4'
-    }
-  ];
+  const featuredProjects = getFeaturedProjects();
 
   return (
     <>
@@ -49,17 +21,20 @@ export default function Home() {
       <section className="min-h-screen flex items-center justify-center px-6 lg:px-12 pt-24">
         <div className="max-w-6xl w-full">
           <ScrollReveal>
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-display font-bold leading-[0.95] mb-8 text-balance">
-              Design qui inspire.
+            <p className="text-xs font-mono uppercase tracking-wider text-primary mb-8">
+              Agence Créative Premium
+            </p>
+            <h1 className="font-display font-normal leading-[0.95] mb-8 text-balance text-foreground">
+              Transformer vos <span className="text-primary">ambitions</span>
               <br />
-              Créations qui marquent.
+              en réalisations d'exception
             </h1>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-lg md:text-xl max-w-2xl text-gray-600 mb-12 leading-relaxed">
+            <p className="text-xl max-w-2xl text-secondary mb-12 leading-relaxed font-light">
               Agence de communication visuelle et design graphique.
-              Nous transformons vos idées en expériences visuelles mémorables.
+              Nous créons des expériences qui marquent les esprits.
             </p>
           </ScrollReveal>
 
@@ -67,13 +42,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href="/portfolio"
-                className="px-8 py-4 bg-primary text-secondary text-center hover:bg-primary/90 transition-colors duration-200"
+                className="px-8 py-4 bg-primary text-paper text-center rounded-lg hover:bg-primary/90 transition-colors duration-200 font-sans"
               >
                 Voir nos projets
               </Link>
               <Link
                 href="/contact"
-                className="px-8 py-4 border border-primary text-primary text-center hover:bg-primary hover:text-secondary transition-all duration-200"
+                className="px-8 py-4 glass-surface text-foreground text-center hover:bg-primary hover:text-paper transition-all duration-200 font-sans rounded-lg"
               >
                 Nous contacter
               </Link>
@@ -83,22 +58,22 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-gray-50">
+      <section className="py-24 lg:py-32 px-6 lg:px-12 glass-surface">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
             <ScrollReveal>
               <div>
-                <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+                <p className="text-xs font-mono uppercase tracking-wider text-primary mb-4">
                   Notre approche
                 </p>
-                <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 leading-tight">
-                  Créer avec intention, designer avec passion
+                <h2 className="font-display font-normal mb-6 leading-tight text-foreground">
+                  Créer avec intention,<br />designer avec passion
                 </h2>
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
-              <div className="space-y-6 text-gray-600 leading-relaxed">
+              <div className="space-y-6 text-secondary leading-relaxed font-light">
                 <p>
                   Chez Créative Design, nous croyons que chaque projet mérite
                   une approche unique et réfléchie. Notre équipe allie créativité
@@ -111,7 +86,7 @@ export default function Home() {
                 </p>
                 <Link
                   href="/about"
-                  className="inline-block mt-4 text-primary font-medium hover:opacity-70 transition-opacity"
+                  className="inline-block mt-4 text-primary font-normal hover:opacity-70 transition-opacity"
                 >
                   En savoir plus sur nous →
                 </Link>
@@ -126,10 +101,10 @@ export default function Home() {
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-primary mb-4">
                 Nos services
               </p>
-              <h2 className="text-4xl md:text-5xl font-display font-bold">
+              <h2 className="font-display font-normal text-foreground">
                 Ce que nous faisons
               </h2>
             </div>
@@ -138,12 +113,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <ScrollReveal key={service} delay={index * 0.1}>
-                <div className="group p-8 border border-gray-200 hover:border-primary transition-all duration-300 hover:shadow-lg">
-                  <div className="w-12 h-12 border border-primary/20 mb-6 group-hover:bg-primary group-hover:border-primary transition-all duration-300" />
-                  <h3 className="text-xl font-display font-semibold mb-3">
+                <div className="group p-8 glass-hover rounded-lg grain-overlay">
+                  <div className="w-12 h-12 border-2 border-primary/20 mb-6 group-hover:bg-primary group-hover:border-primary transition-all duration-300 rounded" />
+                  <h3 className="text-xl font-display font-normal mb-3 text-foreground">
                     {service}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-secondary text-sm leading-relaxed font-light">
                     Solutions créatives et stratégiques adaptées à vos besoins.
                   </p>
                 </div>
@@ -155,7 +130,7 @@ export default function Home() {
             <div className="text-center mt-12">
               <Link
                 href="/services"
-                className="inline-block px-8 py-4 border border-primary text-primary hover:bg-primary hover:text-secondary transition-all duration-200"
+                className="inline-block px-8 py-4 glass-surface text-foreground rounded-lg hover:bg-primary hover:text-paper transition-all duration-200 font-sans"
               >
                 Découvrir tous nos services
               </Link>
@@ -165,26 +140,33 @@ export default function Home() {
       </section>
 
       {/* Featured Projects */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-gray-50">
+      <section className="py-24 lg:py-32 px-6 lg:px-12 glass-surface">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-16">
-              <p className="text-sm uppercase tracking-wider text-gray-500 mb-4">
+              <p className="text-xs font-mono uppercase tracking-wider text-primary mb-4">
                 Portfolio
               </p>
-              <h2 className="text-4xl md:text-5xl font-display font-bold mb-6">
+              <h2 className="font-display font-normal mb-6 text-foreground">
                 Projets sélectionnés
               </h2>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+              <p className="text-secondary max-w-2xl mx-auto font-light">
                 Découvrez quelques-unes de nos réalisations récentes
               </p>
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 mb-12">
             {featuredProjects.map((project, index) => (
               <ScrollReveal key={project.id} delay={index * 0.1}>
-                <ProjectCard {...project} />
+                <ProjectCard
+                  title={project.title}
+                  client={project.client}
+                  category={project.categoryLabel}
+                  year={project.year}
+                  color={project.color}
+                  href={`/portfolio/${project.id}`}
+                />
               </ScrollReveal>
             ))}
           </div>
@@ -193,7 +175,7 @@ export default function Home() {
             <div className="text-center">
               <Link
                 href="/portfolio"
-                className="inline-block px-8 py-4 bg-primary text-secondary hover:bg-primary/90 transition-colors duration-200"
+                className="inline-block px-8 py-4 bg-primary text-paper rounded-lg hover:bg-primary/90 transition-colors duration-200 font-sans"
               >
                 Voir tous les projets
               </Link>
@@ -206,13 +188,13 @@ export default function Home() {
       <section className="py-24 lg:py-32 px-6 lg:px-12">
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
-            <h2 className="text-4xl md:text-6xl font-display font-bold mb-8 text-balance">
+            <h2 className="font-display font-normal mb-8 text-balance text-foreground">
               Prêt à donner vie à votre projet ?
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
+            <p className="text-lg text-secondary mb-12 max-w-2xl mx-auto font-light">
               Discutons de vos besoins et créons ensemble quelque chose
               d'exceptionnel.
             </p>
@@ -221,7 +203,7 @@ export default function Home() {
           <ScrollReveal delay={0.4}>
             <Link
               href="/contact"
-              className="inline-block px-10 py-5 bg-primary text-secondary text-lg hover:bg-primary/90 transition-colors duration-200"
+              className="inline-block px-10 py-5 bg-primary text-paper text-lg rounded-lg hover:bg-primary/90 transition-colors duration-200 font-sans"
             >
               Démarrer un projet
             </Link>
