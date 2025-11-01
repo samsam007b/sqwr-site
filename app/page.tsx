@@ -168,7 +168,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-40 lg:py-48 px-6 lg:px-16 bg-foreground text-paper">
+      <section className="py-40 lg:py-48 px-6 lg:px-16 bg-foreground text-paper" data-dark-bg>
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
             <h2 className="font-display font-normal text-4xl md:text-5xl mb-10 text-balance leading-tight">

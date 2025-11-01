@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useIsTouchDevice } from '@/hooks/useIsMobile';
+import { useCursorColor } from '@/hooks/useCursorColor';
 
 interface TrailParticle {
   id: number;
@@ -10,6 +11,7 @@ interface TrailParticle {
   y: number;
   size: number;
   opacity: number;
+  color: string; // Store color at time of creation
 }
 
 const CustomCursorTrail = () => {
@@ -19,6 +21,7 @@ const CustomCursorTrail = () => {
   const lastTimeRef = useRef(Date.now());
   const particleIdRef = useRef(0);
   const isTouch = useIsTouchDevice();
+  const isOnDark = useCursorColor();
 
   useEffect(() => {
     // Don't show cursor trail on touch devices
@@ -46,6 +49,7 @@ const CustomCursorTrail = () => {
           y: currentPos.y,
           size: Math.min(8 + velocity * 0.5, 14), // Size based on velocity (8-14px)
           opacity: Math.min(0.4 + velocity * 0.05, 0.8), // Opacity based on velocity
+          color: isOnDark ? '#FFFFFF' : '#111111', // White on dark, black on light
         };
 
         setParticles((prev) => [...prev, newParticle]);
@@ -65,7 +69,7 @@ const CustomCursorTrail = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [isTouch]);
+  }, [isTouch, isOnDark]);
 
   // Don't render on touch devices
   if (isTouch) return null;
@@ -97,7 +101,7 @@ const CustomCursorTrail = () => {
               position: 'absolute',
               width: particle.size,
               height: particle.size,
-              backgroundColor: '#111111',
+              backgroundColor: particle.color,
               pointerEvents: 'none',
             }}
           />
