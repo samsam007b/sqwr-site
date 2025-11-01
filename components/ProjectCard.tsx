@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import Card3D from './Card3D';
 
 interface ProjectCardProps {
@@ -28,6 +29,9 @@ const ProjectCard = ({
   aspectRatio = '4/5',
   size = 'medium'
 }: ProjectCardProps) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   // Dynamic sizing based on size prop
   const titleSize = {
     small: 'text-xl',
@@ -48,13 +52,49 @@ const ProjectCard = ({
     medium: '(max-width: 768px) 100vw, 50vw',
     large: '100vw'
   }[size];
+
+  // Accordion fold animation variants
+  const accordionVariants = {
+    hidden: {
+      scaleX: 0.3,
+      opacity: 0.5,
+    },
+    visible: {
+      scaleX: 1,
+      opacity: 1,
+      transition: {
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    },
+  };
+
+  // Accordion bars animation
+  const barsVariants = {
+    hidden: {
+      opacity: 1,
+    },
+    visible: {
+      opacity: 0,
+      transition: {
+        duration: 0.8,
+        delay: 0.3,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
-    <Link href={href} className="group block">
+    <Link href={href} className="group block" ref={ref}>
       <Card3D intensity={3}>
         <motion.div
-          whileHover={{ y: -2 }}
+          variants={accordionVariants}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          whileHover={{ y: -2, scaleX: 0.98 }}
           transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           className="relative"
+          style={{ transformOrigin: "center" }}
         >
         {/* Image Container */}
         <div
@@ -101,10 +141,40 @@ const ProjectCard = ({
               <span className="text-xs font-mono text-foreground">{year}</span>
             </div>
           )}
+
+          {/* Accordion fold bars overlay */}
+          <motion.div
+            variants={barsVariants}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            className="absolute inset-0 flex pointer-events-none z-20"
+          >
+            {[...Array(10)].map((_, index) => (
+              <motion.div
+                key={index}
+                className="flex-1 bg-foreground"
+                style={{
+                  marginRight: index < 9 ? '2px' : '0',
+                }}
+                initial={{ scaleY: 1 }}
+                animate={isInView ? { scaleY: 0 } : { scaleY: 1 }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.3 + index * 0.05,
+                  ease: [0.76, 0, 0.24, 1],
+                }}
+              />
+            ))}
+          </motion.div>
         </div>
 
         {/* Project Info */}
-        <div className="mt-6">
+        <motion.div
+          className="mt-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ duration: 0.6, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+        >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">
               {category}
@@ -116,7 +186,7 @@ const ProjectCard = ({
           <h3 className={`${titleSize} font-display font-normal text-foreground group-hover:text-primary transition-colors duration-400`}>
             {title}
           </h3>
-        </div>
+        </motion.div>
         </motion.div>
       </Card3D>
     </Link>
