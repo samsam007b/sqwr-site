@@ -55,27 +55,30 @@ const Header = () => {
             ))}
           </ul>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button - Larger touch target (44x44px minimum) */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden relative w-6 h-6 focus:outline-none group"
+            className="md:hidden relative w-11 h-11 flex items-center justify-center focus:outline-none group"
             aria-label="Toggle menu"
+            aria-expanded={isMenuOpen}
           >
-            <span
-              className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary transition-all duration-300 ${
-                isMenuOpen ? 'top-3 rotate-45' : 'top-1'
-              }`}
-            />
-            <span
-              className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary top-3 transition-all duration-300 ${
-                isMenuOpen ? 'opacity-0' : 'opacity-100'
-              }`}
-            />
-            <span
-              className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary transition-all duration-300 ${
-                isMenuOpen ? 'top-3 -rotate-45' : 'top-5'
-              }`}
-            />
+            <div className="relative w-6 h-6">
+              <span
+                className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary transition-all duration-300 ${
+                  isMenuOpen ? 'top-3 rotate-45' : 'top-1'
+                }`}
+              />
+              <span
+                className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary top-3 transition-all duration-300 ${
+                  isMenuOpen ? 'opacity-0' : 'opacity-100'
+                }`}
+              />
+              <span
+                className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary transition-all duration-300 ${
+                  isMenuOpen ? 'top-3 -rotate-45' : 'top-5'
+                }`}
+              />
+            </div>
           </button>
         </div>
       </nav>

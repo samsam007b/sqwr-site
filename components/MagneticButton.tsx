@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useIsTouchDevice } from '@/hooks/useIsMobile';
 
 interface MagneticButtonProps {
   children: React.ReactNode;
@@ -21,8 +22,11 @@ const MagneticButton = ({
 }: MagneticButtonProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const isTouch = useIsTouchDevice();
 
   const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouch) return; // Disable on touch devices
+
     const { clientX, clientY } = e;
     const { width, height, left, top } = ref.current!.getBoundingClientRect();
     const x = (clientX - (left + width / 2)) * strength;
@@ -40,7 +44,7 @@ const MagneticButton = ({
       onMouseMove={handleMouse}
       onMouseLeave={reset}
       animate={{ x: position.x, y: position.y }}
-      transition={{ type: 'spring', stiffness: 150, damping: 15, mass: 0.1 }}
+      transition={isTouch ? { duration: 0 } : { type: 'spring', stiffness: 150, damping: 15, mass: 0.1 }}
       className={className}
     >
       {children}

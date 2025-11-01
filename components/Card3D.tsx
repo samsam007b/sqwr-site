@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useIsTouchDevice } from '@/hooks/useIsMobile';
 
 interface Card3DProps {
   children: React.ReactNode;
@@ -17,9 +18,10 @@ const Card3D = ({
   const ref = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
+  const isTouch = useIsTouchDevice();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return;
+    if (isTouch || !ref.current) return; // Disable on touch devices
 
     const rect = ref.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
@@ -36,6 +38,11 @@ const Card3D = ({
     setRotateX(0);
     setRotateY(0);
   };
+
+  // On touch devices, just render without 3D effects
+  if (isTouch) {
+    return <div className={className}>{children}</div>;
+  }
 
   return (
     <motion.div
