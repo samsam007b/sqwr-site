@@ -18,15 +18,15 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-primary text-secondary py-16 lg:py-20">
+    <footer className="bg-foreground text-paper py-16 lg:py-20 relative z-10">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           {/* Brand */}
           <div>
-            <h3 className="text-2xl font-display font-bold mb-4">
+            <h3 className="text-2xl font-display font-normal mb-4 text-paper">
               Créative Design
             </h3>
-            <p className="text-secondary/70 text-sm leading-relaxed">
+            <p className="text-paper/60 text-sm leading-relaxed font-sans font-light">
               Agence de communication visuelle et design graphique.
               Créons ensemble des expériences visuelles marquantes.
             </p>
@@ -34,7 +34,7 @@ const Footer = () => {
 
           {/* Navigation */}
           <div>
-            <h4 className="text-sm uppercase tracking-wider mb-4 opacity-70">
+            <h4 className="text-xs font-mono uppercase tracking-wider mb-4 text-paper/50">
               Navigation
             </h4>
             <ul className="space-y-3">
@@ -42,7 +42,7 @@ const Footer = () => {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-secondary/70 hover:text-secondary text-sm transition-colors duration-200"
+                    className="text-paper/60 hover:text-primary text-sm font-sans transition-colors duration-200"
                   >
                     {link.label}
                   </Link>
@@ -53,13 +53,13 @@ const Footer = () => {
 
           {/* Contact & Social */}
           <div>
-            <h4 className="text-sm uppercase tracking-wider mb-4 opacity-70">
+            <h4 className="text-xs font-mono uppercase tracking-wider mb-4 text-paper/50">
               Contact
             </h4>
-            <p className="text-secondary/70 text-sm mb-2">
+            <p className="text-paper/60 text-sm mb-2 font-sans">
               contact@creative-design.com
             </p>
-            <p className="text-secondary/70 text-sm mb-6">
+            <p className="text-paper/60 text-sm mb-6 font-sans">
               +33 1 23 45 67 89
             </p>
             <div className="flex space-x-4">
@@ -67,7 +67,7 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="w-10 h-10 border border-secondary/30 flex items-center justify-center text-xs hover:bg-secondary hover:text-primary transition-all duration-200"
+                  className="w-10 h-10 border border-paper/20 flex items-center justify-center text-xs font-mono hover:bg-primary hover:border-primary hover:text-paper transition-all duration-200"
                   aria-label={social.label}
                 >
                   {social.icon}
@@ -78,13 +78,13 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-secondary/10 flex flex-col md:flex-row justify-between items-center text-sm text-secondary/50">
+        <div className="pt-8 border-t border-paper/10 flex flex-col md:flex-row justify-between items-center text-sm text-paper/40 font-sans">
           <p>© {currentYear} Créative Design. Tous droits réservés.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link href="#" className="hover:text-secondary transition-colors">
+            <Link href="#" className="hover:text-paper/60 transition-colors">
               Mentions légales
             </Link>
-            <Link href="#" className="hover:text-secondary transition-colors">
+            <Link href="#" className="hover:text-paper/60 transition-colors">
               Politique de confidentialité
             </Link>
           </div>

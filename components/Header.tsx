@@ -28,13 +28,16 @@ const Header = () => {
   return (
     <header
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/95 backdrop-blur-sm shadow-sm' : 'bg-transparent'
+        isScrolled ? 'glass-surface shadow-sm' : 'bg-transparent'
       }`}
     >
       <nav className="container mx-auto px-6 lg:px-12 py-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-display font-bold tracking-tight hover:opacity-70 transition-opacity">
+          <Link
+            href="/"
+            className="text-2xl font-display font-normal tracking-tight text-foreground hover:text-primary transition-colors duration-200"
+          >
             Créative Design
           </Link>
 
@@ -44,7 +47,7 @@ const Header = () => {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="text-sm tracking-wide hover:opacity-70 transition-opacity duration-200"
+                  className="text-sm font-sans font-normal text-foreground tracking-wide hover:text-primary transition-colors duration-200"
                 >
                   {item.label}
                 </Link>
@@ -55,21 +58,21 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden relative w-6 h-6 focus:outline-none"
+            className="md:hidden relative w-6 h-6 focus:outline-none group"
             aria-label="Toggle menu"
           >
             <span
-              className={`absolute block w-6 h-0.5 bg-primary transition-all duration-300 ${
+              className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary transition-all duration-300 ${
                 isMenuOpen ? 'top-3 rotate-45' : 'top-1'
               }`}
             />
             <span
-              className={`absolute block w-6 h-0.5 bg-primary top-3 transition-all duration-300 ${
+              className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary top-3 transition-all duration-300 ${
                 isMenuOpen ? 'opacity-0' : 'opacity-100'
               }`}
             />
             <span
-              className={`absolute block w-6 h-0.5 bg-primary transition-all duration-300 ${
+              className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary transition-all duration-300 ${
                 isMenuOpen ? 'top-3 -rotate-45' : 'top-5'
               }`}
             />
@@ -85,7 +88,7 @@ const Header = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white border-t border-gray-100"
+            className="md:hidden glass-surface border-t border-border-light"
           >
             <ul className="container mx-auto px-6 py-8 space-y-6">
               {menuItems.map((item, index) => (
@@ -98,7 +101,7 @@ const Header = () => {
                   <Link
                     href={item.href}
                     onClick={() => setIsMenuOpen(false)}
-                    className="text-xl font-display block hover:opacity-70 transition-opacity"
+                    className="text-xl font-display font-normal text-foreground block hover:text-primary transition-colors duration-200"
                   >
                     {item.label}
                   </Link>
