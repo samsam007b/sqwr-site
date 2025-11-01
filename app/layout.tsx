@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
 import IntroAnimation from "@/components/IntroAnimation";
+import CustomCursorTrail from "@/components/CustomCursorTrail";
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -68,6 +69,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className="min-h-screen flex flex-col font-sans relative">
+        <CustomCursorTrail />
         <IntroAnimation />
         <SmoothScroll>
           <Header />
