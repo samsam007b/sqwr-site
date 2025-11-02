@@ -7,6 +7,7 @@ import IntroAnimation from "@/components/IntroAnimation";
 import CustomCursorTrail from "@/components/CustomCursorTrail";
 import CursorManager from "@/components/CursorManager";
 import LivingGrid from "@/components/LivingGrid";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -69,19 +70,34 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem('theme') ||
+                  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                document.documentElement.classList.toggle('dark', theme === 'dark');
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col font-sans relative">
-        <LivingGrid />
-        <CursorManager />
-        <CustomCursorTrail />
-        <IntroAnimation />
-        <SmoothScroll>
-          <Header />
-          <main className="flex-grow relative z-10">
-            {children}
-          </main>
-          <Footer />
-        </SmoothScroll>
+        <ThemeProvider>
+          <LivingGrid />
+          <CursorManager />
+          <CustomCursorTrail />
+          <IntroAnimation />
+          <SmoothScroll>
+            <Header />
+            <main className="flex-grow relative z-10">
+              {children}
+            </main>
+            <Footer />
+          </SmoothScroll>
+        </ThemeProvider>
       </body>
     </html>
   );

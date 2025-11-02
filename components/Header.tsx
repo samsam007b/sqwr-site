@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -68,52 +69,60 @@ const Header = () => {
           </motion.div>
 
           {/* Desktop Menu - fades in after intro */}
-          <motion.ul
-            className="hidden md:flex items-center space-x-10"
+          <motion.div
+            className="hidden md:flex items-center gap-6"
             initial={{ opacity: 0 }}
             animate={{ opacity: showLogo ? 1 : 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            {menuItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="text-sm font-sans font-normal text-foreground tracking-wide hover:text-primary transition-colors duration-200"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </motion.ul>
+            <ul className="flex items-center space-x-10">
+              {menuItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-sm font-sans font-normal text-foreground tracking-wide hover:text-primary transition-colors duration-200"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <ThemeToggle />
+          </motion.div>
 
-          {/* Mobile Menu Button - Larger touch target (44x44px minimum) - fades in after intro */}
-          <motion.button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden relative w-11 h-11 flex items-center justify-center focus:outline-none group"
-            aria-label="Toggle menu"
-            aria-expanded={isMenuOpen}
+          {/* Mobile Menu Button + Theme Toggle */}
+          <motion.div
+            className="md:hidden flex items-center gap-3"
             initial={{ opacity: 0 }}
             animate={{ opacity: showLogo ? 1 : 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            <div className="relative w-6 h-6">
-              <span
-                className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary transition-all duration-300 ${
-                  isMenuOpen ? 'top-3 rotate-45' : 'top-1'
-                }`}
-              />
-              <span
-                className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary top-3 transition-all duration-300 ${
-                  isMenuOpen ? 'opacity-0' : 'opacity-100'
-                }`}
-              />
-              <span
-                className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary transition-all duration-300 ${
-                  isMenuOpen ? 'top-3 -rotate-45' : 'top-5'
-                }`}
-              />
-            </div>
-          </motion.button>
+            <ThemeToggle />
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="relative w-11 h-11 flex items-center justify-center focus:outline-none group"
+              aria-label="Toggle menu"
+              aria-expanded={isMenuOpen}
+            >
+              <div className="relative w-6 h-6">
+                <span
+                  className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary transition-all duration-300 ${
+                    isMenuOpen ? 'top-3 rotate-45' : 'top-1'
+                  }`}
+                />
+                <span
+                  className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary top-3 transition-all duration-300 ${
+                    isMenuOpen ? 'opacity-0' : 'opacity-100'
+                  }`}
+                />
+                <span
+                  className={`absolute block w-6 h-0.5 bg-foreground group-hover:bg-primary group-active:bg-primary transition-all duration-300 ${
+                    isMenuOpen ? 'top-3 -rotate-45' : 'top-5'
+                  }`}
+                />
+              </div>
+            </button>
+          </motion.div>
         </div>
       </nav>
 

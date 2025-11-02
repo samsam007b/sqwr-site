@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,18 +10,18 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Architectural Glass Design System
-        background: "#FAFAF8",
-        paper: "#FFFFFF",
-        foreground: "#111111",
-        primary: "#E01919",
-        "primary-foreground": "#FFFFFF",
-        secondary: "#666666",
-        tertiary: "#999999",
-        "border-light": "#E6E6E6",
-        accent: "#E01919",
-        muted: "#F5F5F3",
-        "muted-foreground": "#666666",
+        // Architectural Glass Design System with CSS Variables
+        background: "var(--background)",
+        paper: "var(--paper)",
+        foreground: "var(--foreground)",
+        primary: "var(--primary)",
+        "primary-foreground": "var(--primary-foreground)",
+        secondary: "var(--secondary)",
+        tertiary: "var(--tertiary)",
+        "border-light": "var(--border-light)",
+        accent: "var(--accent)",
+        muted: "var(--muted)",
+        "muted-foreground": "var(--muted-foreground)",
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
