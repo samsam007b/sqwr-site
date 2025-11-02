@@ -1,11 +1,15 @@
+'use client';
+
 import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal';
 import AsymmetricProjectGrid from '@/components/AsymmetricProjectGrid';
 import MagneticButton from '@/components/MagneticButton';
 import TextReveal from '@/components/TextReveal';
 import { getFeaturedProjects } from '@/app/data/projects';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function Home() {
+  const { t } = useLanguage();
   // Select top 6 projects for asymmetric grid (1 full + 2 pairs)
   const topProjects = getFeaturedProjects().slice(0, 6);
 
@@ -16,7 +20,7 @@ export default function Home() {
         <div className="max-w-6xl w-full">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary mb-12">
-              Depuis 2016
+              {t('hero.since')}
             </p>
           </ScrollReveal>
 
@@ -25,13 +29,12 @@ export default function Home() {
             delay={0.1}
             staggerDelay={0.05}
           >
-            {`Où les marques\ntrouvent leur essence`}
+            {t('hero.title')}
           </TextReveal>
 
           <ScrollReveal delay={0.3}>
             <p className="text-2xl max-w-2xl text-secondary mb-16 leading-relaxed font-light">
-              Nous créons des identités visuelles qui connectent,
-              émotionnellement, visuellement, stratégiquement.
+              {t('hero.subtitle')}
             </p>
           </ScrollReveal>
 
@@ -42,14 +45,14 @@ export default function Home() {
                 strength={0.2}
                 className="px-10 py-5 bg-foreground text-paper text-center rounded-lg hover:opacity-90 transition-opacity duration-300 font-sans"
               >
-                Découvrir nos projets
+                {t('hero.cta')}
               </MagneticButton>
               <MagneticButton
                 href="/contact"
                 strength={0.2}
                 className="px-10 py-5 glass-surface text-foreground text-center hover:bg-foreground hover:text-paper transition-all duration-300 font-sans rounded-lg"
               >
-                Démarrer une conversation
+                {t('hero.ctaSecondary')}
               </MagneticButton>
             </div>
           </ScrollReveal>
@@ -63,7 +66,7 @@ export default function Home() {
             <div className="lg:col-span-4">
               <ScrollReveal>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-4">
-                  Notre philosophie
+                  {t('home.philosophyLabel')}
                 </p>
               </ScrollReveal>
             </div>
@@ -71,20 +74,14 @@ export default function Home() {
             <div className="lg:col-span-8">
               <ScrollReveal delay={0.2}>
                 <h2 className="font-display font-normal text-4xl md:text-5xl mb-8 leading-tight text-foreground">
-                  Le design comme levier de transformation
+                  {t('home.philosophyTitle')}
                 </h2>
                 <div className="space-y-6 text-lg text-secondary/80 leading-relaxed font-light">
                   <p>
-                    Chaque marque possède une histoire unique qui mérite d'être
-                    racontée avec intention et authenticité. Notre rôle est de
-                    révéler cette essence à travers des expériences visuelles
-                    mémorables.
+                    {t('home.philosophyText1')}
                   </p>
                   <p>
-                    De la stratégie de marque à l'exécution digitale, nous
-                    combinons réflexion stratégique et excellence créative pour
-                    créer des solutions qui ne sont pas seulement belles, mais
-                    qui performent et créent de la valeur.
+                    {t('home.philosophyText2')}
                   </p>
                 </div>
               </ScrollReveal>
@@ -99,10 +96,10 @@ export default function Home() {
           <ScrollReveal>
             <div className="mb-32 lg:mb-40">
               <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-6">
-                Projets sélectionnés
+                {t('home.projectsLabel')}
               </p>
               <h2 className="font-display font-normal text-4xl md:text-5xl text-foreground">
-                Travaux récents
+                {t('home.projectsTitle')}
               </h2>
             </div>
           </ScrollReveal>
@@ -115,7 +112,7 @@ export default function Home() {
                 href="/portfolio"
                 className="inline-block text-sm font-mono uppercase tracking-[0.2em] text-foreground hover:text-primary transition-colors duration-300"
               >
-                Voir tous les projets →
+                {t('home.viewAll')}
               </Link>
             </div>
           </ScrollReveal>
@@ -129,10 +126,10 @@ export default function Home() {
             <ScrollReveal>
               <div>
                 <div className="text-5xl font-display font-normal mb-4 text-foreground">
-                  150+
+                  {t('home.stat1')}
                 </div>
                 <p className="text-sm font-mono uppercase tracking-[0.2em] text-secondary/60">
-                  Marques transformées
+                  {t('home.stat1Label')}
                 </p>
               </div>
             </ScrollReveal>
@@ -140,10 +137,10 @@ export default function Home() {
             <ScrollReveal delay={0.1}>
               <div>
                 <div className="text-5xl font-display font-normal mb-4 text-foreground">
-                  9 ans
+                  {t('home.stat2')}
                 </div>
                 <p className="text-sm font-mono uppercase tracking-[0.2em] text-secondary/60">
-                  D'expertise créative
+                  {t('home.stat2Label')}
                 </p>
               </div>
             </ScrollReveal>
@@ -151,10 +148,10 @@ export default function Home() {
             <ScrollReveal delay={0.2}>
               <div>
                 <div className="text-5xl font-display font-normal mb-4 text-foreground">
-                  100%
+                  {t('home.stat3')}
                 </div>
                 <p className="text-sm font-mono uppercase tracking-[0.2em] text-secondary/60">
-                  Excellence & passion
+                  {t('home.stat3Label')}
                 </p>
               </div>
             </ScrollReveal>
@@ -166,15 +163,14 @@ export default function Home() {
       <section className="py-40 lg:py-48 px-6 lg:px-16 bg-foreground text-paper" data-dark-bg>
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
-            <h2 className="font-display font-normal text-4xl md:text-5xl mb-10 text-balance leading-tight">
-              Transformons votre vision<br />en réalité
+            <h2 className="font-display font-normal text-4xl md:text-5xl mb-10 text-balance leading-tight whitespace-pre-line">
+              {t('home.ctaTitle')}
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-xl text-paper/70 mb-16 max-w-2xl mx-auto font-light leading-relaxed">
-              Chaque grand projet commence par une conversation.
-              Parlons du vôtre.
+            <p className="text-xl text-paper/70 mb-16 max-w-2xl mx-auto font-light leading-relaxed whitespace-pre-line">
+              {t('home.ctaSubtitle')}
             </p>
           </ScrollReveal>
 
@@ -183,7 +179,7 @@ export default function Home() {
               href="/contact"
               className="inline-block px-10 py-5 bg-primary text-paper text-lg rounded-lg hover:opacity-90 transition-opacity duration-300 font-sans"
             >
-              Entrer en contact
+              {t('home.ctaButton')}
             </Link>
           </ScrollReveal>
         </div>
