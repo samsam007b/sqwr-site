@@ -84,6 +84,18 @@ const ProjectCard = ({
     },
   };
 
+  // Pixel grid settings - create a grid of squares
+  const gridCols = 16;
+  const gridRows = 20;
+  const totalSquares = gridCols * gridRows;
+
+  // Generate squares for pixel effect
+  const pixelSquares = Array.from({ length: totalSquares }, (_, i) => {
+    const row = Math.floor(i / gridCols);
+    const col = i % gridCols;
+    return { id: i, row, col };
+  });
+
   return (
     <Link href={href} className="group block" ref={ref}>
       <Card3D intensity={3}>
@@ -142,29 +154,36 @@ const ProjectCard = ({
             </div>
           )}
 
-          {/* Accordion fold bars overlay */}
+          {/* Pixelated grid overlay - squares that disappear to reveal image */}
           <motion.div
-            variants={barsVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            className="absolute inset-0 flex pointer-events-none z-20"
+            className="absolute inset-0 pointer-events-none z-20"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
+              gridTemplateRows: `repeat(${gridRows}, 1fr)`,
+              gap: '1px',
+            }}
           >
-            {[...Array(10)].map((_, index) => (
-              <motion.div
-                key={index}
-                className="flex-1 bg-foreground"
-                style={{
-                  marginRight: index < 9 ? '2px' : '0',
-                }}
-                initial={{ scaleY: 1 }}
-                animate={isInView ? { scaleY: 0 } : { scaleY: 1 }}
-                transition={{
-                  duration: 0.6,
-                  delay: 0.3 + index * 0.05,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
-              />
-            ))}
+            {pixelSquares.map(({ id, row, col }) => {
+              // Create wave effect: delay based on distance from top-left corner
+              const distanceFromOrigin = Math.sqrt(row * row + col * col);
+              const maxDistance = Math.sqrt(gridRows * gridRows + gridCols * gridCols);
+              const normalizedDistance = distanceFromOrigin / maxDistance;
+
+              return (
+                <motion.div
+                  key={id}
+                  className="bg-foreground"
+                  initial={{ opacity: 1, scale: 1 }}
+                  animate={isInView ? { opacity: 0, scale: 0.8 } : { opacity: 1, scale: 1 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.2 + normalizedDistance * 0.6,
+                    ease: [0.76, 0, 0.24, 1],
+                  }}
+                />
+              );
+            })}
           </motion.div>
         </div>
 
