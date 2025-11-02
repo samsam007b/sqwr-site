@@ -115,18 +115,60 @@ const ProjectCard = ({
         >
           {image ? (
             <>
-              {/* Real Image */}
-              <Image
-                src={image}
-                alt={title}
-                fill
-                className="object-cover transition-all duration-700 group-hover:scale-[1.02]"
-                sizes={imageSizes}
-                quality={imageQuality}
-                priority={size === 'large'}
-              />
+              {/* Image divided into pixelated grid - each square is a piece of the image */}
+              <div
+                className="absolute inset-0"
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
+                  gridTemplateRows: `repeat(${gridRows}, 1fr)`,
+                  gap: '1px',
+                  backgroundColor: 'transparent',
+                }}
+              >
+                {pixelSquares.map(({ id, row, col }) => {
+                  // Create wave effect: delay based on distance from top-left corner
+                  const distanceFromOrigin = Math.sqrt(row * row + col * col);
+                  const maxDistance = Math.sqrt(gridRows * gridRows + gridCols * gridCols);
+                  const normalizedDistance = distanceFromOrigin / maxDistance;
+
+                  return (
+                    <motion.div
+                      key={id}
+                      className="relative overflow-hidden"
+                      style={{
+                        backgroundImage: `url(${image})`,
+                        backgroundSize: `${gridCols * 100}% ${gridRows * 100}%`,
+                        backgroundPosition: `${(col / (gridCols - 1)) * 100}% ${(row / (gridRows - 1)) * 100}%`,
+                        backgroundRepeat: 'no-repeat',
+                      }}
+                      initial={{ opacity: 0, scale: 0, rotate: 45 }}
+                      animate={isInView ? {
+                        opacity: 1,
+                        scale: 1,
+                        rotate: 0
+                      } : {
+                        opacity: 0,
+                        scale: 0,
+                        rotate: 45
+                      }}
+                      transition={{
+                        duration: 0.6,
+                        delay: 0.2 + normalizedDistance * 0.7,
+                        ease: [0.76, 0, 0.24, 1],
+                      }}
+                    />
+                  );
+                })}
+              </div>
+
               {/* Dark overlay for better text contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80" />
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80 pointer-events-none z-10"
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.8, delay: 0.9 }}
+              />
             </>
           ) : (
             <>
@@ -149,42 +191,15 @@ const ProjectCard = ({
 
           {/* Year badge */}
           {year && (
-            <div className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-10 transition-opacity duration-300 group-hover:opacity-90">
+            <motion.div
+              className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-20 transition-opacity duration-300 group-hover:opacity-90"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.4, delay: 1 }}
+            >
               <span className="text-xs font-mono text-foreground">{year}</span>
-            </div>
+            </motion.div>
           )}
-
-          {/* Pixelated grid overlay - squares that disappear to reveal image */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none z-20"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-              gridTemplateRows: `repeat(${gridRows}, 1fr)`,
-              gap: '1px',
-            }}
-          >
-            {pixelSquares.map(({ id, row, col }) => {
-              // Create wave effect: delay based on distance from top-left corner
-              const distanceFromOrigin = Math.sqrt(row * row + col * col);
-              const maxDistance = Math.sqrt(gridRows * gridRows + gridCols * gridCols);
-              const normalizedDistance = distanceFromOrigin / maxDistance;
-
-              return (
-                <motion.div
-                  key={id}
-                  className="bg-foreground"
-                  initial={{ opacity: 1, scale: 1 }}
-                  animate={isInView ? { opacity: 0, scale: 0.8 } : { opacity: 1, scale: 1 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.2 + normalizedDistance * 0.6,
-                    ease: [0.76, 0, 0.24, 1],
-                  }}
-                />
-              );
-            })}
-          </motion.div>
         </div>
 
         {/* Project Info */}
