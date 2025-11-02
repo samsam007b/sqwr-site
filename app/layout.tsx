@@ -8,6 +8,7 @@ import CustomCursorTrail from "@/components/CustomCursorTrail";
 import CursorManager from "@/components/CursorManager";
 import LivingGrid from "@/components/LivingGrid";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -86,17 +87,19 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col font-sans relative">
         <ThemeProvider>
-          <LivingGrid />
-          <CursorManager />
-          <CustomCursorTrail />
-          <IntroAnimation />
-          <SmoothScroll>
-            <Header />
-            <main className="flex-grow relative z-10">
-              {children}
-            </main>
-            <Footer />
-          </SmoothScroll>
+          <LanguageProvider>
+            <LivingGrid />
+            <CursorManager />
+            <CustomCursorTrail />
+            <IntroAnimation />
+            <SmoothScroll>
+              <Header />
+              <main className="flex-grow relative z-10">
+                {children}
+              </main>
+              <Footer />
+            </SmoothScroll>
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

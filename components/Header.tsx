@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
+import LanguageSelector from './LanguageSelector';
+import { useLanguage } from '@/context/LanguageContext';
 
 const Header = () => {
+  const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showLogo, setShowLogo] = useState(false);
@@ -39,11 +42,11 @@ const Header = () => {
   }, []);
 
   const menuItems = [
-    { href: '/', label: 'Accueil' },
-    { href: '/services', label: 'Services' },
-    { href: '/portfolio', label: 'Portfolio' },
-    { href: '/about', label: 'À propos' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/', label: t('nav.home') },
+    { href: '/services', label: t('nav.services') },
+    { href: '/portfolio', label: t('nav.portfolio') },
+    { href: '/about', label: t('nav.about') },
+    { href: '/contact', label: t('nav.contact') },
   ];
 
   return (
@@ -70,7 +73,7 @@ const Header = () => {
 
           {/* Desktop Menu - fades in after intro */}
           <motion.div
-            className="hidden md:flex items-center gap-6"
+            className="hidden md:flex items-center gap-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: showLogo ? 1 : 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
@@ -87,16 +90,20 @@ const Header = () => {
                 </li>
               ))}
             </ul>
-            <ThemeToggle />
+            <div className="flex items-center gap-3">
+              <LanguageSelector />
+              <ThemeToggle />
+            </div>
           </motion.div>
 
-          {/* Mobile Menu Button + Theme Toggle */}
+          {/* Mobile Menu Button + Controls */}
           <motion.div
-            className="md:hidden flex items-center gap-3"
+            className="md:hidden flex items-center gap-2"
             initial={{ opacity: 0 }}
             animate={{ opacity: showLogo ? 1 : 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           >
+            <LanguageSelector />
             <ThemeToggle />
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
