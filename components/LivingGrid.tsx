@@ -6,28 +6,22 @@ const LivingGrid = () => {
   // Generate 9 squares (3x3 grid)
   const squares = Array.from({ length: 9 }, (_, i) => i);
 
-  // Random duration between 12-18 seconds for very smooth feel
-  const getRandomDuration = () => 12 + Math.random() * 6;
+  // Random duration between 10-14 seconds - optimized for performance
+  const getRandomDuration = () => 10 + Math.random() * 4;
 
   // Random delay to desynchronize squares
-  const getRandomDelay = () => Math.random() * 6;
+  const getRandomDelay = () => Math.random() * 4;
 
-  // Animation for each square - breathing in/out (translateZ) with strong shadows
+  // Animation for each square - breathing in/out (translateZ) with shadows
+  // Removed filter animation for better performance
   const breathingAnimation = (index: number) => ({
-    translateZ: [0, 40, 0, -25, 0], // More pronounced movement: forward 40px, back 25px
+    translateZ: [0, 30, 0, -20, 0], // Slightly reduced movement for smoother performance
     boxShadow: [
-      '0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08)', // Rest state
-      '0 35px 60px rgba(0, 0, 0, 0.25), 0 20px 30px rgba(0, 0, 0, 0.15)', // Forward (very strong shadow)
-      '0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08)', // Rest
-      '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)', // Back (very light shadow)
-      '0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08)', // Rest
-    ],
-    filter: [
-      'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06))', // Rest
-      'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15))', // Forward
-      'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06))', // Rest
-      'drop-shadow(0 1px 3px rgba(0, 0, 0, 0.03))', // Back
-      'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06))', // Rest
+      '0 6px 20px rgba(0, 0, 0, 0.1)', // Rest state
+      '0 25px 50px rgba(0, 0, 0, 0.2)', // Forward
+      '0 6px 20px rgba(0, 0, 0, 0.1)', // Rest
+      '0 2px 6px rgba(0, 0, 0, 0.05)', // Back
+      '0 6px 20px rgba(0, 0, 0, 0.1)', // Rest
     ],
     transition: {
       duration: getRandomDuration(),
@@ -56,6 +50,8 @@ const LivingGrid = () => {
             style={{
               transformStyle: 'preserve-3d',
               willChange: 'transform, box-shadow',
+              transform: 'translateZ(0)', // Force GPU acceleration
+              backfaceVisibility: 'hidden', // Optimize rendering
             }}
             animate={breathingAnimation(index)}
           >

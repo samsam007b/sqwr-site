@@ -53,17 +53,17 @@ const ProjectCard = ({
     large: '100vw'
   }[size];
 
-  // Accordion fold animation variants
+  // Accordion fold animation variants - optimized for faster reveal
   const accordionVariants = {
     hidden: {
-      scaleX: 0.3,
-      opacity: 0.5,
+      scaleX: 0.5,
+      opacity: 0.7,
     },
     visible: {
       scaleX: 1,
       opacity: 1,
       transition: {
-        duration: 1,
+        duration: 0.6,
         ease: [0.25, 0.1, 0.25, 1],
       },
     },
@@ -84,9 +84,9 @@ const ProjectCard = ({
     },
   };
 
-  // Pixel grid settings - create a grid of squares
-  const gridCols = 16;
-  const gridRows = 20;
+  // Pixel grid settings - optimized for performance (80 squares instead of 320)
+  const gridCols = 8;
+  const gridRows = 10;
   const totalSquares = gridCols * gridRows;
 
   // Generate squares for pixel effect
@@ -141,6 +141,8 @@ const ProjectCard = ({
                         backgroundSize: `${gridCols * 100}% ${gridRows * 100}%`,
                         backgroundPosition: `${(col / (gridCols - 1)) * 100}% ${(row / (gridRows - 1)) * 100}%`,
                         backgroundRepeat: 'no-repeat',
+                        willChange: 'transform, opacity',
+                        transform: 'translateZ(0)', // Force GPU acceleration
                       }}
                       initial={{ opacity: 0, scale: 0, rotate: 45 }}
                       animate={isInView ? {
@@ -153,8 +155,8 @@ const ProjectCard = ({
                         rotate: 45
                       }}
                       transition={{
-                        duration: 0.6,
-                        delay: 0.2 + normalizedDistance * 0.7,
+                        duration: 0.4,
+                        delay: 0.1 + normalizedDistance * 0.4,
                         ease: [0.76, 0, 0.24, 1],
                       }}
                     />
@@ -167,7 +169,7 @@ const ProjectCard = ({
                 className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80 pointer-events-none z-10"
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.8, delay: 0.9 }}
+                transition={{ duration: 0.4, delay: 0.5 }}
               />
             </>
           ) : (
@@ -195,7 +197,7 @@ const ProjectCard = ({
               className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-20 transition-opacity duration-300 group-hover:opacity-90"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.4, delay: 1 }}
+              transition={{ duration: 0.3, delay: 0.6 }}
             >
               <span className="text-xs font-mono text-foreground">{year}</span>
             </motion.div>
@@ -207,7 +209,7 @@ const ProjectCard = ({
           className="mt-6"
           initial={{ opacity: 0, y: 10 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          transition={{ duration: 0.6, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: 0.4, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">
