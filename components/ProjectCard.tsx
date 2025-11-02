@@ -69,9 +69,9 @@ const ProjectCard = ({
     },
   };
 
-  // Pixel grid settings - optimized for performance (120 squares)
-  const gridCols = 10;
-  const gridRows = 12;
+  // Origami grid settings - balanced for performance and visual effect
+  const gridCols = 8;
+  const gridRows = 10;
   const totalSquares = gridCols * gridRows;
 
   return (
@@ -93,81 +93,71 @@ const ProjectCard = ({
         >
           {image ? (
             <>
-              {/* Base image - single load, much more performant */}
-              <motion.div
+              {/* Origami-style unfolding grid - each square unfolds to reveal its portion of the image */}
+              <div
                 className="absolute inset-0"
-                initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-              >
-                <Image
-                  src={image}
-                  alt={title}
-                  fill
-                  className="object-cover"
-                  sizes={imageSizes}
-                  quality={imageQuality}
-                  priority={size === 'large'}
-                />
-              </motion.div>
-
-              {/* Pixelated reveal grid - squares that disappear to reveal image */}
-              <motion.div
-                className="absolute inset-0 pointer-events-none z-10"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
                   gridTemplateRows: `repeat(${gridRows}, 1fr)`,
                   gap: '0px',
+                  perspective: '1000px',
                 }}
               >
                 {Array.from({ length: totalSquares }, (_, i) => {
                   const row = Math.floor(i / gridCols);
                   const col = i % gridCols;
 
-                  // Create organic wave effect from top-left
+                  // Create wave effect from top-left corner
                   const distanceFromOrigin = Math.sqrt(row * row + col * col);
                   const maxDistance = Math.sqrt(gridRows * gridRows + gridCols * gridCols);
                   const normalizedDistance = distanceFromOrigin / maxDistance;
 
-                  // Add subtle randomness for organic feel
-                  const randomOffset = (Math.random() - 0.5) * 0.08;
+                  // Slight randomness for organic feel
+                  const randomOffset = (Math.random() - 0.5) * 0.06;
 
                   return (
                     <motion.div
                       key={i}
-                      className="relative"
+                      className="relative overflow-hidden"
                       style={{
-                        backgroundColor: 'var(--foreground)',
-                        boxShadow: 'inset 0 0 0 0.5px rgba(0, 0, 0, 0.15)',
+                        backgroundImage: `url(${image})`,
+                        backgroundSize: `${gridCols * 100}% ${gridRows * 100}%`,
+                        backgroundPosition: `${(col / (gridCols - 1)) * 100}% ${(row / (gridRows - 1)) * 100}%`,
+                        backgroundRepeat: 'no-repeat',
+                        transformStyle: 'preserve-3d',
+                        transformOrigin: 'center',
+                        boxShadow: 'inset 0 0 0 0.5px rgba(0, 0, 0, 0.08)',
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
                       }}
                       initial={{
-                        opacity: 1,
-                        scale: 1,
+                        rotateX: 90,
+                        opacity: 0,
                       }}
                       animate={isInView ? {
-                        opacity: 0,
-                        scale: 0.85,
-                      } : {
+                        rotateX: 0,
                         opacity: 1,
-                        scale: 1,
+                      } : {
+                        rotateX: 90,
+                        opacity: 0,
                       }}
                       transition={{
-                        duration: 0.35,
-                        delay: 0.05 + (normalizedDistance * 0.45) + randomOffset,
-                        ease: [0.33, 1, 0.68, 1], // easeOutCubic for smooth deceleration
+                        duration: 0.6,
+                        delay: 0.05 + (normalizedDistance * 0.5) + randomOffset,
+                        ease: [0.34, 1.56, 0.64, 1], // easeOutBack for slight overshoot (origami spring)
                       }}
                     />
                   );
                 })}
-              </motion.div>
+              </div>
 
               {/* Dark overlay for better text contrast */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80 pointer-events-none z-20"
+                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80 pointer-events-none z-10"
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.5, delay: 0.55 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
               />
             </>
           ) : (
@@ -192,10 +182,10 @@ const ProjectCard = ({
           {/* Year badge */}
           {year && (
             <motion.div
-              className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-30 transition-opacity duration-300 group-hover:opacity-90"
+              className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-20 transition-opacity duration-300 group-hover:opacity-90"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.35, delay: 0.6 }}
+              transition={{ duration: 0.4, delay: 0.65 }}
             >
               <span className="text-xs font-mono text-foreground">{year}</span>
             </motion.div>
