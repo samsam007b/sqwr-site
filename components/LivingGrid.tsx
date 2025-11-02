@@ -6,28 +6,35 @@ const LivingGrid = () => {
   // Generate 9 squares (3x3 grid)
   const squares = Array.from({ length: 9 }, (_, i) => i);
 
-  // Random duration between 8-12 seconds for organic feel
-  const getRandomDuration = () => 8 + Math.random() * 4;
+  // Random duration between 12-18 seconds for very smooth feel
+  const getRandomDuration = () => 12 + Math.random() * 6;
 
   // Random delay to desynchronize squares
-  const getRandomDelay = () => Math.random() * 4;
+  const getRandomDelay = () => Math.random() * 6;
 
-  // Animation for each square - breathing in/out (translateZ)
+  // Animation for each square - breathing in/out (translateZ) with strong shadows
   const breathingAnimation = (index: number) => ({
-    translateZ: [0, 15, 0, -10, 0], // Forward, back, repeat
+    translateZ: [0, 40, 0, -25, 0], // More pronounced movement: forward 40px, back 25px
     boxShadow: [
-      '0 4px 12px rgba(0, 0, 0, 0.08)', // Rest state
-      '0 20px 40px rgba(0, 0, 0, 0.15)', // Forward (stronger shadow)
-      '0 4px 12px rgba(0, 0, 0, 0.08)', // Rest
-      '0 2px 6px rgba(0, 0, 0, 0.04)', // Back (lighter shadow)
-      '0 4px 12px rgba(0, 0, 0, 0.08)', // Rest
+      '0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08)', // Rest state
+      '0 35px 60px rgba(0, 0, 0, 0.25), 0 20px 30px rgba(0, 0, 0, 0.15)', // Forward (very strong shadow)
+      '0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08)', // Rest
+      '0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04)', // Back (very light shadow)
+      '0 8px 24px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08)', // Rest
+    ],
+    filter: [
+      'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06))', // Rest
+      'drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15))', // Forward
+      'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06))', // Rest
+      'drop-shadow(0 1px 3px rgba(0, 0, 0, 0.03))', // Back
+      'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.06))', // Rest
     ],
     transition: {
       duration: getRandomDuration(),
       delay: getRandomDelay(),
       repeat: Infinity,
-      ease: 'easeInOut',
-      times: [0, 0.3, 0.5, 0.7, 1],
+      ease: [0.45, 0.05, 0.55, 0.95], // Custom cubic-bezier for ultra-smooth motion
+      times: [0, 0.35, 0.5, 0.65, 1],
     },
   });
 
