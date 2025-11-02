@@ -69,32 +69,10 @@ const ProjectCard = ({
     },
   };
 
-  // Accordion bars animation
-  const barsVariants = {
-    hidden: {
-      opacity: 1,
-    },
-    visible: {
-      opacity: 0,
-      transition: {
-        duration: 0.8,
-        delay: 0.3,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  // Pixel grid settings - optimized for performance (80 squares instead of 320)
-  const gridCols = 8;
-  const gridRows = 10;
+  // Pixel grid settings - optimized for performance (120 squares)
+  const gridCols = 10;
+  const gridRows = 12;
   const totalSquares = gridCols * gridRows;
-
-  // Generate squares for pixel effect
-  const pixelSquares = Array.from({ length: totalSquares }, (_, i) => {
-    const row = Math.floor(i / gridCols);
-    const col = i % gridCols;
-    return { id: i, row, col };
-  });
 
   return (
     <Link href={href} className="group block" ref={ref}>
@@ -115,61 +93,81 @@ const ProjectCard = ({
         >
           {image ? (
             <>
-              {/* Image divided into pixelated grid - each square is a piece of the image */}
-              <div
+              {/* Base image - single load, much more performant */}
+              <motion.div
                 className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <Image
+                  src={image}
+                  alt={title}
+                  fill
+                  className="object-cover"
+                  sizes={imageSizes}
+                  quality={imageQuality}
+                  priority={size === 'large'}
+                />
+              </motion.div>
+
+              {/* Pixelated reveal grid - squares that disappear to reveal image */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none z-10"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
                   gridTemplateRows: `repeat(${gridRows}, 1fr)`,
-                  gap: '1px',
-                  backgroundColor: 'transparent',
+                  gap: '0px',
                 }}
               >
-                {pixelSquares.map(({ id, row, col }) => {
-                  // Create wave effect: delay based on distance from top-left corner
+                {Array.from({ length: totalSquares }, (_, i) => {
+                  const row = Math.floor(i / gridCols);
+                  const col = i % gridCols;
+
+                  // Create organic wave effect from top-left
                   const distanceFromOrigin = Math.sqrt(row * row + col * col);
                   const maxDistance = Math.sqrt(gridRows * gridRows + gridCols * gridCols);
                   const normalizedDistance = distanceFromOrigin / maxDistance;
 
+                  // Add subtle randomness for organic feel
+                  const randomOffset = (Math.random() - 0.5) * 0.08;
+
                   return (
                     <motion.div
-                      key={id}
-                      className="relative overflow-hidden"
+                      key={i}
+                      className="relative"
                       style={{
-                        backgroundImage: `url(${image})`,
-                        backgroundSize: `${gridCols * 100}% ${gridRows * 100}%`,
-                        backgroundPosition: `${(col / (gridCols - 1)) * 100}% ${(row / (gridRows - 1)) * 100}%`,
-                        backgroundRepeat: 'no-repeat',
-                        willChange: 'transform, opacity',
-                        transform: 'translateZ(0)', // Force GPU acceleration
+                        backgroundColor: 'var(--foreground)',
+                        boxShadow: 'inset 0 0 0 0.5px rgba(0, 0, 0, 0.15)',
                       }}
-                      initial={{ opacity: 0, scale: 0, rotate: 45 }}
-                      animate={isInView ? {
+                      initial={{
                         opacity: 1,
                         scale: 1,
-                        rotate: 0
-                      } : {
+                      }}
+                      animate={isInView ? {
                         opacity: 0,
-                        scale: 0,
-                        rotate: 45
+                        scale: 0.85,
+                      } : {
+                        opacity: 1,
+                        scale: 1,
                       }}
                       transition={{
-                        duration: 0.4,
-                        delay: 0.1 + normalizedDistance * 0.4,
-                        ease: [0.76, 0, 0.24, 1],
+                        duration: 0.35,
+                        delay: 0.05 + (normalizedDistance * 0.45) + randomOffset,
+                        ease: [0.33, 1, 0.68, 1], // easeOutCubic for smooth deceleration
                       }}
                     />
                   );
                 })}
-              </div>
+              </motion.div>
 
               {/* Dark overlay for better text contrast */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80 pointer-events-none z-10"
+                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80 pointer-events-none z-20"
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.4, delay: 0.5 }}
+                transition={{ duration: 0.5, delay: 0.55 }}
               />
             </>
           ) : (
@@ -194,10 +192,10 @@ const ProjectCard = ({
           {/* Year badge */}
           {year && (
             <motion.div
-              className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-20 transition-opacity duration-300 group-hover:opacity-90"
+              className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-30 transition-opacity duration-300 group-hover:opacity-90"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.3, delay: 0.6 }}
+              transition={{ duration: 0.35, delay: 0.6 }}
             >
               <span className="text-xs font-mono text-foreground">{year}</span>
             </motion.div>
