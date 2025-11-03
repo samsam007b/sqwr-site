@@ -9,39 +9,39 @@ const LivingGrid = () => {
   // Generate 9 squares (3x3 grid)
   const squares = Array.from({ length: 9 }, (_, i) => i);
 
-  // Random duration between 10-14 seconds - optimized for performance
-  const getRandomDuration = () => 10 + Math.random() * 4;
+  // Random duration between 12-18 seconds for slower, more visible breathing
+  const getRandomDuration = () => 12 + Math.random() * 6;
 
   // Random delay to desynchronize squares
-  const getRandomDelay = () => Math.random() * 4;
+  const getRandomDelay = () => Math.random() * 5;
 
-  // Animation for each square - breathing in/out (translateZ) with shadows
+  // Animation for each square - enhanced breathing in/out (translateZ) with dramatic shadows
   // Different shadows for light and dark mode
   const breathingAnimation = (index: number) => {
     const lightShadows = [
-      '0 6px 20px rgba(0, 0, 0, 0.1)', // Rest state
-      '0 25px 50px rgba(0, 0, 0, 0.2)', // Forward
-      '0 6px 20px rgba(0, 0, 0, 0.1)', // Rest
-      '0 2px 6px rgba(0, 0, 0, 0.05)', // Back
-      '0 6px 20px rgba(0, 0, 0, 0.1)', // Rest
+      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest state - enhanced
+      '0 40px 80px rgba(0, 0, 0, 0.3)', // Forward - much more dramatic
+      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
+      '0 2px 8px rgba(0, 0, 0, 0.06)', // Back - subtle
+      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
     ];
 
     const darkShadows = [
-      '0 6px 20px rgba(255, 255, 255, 0.03), 0 2px 8px rgba(255, 51, 51, 0.08)', // Rest state with red glow
-      '0 25px 50px rgba(255, 255, 255, 0.08), 0 10px 30px rgba(255, 51, 51, 0.15)', // Forward with stronger glow
-      '0 6px 20px rgba(255, 255, 255, 0.03), 0 2px 8px rgba(255, 51, 51, 0.08)', // Rest
-      '0 2px 6px rgba(255, 255, 255, 0.02), 0 1px 3px rgba(255, 51, 51, 0.05)', // Back
-      '0 6px 20px rgba(255, 255, 255, 0.03), 0 2px 8px rgba(255, 51, 51, 0.08)', // Rest
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest state with enhanced red glow
+      '0 40px 80px rgba(255, 255, 255, 0.12), 0 20px 50px rgba(255, 51, 51, 0.25)', // Forward - dramatic glow
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
+      '0 2px 8px rgba(255, 255, 255, 0.03), 0 1px 4px rgba(255, 51, 51, 0.06)', // Back
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
     ];
 
     return {
-      translateZ: [0, 30, 0, -20, 0],
+      translateZ: [0, 50, 0, -35, 0], // Enhanced movement: forward 50px, back 35px
       boxShadow: theme === 'dark' ? darkShadows : lightShadows,
       transition: {
         duration: getRandomDuration(),
         delay: getRandomDelay(),
         repeat: Infinity,
-        ease: [0.45, 0.05, 0.55, 0.95],
+        ease: [0.42, 0, 0.58, 1], // Smoother easing for breathing effect
         times: [0, 0.35, 0.5, 0.65, 1],
       },
     };
