@@ -15,28 +15,54 @@ const LivingGrid = () => {
   // Random delay to desynchronize squares
   const getRandomDelay = () => Math.random() * 5;
 
-  // Animation for each square - enhanced breathing in/out (translateZ) with dramatic shadows
-  // Different shadows for light and dark mode
+  // Animation for each square - alternating 3D breathing with different directions
+  // Creates checkerboard pattern where some squares move forward while others move back
   const breathingAnimation = (index: number) => {
-    const lightShadows = [
-      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest state - enhanced
-      '0 40px 80px rgba(0, 0, 0, 0.3)', // Forward - much more dramatic
+    // Checkerboard pattern: even indices start forward, odd indices start back
+    const startsForward = index % 2 === 0;
+
+    // Shadows for forward movement (square coming towards viewer)
+    const forwardLightShadows = [
+      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest state
+      '0 40px 80px rgba(0, 0, 0, 0.3)', // Forward - dramatic shadow
       '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
       '0 2px 8px rgba(0, 0, 0, 0.06)', // Back - subtle
       '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
     ];
 
-    const darkShadows = [
-      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest state with enhanced red glow
+    const forwardDarkShadows = [
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
       '0 40px 80px rgba(255, 255, 255, 0.12), 0 20px 50px rgba(255, 51, 51, 0.25)', // Forward - dramatic glow
       '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
       '0 2px 8px rgba(255, 255, 255, 0.03), 0 1px 4px rgba(255, 51, 51, 0.06)', // Back
       '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
     ];
 
+    // Shadows for backward movement (square starting back, then coming forward)
+    const backwardLightShadows = [
+      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
+      '0 2px 8px rgba(0, 0, 0, 0.06)', // Back first
+      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
+      '0 40px 80px rgba(0, 0, 0, 0.3)', // Then forward
+      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
+    ];
+
+    const backwardDarkShadows = [
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
+      '0 2px 8px rgba(255, 255, 255, 0.03), 0 1px 4px rgba(255, 51, 51, 0.06)', // Back first
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
+      '0 40px 80px rgba(255, 255, 255, 0.12), 0 20px 50px rgba(255, 51, 51, 0.25)', // Then forward
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
+    ];
+
     return {
-      translateZ: [0, 50, 0, -35, 0], // Enhanced movement: forward 50px, back 35px
-      boxShadow: theme === 'dark' ? darkShadows : lightShadows,
+      // Alternate between forward-first and backward-first motion
+      translateZ: startsForward
+        ? [0, 50, 0, -35, 0]  // Start by moving forward
+        : [0, -35, 0, 50, 0], // Start by moving backward
+      boxShadow: theme === 'dark'
+        ? (startsForward ? forwardDarkShadows : backwardDarkShadows)
+        : (startsForward ? forwardLightShadows : backwardLightShadows),
       transition: {
         duration: getRandomDuration(),
         delay: getRandomDelay(),
