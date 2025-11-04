@@ -287,14 +287,6 @@ const ProjectCard = ({
                   />
                 ))}
               </div>
-
-              {/* Dark overlay for better text contrast */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80 pointer-events-none z-10"
-                initial={{ opacity: 0 }}
-                animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.5, delay: 1.5 }}
-              />
             </>
           ) : (
             <>
