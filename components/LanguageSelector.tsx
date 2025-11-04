@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
 const languages = [
-  { code: 'fr' as Locale, label: 'Français', flag: '🇫🇷' },
-  { code: 'en' as Locale, label: 'English', flag: '🇬🇧' },
-  { code: 'nl' as Locale, label: 'Nederlands', flag: '🇳🇱' },
-  { code: 'de' as Locale, label: 'Deutsch', flag: '🇩🇪' },
+  { code: 'fr' as Locale, label: 'Français' },
+  { code: 'en' as Locale, label: 'English' },
+  { code: 'nl' as Locale, label: 'Nederlands' },
+  { code: 'de' as Locale, label: 'Deutsch' },
 ];
 
 const LanguageSelector = () => {
@@ -49,8 +49,7 @@ const LanguageSelector = () => {
         aria-label="Select language"
         aria-expanded={isOpen}
       >
-        <span className="text-base">{currentLanguage.flag}</span>
-        <span className="text-xs font-mono uppercase tracking-wider text-foreground hidden sm:inline">
+        <span className="text-xs font-mono uppercase tracking-wider text-foreground">
           {currentLanguage.code}
         </span>
         <motion.svg
@@ -90,7 +89,6 @@ const LanguageSelector = () => {
                 whileHover={{ x: 4 }}
                 transition={{ duration: 0.2 }}
               >
-                <span className="text-base">{lang.flag}</span>
                 <span className="text-sm font-sans">{lang.label}</span>
                 {locale === lang.code && (
                   <motion.svg
