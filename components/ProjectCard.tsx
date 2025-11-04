@@ -32,6 +32,8 @@ const ProjectCard = ({
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [isHovered, setIsHovered] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Dynamic sizing based on size prop
   const titleSize = {
@@ -66,6 +68,15 @@ const ProjectCard = ({
     return { row, col };
   };
 
+  // Handle mouse move to track position relative to container
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100; // 0-100%
+    const y = ((e.clientY - rect.top) / rect.height) * 100; // 0-100%
+    setMousePosition({ x, y });
+  };
+
   return (
     <Link href={href} className="group block" ref={ref}>
       <Card3D intensity={3}>
@@ -78,10 +89,12 @@ const ProjectCard = ({
         >
         {/* Image Container */}
         <div
+          ref={containerRef}
           className="relative overflow-hidden rounded-lg grain-overlay"
           style={{ aspectRatio }}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
+          onMouseMove={handleMouseMove}
         >
           {image ? (
             <>
@@ -100,12 +113,33 @@ const ProjectCard = ({
                   const { row, col } = getSquarePosition(i);
                   const waveDelay = (col * 0.15) + (row * 0.1);
 
-                  // Calculate separation direction for each square on hover
-                  // Center square (index 4) stays in place, others move outward
-                  const isCenter = i === 4;
-                  const offsetX = (col - 1) * 8; // -8, 0, 8
-                  const offsetY = (row - 1) * 8; // -8, 0, 8
-                  const hoverZ = isCenter ? 20 : Math.sqrt(offsetX * offsetX + offsetY * offsetY) * 3;
+                  // Calculate square center position in percentage (0-100)
+                  const squareCenterX = (col / (gridCols - 1)) * 100; // 0, 50, 100
+                  const squareCenterY = (row / (gridRows - 1)) * 100; // 0, 50, 100
+
+                  // Calculate distance from mouse to square center
+                  const deltaX = mousePosition.x - squareCenterX;
+                  const deltaY = mousePosition.y - squareCenterY;
+                  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+                  // Maximum distance in a 100x100 space is ~141 (diagonal)
+                  const maxDistance = 141;
+                  const normalizedDistance = Math.min(distance / maxDistance, 1);
+
+                  // Repulsion effect: push squares away from mouse
+                  // Closer squares (smaller distance) = stronger push
+                  const repulsionStrength = Math.max(0, 1 - normalizedDistance);
+                  const pushMultiplier = 20; // How far to push
+
+                  // Calculate push direction (away from mouse)
+                  const angle = Math.atan2(-deltaY, -deltaX); // Negative for repulsion
+                  const pushX = isHovered ? Math.cos(angle) * repulsionStrength * pushMultiplier : 0;
+                  const pushY = isHovered ? Math.sin(angle) * repulsionStrength * pushMultiplier : 0;
+                  const pushZ = isHovered ? repulsionStrength * 40 : 0;
+
+                  // Rotation based on push direction
+                  const rotateX = isHovered ? pushY * 0.8 : 0;
+                  const rotateY = isHovered ? -pushX * 0.8 : 0;
 
                   return (
                     <motion.div
@@ -129,11 +163,11 @@ const ProjectCard = ({
                         y: 0,
                       }}
                       animate={isInView ? (isHovered ? {
-                        translateZ: hoverZ,
-                        rotateX: (row - 1) * 8,
-                        rotateY: (col - 1) * 8,
-                        x: offsetX,
-                        y: offsetY,
+                        translateZ: pushZ,
+                        rotateX: rotateX,
+                        rotateY: rotateY,
+                        x: pushX,
+                        y: pushY,
                       } : {
                         translateZ: [0, 80, 0, -40, 0],
                         rotateX: [0, 15, 0, -10, 0],
@@ -148,8 +182,10 @@ const ProjectCard = ({
                         rotateY: 0,
                       }}
                       transition={isHovered ? {
-                        duration: 0.4,
-                        ease: [0.34, 1.56, 0.64, 1],
+                        type: "spring",
+                        stiffness: 150,
+                        damping: 15,
+                        mass: 0.1,
                       } : {
                         duration: 2,
                         delay: 0.3 + waveDelay,
