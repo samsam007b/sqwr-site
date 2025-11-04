@@ -2,64 +2,51 @@
 
 import { motion } from 'framer-motion';
 import { useTheme } from '@/context/ThemeContext';
+import { memo, useMemo } from 'react';
 
-const LivingGrid = () => {
-  const { theme } = useTheme();
+// Memoized grid square for performance
+const GridSquare = memo(({ index, theme }: { index: number; theme: 'light' | 'dark' }) => {
+  // Memoize animation config
+  const animation = useMemo(() => {
+    const getRandomDuration = () => 12 + Math.random() * 6;
+    const getRandomDelay = () => Math.random() * 5;
 
-  // Generate 9 squares (3x3 grid)
-  const squares = Array.from({ length: 9 }, (_, i) => i);
-
-  // Random duration between 12-18 seconds for slower, more visible breathing
-  const getRandomDuration = () => 12 + Math.random() * 6;
-
-  // Random delay to desynchronize squares
-  const getRandomDelay = () => Math.random() * 5;
-
-  // Animation for each square - alternating 3D breathing with different directions
-  // Creates checkerboard pattern where some squares move forward while others move back
-  const breathingAnimation = (index: number) => {
-    // Checkerboard pattern: even indices start forward, odd indices start back
     const startsForward = index % 2 === 0;
 
-    // Shadows for forward movement (square coming towards viewer)
     const forwardLightShadows = [
-      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest state
-      '0 40px 80px rgba(0, 0, 0, 0.3)', // Forward - dramatic shadow
-      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
-      '0 2px 8px rgba(0, 0, 0, 0.06)', // Back - subtle
-      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
+      '0 8px 30px rgba(0, 0, 0, 0.12)',
+      '0 40px 80px rgba(0, 0, 0, 0.3)',
+      '0 8px 30px rgba(0, 0, 0, 0.12)',
+      '0 2px 8px rgba(0, 0, 0, 0.06)',
+      '0 8px 30px rgba(0, 0, 0, 0.12)',
     ];
 
     const forwardDarkShadows = [
-      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
-      '0 40px 80px rgba(255, 255, 255, 0.12), 0 20px 50px rgba(255, 51, 51, 0.25)', // Forward - dramatic glow
-      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
-      '0 2px 8px rgba(255, 255, 255, 0.03), 0 1px 4px rgba(255, 51, 51, 0.06)', // Back
-      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)',
+      '0 40px 80px rgba(255, 255, 255, 0.12), 0 20px 50px rgba(255, 51, 51, 0.25)',
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)',
+      '0 2px 8px rgba(255, 255, 255, 0.03), 0 1px 4px rgba(255, 51, 51, 0.06)',
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)',
     ];
 
-    // Shadows for backward movement (square starting back, then coming forward)
     const backwardLightShadows = [
-      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
-      '0 2px 8px rgba(0, 0, 0, 0.06)', // Back first
-      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
-      '0 40px 80px rgba(0, 0, 0, 0.3)', // Then forward
-      '0 8px 30px rgba(0, 0, 0, 0.12)', // Rest
+      '0 8px 30px rgba(0, 0, 0, 0.12)',
+      '0 2px 8px rgba(0, 0, 0, 0.06)',
+      '0 8px 30px rgba(0, 0, 0, 0.12)',
+      '0 40px 80px rgba(0, 0, 0, 0.3)',
+      '0 8px 30px rgba(0, 0, 0, 0.12)',
     ];
 
     const backwardDarkShadows = [
-      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
-      '0 2px 8px rgba(255, 255, 255, 0.03), 0 1px 4px rgba(255, 51, 51, 0.06)', // Back first
-      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
-      '0 40px 80px rgba(255, 255, 255, 0.12), 0 20px 50px rgba(255, 51, 51, 0.25)', // Then forward
-      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)', // Rest
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)',
+      '0 2px 8px rgba(255, 255, 255, 0.03), 0 1px 4px rgba(255, 51, 51, 0.06)',
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)',
+      '0 40px 80px rgba(255, 255, 255, 0.12), 0 20px 50px rgba(255, 51, 51, 0.25)',
+      '0 8px 30px rgba(255, 255, 255, 0.05), 0 4px 12px rgba(255, 51, 51, 0.12)',
     ];
 
     return {
-      // Alternate between forward-first and backward-first motion
-      translateZ: startsForward
-        ? [0, 50, 0, -35, 0]  // Start by moving forward
-        : [0, -35, 0, 50, 0], // Start by moving backward
+      translateZ: startsForward ? [0, 50, 0, -35, 0] : [0, -35, 0, 50, 0],
       boxShadow: theme === 'dark'
         ? (startsForward ? forwardDarkShadows : backwardDarkShadows)
         : (startsForward ? forwardLightShadows : backwardLightShadows),
@@ -67,32 +54,54 @@ const LivingGrid = () => {
         duration: getRandomDuration(),
         delay: getRandomDelay(),
         repeat: Infinity,
-        ease: [0.42, 0, 0.58, 1], // Smoother easing for breathing effect
+        ease: [0.42, 0, 0.58, 1],
         times: [0, 0.35, 0.5, 0.65, 1],
       },
     };
-  };
+  }, [index, theme]);
 
-  // Animation for grid lines - enhanced breathing effect
-  const lineBreathingAnimation = (lineIndex: number) => {
+  return (
+    <motion.div
+      className="relative bg-paper border-0"
+      style={{
+        transformStyle: 'preserve-3d',
+        willChange: 'transform, box-shadow',
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
+      }}
+      animate={animation}
+    >
+      <div className="absolute inset-0 grain-overlay dark:opacity-[0.03] opacity-[0.02]" />
+    </motion.div>
+  );
+});
+
+GridSquare.displayName = 'GridSquare';
+
+// Memoized grid line for performance
+const GridLine = memo(({ lineIndex, isHorizontal, theme }: { lineIndex: number; isHorizontal: boolean; theme: 'light' | 'dark' }) => {
+  const animation = useMemo(() => {
+    const getRandomDuration = () => 12 + Math.random() * 6;
+    const getRandomDelay = () => Math.random() * 5;
+
     const lightShadows = [
-      '0 4px 20px rgba(0, 0, 0, 0.08)', // Rest state
-      '0 20px 60px rgba(0, 0, 0, 0.25)', // Forward - dramatic shadow
-      '0 4px 20px rgba(0, 0, 0, 0.08)', // Rest
-      '0 1px 4px rgba(0, 0, 0, 0.04)', // Back
-      '0 4px 20px rgba(0, 0, 0, 0.08)', // Rest
+      '0 4px 20px rgba(0, 0, 0, 0.08)',
+      '0 20px 60px rgba(0, 0, 0, 0.25)',
+      '0 4px 20px rgba(0, 0, 0, 0.08)',
+      '0 1px 4px rgba(0, 0, 0, 0.04)',
+      '0 4px 20px rgba(0, 0, 0, 0.08)',
     ];
 
     const darkShadows = [
-      '0 4px 20px rgba(255, 255, 255, 0.04), 0 2px 8px rgba(255, 51, 51, 0.1)', // Rest with red glow
-      '0 20px 60px rgba(255, 255, 255, 0.1), 0 10px 40px rgba(255, 51, 51, 0.2)', // Forward - dramatic glow
-      '0 4px 20px rgba(255, 255, 255, 0.04), 0 2px 8px rgba(255, 51, 51, 0.1)', // Rest
-      '0 1px 4px rgba(255, 255, 255, 0.02), 0 1px 2px rgba(255, 51, 51, 0.05)', // Back
-      '0 4px 20px rgba(255, 255, 255, 0.04), 0 2px 8px rgba(255, 51, 51, 0.1)', // Rest
+      '0 4px 20px rgba(255, 255, 255, 0.04), 0 2px 8px rgba(255, 51, 51, 0.1)',
+      '0 20px 60px rgba(255, 255, 255, 0.1), 0 10px 40px rgba(255, 51, 51, 0.2)',
+      '0 4px 20px rgba(255, 255, 255, 0.04), 0 2px 8px rgba(255, 51, 51, 0.1)',
+      '0 1px 4px rgba(255, 255, 255, 0.02), 0 1px 2px rgba(255, 51, 51, 0.05)',
+      '0 4px 20px rgba(255, 255, 255, 0.04), 0 2px 8px rgba(255, 51, 51, 0.1)',
     ];
 
     return {
-      translateZ: [0, 45, 0, -30, 0], // Slightly less movement than squares but still dramatic
+      translateZ: [0, 45, 0, -30, 0],
       boxShadow: theme === 'dark' ? darkShadows : lightShadows,
       transition: {
         duration: getRandomDuration(),
@@ -102,7 +111,30 @@ const LivingGrid = () => {
         times: [0, 0.35, 0.5, 0.65, 1],
       },
     };
-  };
+  }, [theme]); // lineIndex is used only for key, not needed in deps
+
+  const position = `${((lineIndex + 1) / 3) * 100}%`;
+
+  return (
+    <motion.div
+      className={`absolute dark:bg-foreground/[0.08] bg-foreground/[0.03] ${isHorizontal ? 'left-0 right-0' : 'top-0 bottom-0'}`}
+      style={{
+        [isHorizontal ? 'height' : 'width']: '1px',
+        [isHorizontal ? 'top' : 'left']: position,
+        transformStyle: 'preserve-3d',
+        willChange: 'transform, box-shadow',
+        transform: 'translateZ(0)',
+        backfaceVisibility: 'hidden',
+      }}
+      animate={animation}
+    />
+  );
+});
+
+GridLine.displayName = 'GridLine';
+
+const LivingGrid = () => {
+  const { theme } = useTheme();
 
   return (
     <div
@@ -115,55 +147,28 @@ const LivingGrid = () => {
     >
       {/* Grid container */}
       <div className="w-full h-full grid grid-cols-3 grid-rows-3 gap-0">
-        {squares.map((index) => (
-          <motion.div
-            key={index}
-            className="relative bg-paper border-0"
-            style={{
-              transformStyle: 'preserve-3d',
-              willChange: 'transform, box-shadow',
-              transform: 'translateZ(0)', // Force GPU acceleration
-              backfaceVisibility: 'hidden', // Optimize rendering
-            }}
-            animate={breathingAnimation(index)}
-          >
-            {/* Subtle grain overlay */}
-            <div className="absolute inset-0 grain-overlay dark:opacity-[0.03] opacity-[0.02]" />
-          </motion.div>
+        {Array.from({ length: 9 }, (_, index) => (
+          <GridSquare key={index} index={index} theme={theme} />
         ))}
       </div>
 
       {/* Animated horizontal lines */}
       {[0, 1].map((lineIndex) => (
-        <motion.div
-          key={`h-line-${lineIndex}`}
-          className="absolute left-0 right-0 dark:bg-foreground/[0.08] bg-foreground/[0.03]"
-          style={{
-            height: '1px',
-            top: `${((lineIndex + 1) / 3) * 100}%`,
-            transformStyle: 'preserve-3d',
-            willChange: 'transform, box-shadow',
-            transform: 'translateZ(0)',
-            backfaceVisibility: 'hidden',
-          }}
-          animate={lineBreathingAnimation(lineIndex)}
+        <GridLine
+          key={`h-${lineIndex}`}
+          lineIndex={lineIndex}
+          isHorizontal={true}
+          theme={theme}
         />
       ))}
 
       {/* Animated vertical lines */}
       {[0, 1].map((lineIndex) => (
-        <motion.div
-          key={`v-line-${lineIndex}`}
-          className="absolute top-0 bottom-0 dark:bg-foreground/[0.08] bg-foreground/[0.03]"
-          style={{
-            width: '1px',
-            left: `${((lineIndex + 1) / 3) * 100}%`,
-            transformStyle: 'preserve-3d',
-            willChange: 'transform, box-shadow',
-            transform: 'translateZ(0)',
-            backfaceVisibility: 'hidden',
-          }}
-          animate={lineBreathingAnimation(lineIndex + 2)}
+        <GridLine
+          key={`v-${lineIndex}`}
+          lineIndex={lineIndex + 2}
+          isHorizontal={false}
+          theme={theme}
         />
       ))}
     </div>

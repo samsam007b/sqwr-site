@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo, useCallback, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import Card3D from './Card3D';
 
@@ -18,6 +18,147 @@ interface ProjectCardProps {
   aspectRatio?: string; // e.g., "16/9", "4/3", "4/5"
   size?: 'small' | 'medium' | 'large';
 }
+
+// Memoized grid square component for performance
+const GridSquare = memo(({
+  i,
+  image,
+  gridCols,
+  gridRows,
+  isInView,
+  isHovered,
+  isClicked,
+  mousePosition,
+  getSquarePosition
+}: {
+  i: number;
+  image: string;
+  gridCols: number;
+  gridRows: number;
+  isInView: boolean;
+  isHovered: boolean;
+  isClicked: boolean;
+  mousePosition: { x: number; y: number };
+  getSquarePosition: (index: number) => { row: number; col: number };
+}) => {
+  const { row, col } = getSquarePosition(i);
+  const waveDelay = (col * 0.15) + (row * 0.1);
+
+  // Memoize calculations
+  const squareCenterX = useMemo(() => (col / (gridCols - 1)) * 100, [col, gridCols]);
+  const squareCenterY = useMemo(() => (row / (gridRows - 1)) * 100, [row, gridRows]);
+
+  // Mouse repulsion calculations
+  const repulsion = useMemo(() => {
+    if (!isHovered || isClicked) return { pushX: 0, pushY: 0, pushZ: 0, rotateXHover: 0, rotateYHover: 0 };
+
+    const deltaX = mousePosition.x - squareCenterX;
+    const deltaY = mousePosition.y - squareCenterY;
+    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const normalizedDistance = Math.min(distance / 141, 1);
+    const repulsionStrength = Math.max(0, 1 - normalizedDistance);
+    const angle = Math.atan2(-deltaY, -deltaX);
+
+    return {
+      pushX: Math.cos(angle) * repulsionStrength * 20,
+      pushY: Math.sin(angle) * repulsionStrength * 20,
+      pushZ: repulsionStrength * 40,
+      rotateXHover: Math.sin(angle) * repulsionStrength * 20 * 0.8,
+      rotateYHover: -Math.cos(angle) * repulsionStrength * 20 * 0.8,
+    };
+  }, [isHovered, isClicked, mousePosition, squareCenterX, squareCenterY]);
+
+  // Explosion effect calculations
+  const explosion = useMemo(() => {
+    const isCenter = i === 4;
+    const depthMultiplier = isCenter ? 1.5 : Math.random() * 0.5 + 0.7;
+    return {
+      translateZ: 300 + (depthMultiplier * 200),
+      rotateX: (Math.random() - 0.5) * 30,
+      rotateY: (Math.random() - 0.5) * 30,
+    };
+  }, [i]);
+
+  return (
+    <motion.div
+      style={{
+        backgroundImage: `url(${image})`,
+        backgroundSize: `${gridCols * 100}% ${gridRows * 100}%`,
+        backgroundPosition: `${col * 50}% ${row * 50}%`,
+        backgroundRepeat: 'no-repeat',
+        transformStyle: 'preserve-3d',
+        transformOrigin: 'center',
+        boxShadow: 'inset 0 0 0 0.5px rgba(0, 0, 0, 0.08)',
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden',
+      }}
+      initial={{
+        translateZ: 0,
+        rotateX: 0,
+        x: 0,
+        y: 0,
+      }}
+      animate={
+        isClicked
+          ? {
+              translateZ: explosion.translateZ,
+              scale: 1.5,
+              opacity: 0,
+              rotateX: explosion.rotateX,
+              rotateY: explosion.rotateY,
+              x: 0,
+              y: 0,
+            }
+          : isInView
+          ? (isHovered
+              ? {
+                  translateZ: repulsion.pushZ,
+                  rotateX: repulsion.rotateXHover,
+                  rotateY: repulsion.rotateYHover,
+                  x: repulsion.pushX,
+                  y: repulsion.pushY,
+                }
+              : {
+                  translateZ: [0, 80, 0, -40, 0],
+                  rotateX: [0, 15, 0, -10, 0],
+                  x: 0,
+                  y: 0,
+                  rotateY: 0,
+                })
+          : {
+              translateZ: 0,
+              rotateX: 0,
+              x: 0,
+              y: 0,
+              rotateY: 0,
+            }
+      }
+      transition={
+        isClicked
+          ? {
+              duration: 0.6,
+              delay: i * 0.02,
+              ease: [0.6, 0.01, 0.05, 0.95],
+            }
+          : isHovered
+          ? {
+              type: 'spring',
+              stiffness: 150,
+              damping: 15,
+              mass: 0.1,
+            }
+          : {
+              duration: 2,
+              delay: 0.3 + waveDelay,
+              ease: [0.42, 0, 0.58, 1],
+              times: [0, 0.3, 0.5, 0.7, 1],
+            }
+      }
+    />
+  );
+});
+
+GridSquare.displayName = 'GridSquare';
 
 const ProjectCard = ({
   title,
@@ -71,26 +212,29 @@ const ProjectCard = ({
     return { row, col };
   };
 
-  // Handle mouse move to track position relative to container
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  // Memoized handlers for performance
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current || isClicked) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100; // 0-100%
-    const y = ((e.clientY - rect.top) / rect.height) * 100; // 0-100%
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
     setMousePosition({ x, y });
-  };
+  }, [isClicked]);
 
-  // Handle click to trigger explosion animation then navigate
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent immediate navigation
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     setIsClicked(true);
     setIsHovered(false);
+    setTimeout(() => router.push(href), 800);
+  }, [href, router]);
 
-    // Navigate after animation completes (800ms)
-    setTimeout(() => {
-      router.push(href);
-    }, 800);
-  };
+  const handleMouseEnter = useCallback(() => {
+    if (!isClicked) setIsHovered(true);
+  }, [isClicked]);
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+  }, []);
 
   return (
     <Link href={href} className="group block" ref={ref} onClick={handleClick}>
@@ -107,8 +251,8 @@ const ProjectCard = ({
           ref={containerRef}
           className="relative overflow-hidden rounded-lg grain-overlay"
           style={{ aspectRatio }}
-          onMouseEnter={() => !isClicked && setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}
         >
           {image ? (
@@ -124,125 +268,20 @@ const ProjectCard = ({
                   perspective: '1200px',
                 }}
               >
-                {Array.from({ length: totalSquares }, (_, i) => {
-                  const { row, col } = getSquarePosition(i);
-                  const waveDelay = (col * 0.15) + (row * 0.1);
-
-                  // Calculate square center position in percentage (0-100)
-                  const squareCenterX = (col / (gridCols - 1)) * 100; // 0, 50, 100
-                  const squareCenterY = (row / (gridRows - 1)) * 100; // 0, 50, 100
-
-                  // Calculate distance from mouse to square center
-                  const deltaX = mousePosition.x - squareCenterX;
-                  const deltaY = mousePosition.y - squareCenterY;
-                  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-
-                  // Maximum distance in a 100x100 space is ~141 (diagonal)
-                  const maxDistance = 141;
-                  const normalizedDistance = Math.min(distance / maxDistance, 1);
-
-                  // Repulsion effect: push squares away from mouse
-                  // Closer squares (smaller distance) = stronger push
-                  const repulsionStrength = Math.max(0, 1 - normalizedDistance);
-                  const pushMultiplier = 20; // How far to push
-
-                  // Calculate push direction (away from mouse)
-                  const angle = Math.atan2(-deltaY, -deltaX); // Negative for repulsion
-                  const pushX = isHovered ? Math.cos(angle) * repulsionStrength * pushMultiplier : 0;
-                  const pushY = isHovered ? Math.sin(angle) * repulsionStrength * pushMultiplier : 0;
-                  const pushZ = isHovered ? repulsionStrength * 40 : 0;
-
-                  // Rotation based on push direction
-                  const rotateXHover = isHovered ? pushY * 0.8 : 0;
-                  const rotateYHover = isHovered ? -pushX * 0.8 : 0;
-
-                  // Explosion 3D Forward effect on click
-                  const isCenter = i === 4;
-                  const depthMultiplier = isCenter ? 1.5 : Math.random() * 0.5 + 0.7;
-                  const explosionZ = 300 + (depthMultiplier * 200);
-                  const explosionRotateX = (Math.random() - 0.5) * 30;
-                  const explosionRotateY = (Math.random() - 0.5) * 30;
-
-                  return (
-                    <motion.div
-                      key={i}
-                      className="relative overflow-hidden"
-                      style={{
-                        backgroundImage: `url(${image})`,
-                        backgroundSize: `${gridCols * 100}% ${gridRows * 100}%`,
-                        backgroundPosition: `${col * 50}% ${row * 50}%`,
-                        backgroundRepeat: 'no-repeat',
-                        transformStyle: 'preserve-3d',
-                        transformOrigin: 'center',
-                        boxShadow: 'inset 0 0 0 0.5px rgba(0, 0, 0, 0.08)',
-                        backfaceVisibility: 'hidden',
-                        WebkitBackfaceVisibility: 'hidden',
-                      }}
-                      initial={{
-                        translateZ: 0,
-                        rotateX: 0,
-                        x: 0,
-                        y: 0,
-                      }}
-                      animate={
-                        isClicked
-                          ? {
-                              translateZ: explosionZ,
-                              scale: 1.5,
-                              opacity: 0,
-                              rotateX: explosionRotateX,
-                              rotateY: explosionRotateY,
-                              x: 0,
-                              y: 0,
-                            }
-                          : isInView
-                          ? (isHovered
-                              ? {
-                                  translateZ: pushZ,
-                                  rotateX: rotateXHover,
-                                  rotateY: rotateYHover,
-                                  x: pushX,
-                                  y: pushY,
-                                }
-                              : {
-                                  translateZ: [0, 80, 0, -40, 0],
-                                  rotateX: [0, 15, 0, -10, 0],
-                                  x: 0,
-                                  y: 0,
-                                  rotateY: 0,
-                                })
-                          : {
-                              translateZ: 0,
-                              rotateX: 0,
-                              x: 0,
-                              y: 0,
-                              rotateY: 0,
-                            }
-                      }
-                      transition={
-                        isClicked
-                          ? {
-                              duration: 0.6,
-                              delay: i * 0.02,
-                              ease: [0.6, 0.01, 0.05, 0.95],
-                            }
-                          : isHovered
-                          ? {
-                              type: 'spring',
-                              stiffness: 150,
-                              damping: 15,
-                              mass: 0.1,
-                            }
-                          : {
-                              duration: 2,
-                              delay: 0.3 + waveDelay,
-                              ease: [0.42, 0, 0.58, 1],
-                              times: [0, 0.3, 0.5, 0.7, 1],
-                            }
-                      }
-                    />
-                  );
-                })}
+                {Array.from({ length: totalSquares }, (_, i) => (
+                  <GridSquare
+                    key={i}
+                    i={i}
+                    image={image}
+                    gridCols={gridCols}
+                    gridRows={gridRows}
+                    isInView={isInView}
+                    isHovered={isHovered}
+                    isClicked={isClicked}
+                    mousePosition={mousePosition}
+                    getSquarePosition={getSquarePosition}
+                  />
+                ))}
               </div>
 
               {/* Dark overlay for better text contrast */}
