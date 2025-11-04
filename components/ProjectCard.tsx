@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Card3D from './Card3D';
 
 interface ProjectCardProps {
@@ -31,6 +31,7 @@ const ProjectCard = ({
 }: ProjectCardProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [isHovered, setIsHovered] = useState(false);
 
   // Dynamic sizing based on size prop
   const titleSize = {
@@ -79,6 +80,8 @@ const ProjectCard = ({
         <div
           className="relative overflow-hidden rounded-lg grain-overlay"
           style={{ aspectRatio }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           {image ? (
             <>
@@ -96,6 +99,13 @@ const ProjectCard = ({
                 {Array.from({ length: totalSquares }, (_, i) => {
                   const { row, col } = getSquarePosition(i);
                   const waveDelay = (col * 0.15) + (row * 0.1);
+
+                  // Calculate separation direction for each square on hover
+                  // Center square (index 4) stays in place, others move outward
+                  const isCenter = i === 4;
+                  const offsetX = (col - 1) * 8; // -8, 0, 8
+                  const offsetY = (row - 1) * 8; // -8, 0, 8
+                  const hoverZ = isCenter ? 20 : Math.sqrt(offsetX * offsetX + offsetY * offsetY) * 3;
 
                   return (
                     <motion.div
@@ -115,15 +125,32 @@ const ProjectCard = ({
                       initial={{
                         translateZ: 0,
                         rotateX: 0,
+                        x: 0,
+                        y: 0,
                       }}
-                      animate={isInView ? {
+                      animate={isInView ? (isHovered ? {
+                        translateZ: hoverZ,
+                        rotateX: (row - 1) * 8,
+                        rotateY: (col - 1) * 8,
+                        x: offsetX,
+                        y: offsetY,
+                      } : {
                         translateZ: [0, 80, 0, -40, 0],
                         rotateX: [0, 15, 0, -10, 0],
-                      } : {
+                        x: 0,
+                        y: 0,
+                        rotateY: 0,
+                      }) : {
                         translateZ: 0,
                         rotateX: 0,
+                        x: 0,
+                        y: 0,
+                        rotateY: 0,
                       }}
-                      transition={{
+                      transition={isHovered ? {
+                        duration: 0.4,
+                        ease: [0.34, 1.56, 0.64, 1],
+                      } : {
                         duration: 2,
                         delay: 0.3 + waveDelay,
                         ease: [0.42, 0, 0.58, 1],
