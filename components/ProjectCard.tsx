@@ -249,8 +249,11 @@ const ProjectCard = ({
         {/* Image Container */}
         <div
           ref={containerRef}
-          className="relative overflow-hidden rounded-lg grain-overlay"
-          style={{ aspectRatio }}
+          className="relative overflow-visible rounded-lg grain-overlay"
+          style={{
+            aspectRatio,
+            background: 'transparent',
+          }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}
@@ -266,6 +269,7 @@ const ProjectCard = ({
                   gridTemplateRows: `repeat(${gridRows}, 1fr)`,
                   gap: '1px',
                   perspective: '1200px',
+                  background: 'transparent',
                 }}
               >
                 {Array.from({ length: totalSquares }, (_, i) => (
