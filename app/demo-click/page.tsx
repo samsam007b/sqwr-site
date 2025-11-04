@@ -217,7 +217,6 @@ const ClickCardDemo = ({ image, effectType }: { image: string; effectType: strin
           rotateZ: (Math.random() - 0.5) * 45,
           scale: Math.random() * 0.5 + 0.5,
           opacity: 0,
-          filter: 'blur(10px)',
         };
 
       default:
@@ -230,6 +229,7 @@ const ClickCardDemo = ({ image, effectType }: { image: string; effectType: strin
       {/* Project Page Preview that appears after transition */}
       <motion.div
         className="absolute inset-0 rounded-lg overflow-hidden z-10"
+        style={{ pointerEvents: showProjectPage ? 'auto' : 'none' }}
         initial={{ opacity: 0, scale: 0.8 }}
         animate={showProjectPage ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
         transition={{ duration: 0.4 }}
