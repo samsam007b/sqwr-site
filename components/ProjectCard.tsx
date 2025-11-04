@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Card3D from './Card3D';
 
 interface ProjectCardProps {
@@ -33,7 +34,9 @@ const ProjectCard = ({
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const [isHovered, setIsHovered] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isClicked, setIsClicked] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Dynamic sizing based on size prop
   const titleSize = {
@@ -70,21 +73,33 @@ const ProjectCard = ({
 
   // Handle mouse move to track position relative to container
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isClicked) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100; // 0-100%
     const y = ((e.clientY - rect.top) / rect.height) * 100; // 0-100%
     setMousePosition({ x, y });
   };
 
+  // Handle click to trigger explosion animation then navigate
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent immediate navigation
+    setIsClicked(true);
+    setIsHovered(false);
+
+    // Navigate after animation completes (800ms)
+    setTimeout(() => {
+      router.push(href);
+    }, 800);
+  };
+
   return (
-    <Link href={href} className="group block" ref={ref}>
+    <Link href={href} className="group block" ref={ref} onClick={handleClick}>
       <Card3D intensity={3}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-          whileHover={{ y: -2 }}
+          whileHover={!isClicked ? { y: -2 } : {}}
           className="relative"
         >
         {/* Image Container */}
@@ -92,7 +107,7 @@ const ProjectCard = ({
           ref={containerRef}
           className="relative overflow-hidden rounded-lg grain-overlay"
           style={{ aspectRatio }}
-          onMouseEnter={() => setIsHovered(true)}
+          onMouseEnter={() => !isClicked && setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onMouseMove={handleMouseMove}
         >
@@ -138,8 +153,15 @@ const ProjectCard = ({
                   const pushZ = isHovered ? repulsionStrength * 40 : 0;
 
                   // Rotation based on push direction
-                  const rotateX = isHovered ? pushY * 0.8 : 0;
-                  const rotateY = isHovered ? -pushX * 0.8 : 0;
+                  const rotateXHover = isHovered ? pushY * 0.8 : 0;
+                  const rotateYHover = isHovered ? -pushX * 0.8 : 0;
+
+                  // Explosion 3D Forward effect on click
+                  const isCenter = i === 4;
+                  const depthMultiplier = isCenter ? 1.5 : Math.random() * 0.5 + 0.7;
+                  const explosionZ = 300 + (depthMultiplier * 200);
+                  const explosionRotateX = (Math.random() - 0.5) * 30;
+                  const explosionRotateY = (Math.random() - 0.5) * 30;
 
                   return (
                     <motion.div
@@ -162,36 +184,62 @@ const ProjectCard = ({
                         x: 0,
                         y: 0,
                       }}
-                      animate={isInView ? (isHovered ? {
-                        translateZ: pushZ,
-                        rotateX: rotateX,
-                        rotateY: rotateY,
-                        x: pushX,
-                        y: pushY,
-                      } : {
-                        translateZ: [0, 80, 0, -40, 0],
-                        rotateX: [0, 15, 0, -10, 0],
-                        x: 0,
-                        y: 0,
-                        rotateY: 0,
-                      }) : {
-                        translateZ: 0,
-                        rotateX: 0,
-                        x: 0,
-                        y: 0,
-                        rotateY: 0,
-                      }}
-                      transition={isHovered ? {
-                        type: "spring",
-                        stiffness: 150,
-                        damping: 15,
-                        mass: 0.1,
-                      } : {
-                        duration: 2,
-                        delay: 0.3 + waveDelay,
-                        ease: [0.42, 0, 0.58, 1],
-                        times: [0, 0.3, 0.5, 0.7, 1],
-                      }}
+                      animate={
+                        isClicked
+                          ? {
+                              translateZ: explosionZ,
+                              scale: 1.5,
+                              opacity: 0,
+                              rotateX: explosionRotateX,
+                              rotateY: explosionRotateY,
+                              x: 0,
+                              y: 0,
+                            }
+                          : isInView
+                          ? (isHovered
+                              ? {
+                                  translateZ: pushZ,
+                                  rotateX: rotateXHover,
+                                  rotateY: rotateYHover,
+                                  x: pushX,
+                                  y: pushY,
+                                }
+                              : {
+                                  translateZ: [0, 80, 0, -40, 0],
+                                  rotateX: [0, 15, 0, -10, 0],
+                                  x: 0,
+                                  y: 0,
+                                  rotateY: 0,
+                                })
+                          : {
+                              translateZ: 0,
+                              rotateX: 0,
+                              x: 0,
+                              y: 0,
+                              rotateY: 0,
+                            }
+                      }
+                      transition={
+                        isClicked
+                          ? {
+                              duration: 0.6,
+                              delay: i * 0.02,
+                              ease: [0.6, 0.01, 0.05, 0.95],
+                            }
+                          : isHovered
+                          ? {
+                              type: 'spring',
+                              stiffness: 150,
+                              damping: 15,
+                              mass: 0.1,
+                            }
+                          : {
+                              duration: 2,
+                              delay: 0.3 + waveDelay,
+                              ease: [0.42, 0, 0.58, 1],
+                              times: [0, 0.3, 0.5, 0.7, 1],
+                            }
+                      }
                     />
                   );
                 })}
