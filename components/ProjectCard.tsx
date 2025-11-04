@@ -53,38 +53,27 @@ const ProjectCard = ({
     large: '100vw'
   }[size];
 
-  // Accordion fold animation variants - optimized for faster reveal
-  const accordionVariants = {
-    hidden: {
-      scaleX: 0.5,
-      opacity: 0.7,
-    },
-    visible: {
-      scaleX: 1,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.25, 0.1, 0.25, 1],
-      },
-    },
-  };
-
-  // Origami grid settings - balanced for performance and visual effect
-  const gridCols = 8;
-  const gridRows = 10;
+  // Wave Sinusoidal grid settings - 3x3 grid for optimal performance
+  const gridCols = 3;
+  const gridRows = 3;
   const totalSquares = gridCols * gridRows;
+
+  // Helper to get square position
+  const getSquarePosition = (index: number) => {
+    const row = Math.floor(index / gridCols);
+    const col = index % gridCols;
+    return { row, col };
+  };
 
   return (
     <Link href={href} className="group block" ref={ref}>
       <Card3D intensity={3}>
         <motion.div
-          variants={accordionVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          whileHover={{ y: -2, scaleX: 0.98 }}
-          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+          whileHover={{ y: -2 }}
           className="relative"
-          style={{ transformOrigin: "center" }}
         >
         {/* Image Container */}
         <div
@@ -93,28 +82,20 @@ const ProjectCard = ({
         >
           {image ? (
             <>
-              {/* Origami-style unfolding grid - each square unfolds to reveal its portion of the image */}
+              {/* Wave Sinusoidal - 3x3 grid with organic wave motion */}
               <div
                 className="absolute inset-0"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
                   gridTemplateRows: `repeat(${gridRows}, 1fr)`,
-                  gap: '0px',
-                  perspective: '1000px',
+                  gap: '1px',
+                  perspective: '1200px',
                 }}
               >
                 {Array.from({ length: totalSquares }, (_, i) => {
-                  const row = Math.floor(i / gridCols);
-                  const col = i % gridCols;
-
-                  // Create wave effect from top-left corner
-                  const distanceFromOrigin = Math.sqrt(row * row + col * col);
-                  const maxDistance = Math.sqrt(gridRows * gridRows + gridCols * gridCols);
-                  const normalizedDistance = distanceFromOrigin / maxDistance;
-
-                  // Slight randomness for organic feel
-                  const randomOffset = (Math.random() - 0.5) * 0.06;
+                  const { row, col } = getSquarePosition(i);
+                  const waveDelay = (col * 0.15) + (row * 0.1);
 
                   return (
                     <motion.div
@@ -123,7 +104,7 @@ const ProjectCard = ({
                       style={{
                         backgroundImage: `url(${image})`,
                         backgroundSize: `${gridCols * 100}% ${gridRows * 100}%`,
-                        backgroundPosition: `${(col / (gridCols - 1)) * 100}% ${(row / (gridRows - 1)) * 100}%`,
+                        backgroundPosition: `${col * 50}% ${row * 50}%`,
                         backgroundRepeat: 'no-repeat',
                         transformStyle: 'preserve-3d',
                         transformOrigin: 'center',
@@ -132,20 +113,21 @@ const ProjectCard = ({
                         WebkitBackfaceVisibility: 'hidden',
                       }}
                       initial={{
-                        rotateX: 90,
-                        opacity: 0,
+                        translateZ: 0,
+                        rotateX: 0,
                       }}
                       animate={isInView ? {
-                        rotateX: 0,
-                        opacity: 1,
+                        translateZ: [0, 80, 0, -40, 0],
+                        rotateX: [0, 15, 0, -10, 0],
                       } : {
-                        rotateX: 90,
-                        opacity: 0,
+                        translateZ: 0,
+                        rotateX: 0,
                       }}
                       transition={{
-                        duration: 0.6,
-                        delay: 0.05 + (normalizedDistance * 0.5) + randomOffset,
-                        ease: [0.34, 1.56, 0.64, 1], // easeOutBack for slight overshoot (origami spring)
+                        duration: 2,
+                        delay: 0.3 + waveDelay,
+                        ease: [0.42, 0, 0.58, 1],
+                        times: [0, 0.3, 0.5, 0.7, 1],
                       }}
                     />
                   );
@@ -157,7 +139,7 @@ const ProjectCard = ({
                 className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent transition-opacity duration-700 group-hover:opacity-80 pointer-events-none z-10"
                 initial={{ opacity: 0 }}
                 animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
+                transition={{ duration: 0.5, delay: 1.5 }}
               />
             </>
           ) : (
@@ -185,7 +167,7 @@ const ProjectCard = ({
               className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-20 transition-opacity duration-300 group-hover:opacity-90"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.4, delay: 0.65 }}
+              transition={{ duration: 0.4, delay: 1.8 }}
             >
               <span className="text-xs font-mono text-foreground">{year}</span>
             </motion.div>
@@ -197,7 +179,7 @@ const ProjectCard = ({
           className="mt-6"
           initial={{ opacity: 0, y: 10 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-          transition={{ duration: 0.4, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          transition={{ duration: 0.4, delay: 1.6, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <div className="flex items-center justify-between mb-3">
             <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">
