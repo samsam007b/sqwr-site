@@ -79,7 +79,7 @@ export const de = {
     location: 'Paris, Frankreich',
     navigationTitle: 'Navigation',
     contactTitle: 'Kontaktieren Sie uns',
-    copyright: 'Creative Design',
+    copyright: 'sqwr.',
     legal: 'Impressum',
     privacy: 'Datenschutz',
   },

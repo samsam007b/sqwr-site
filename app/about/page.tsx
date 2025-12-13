@@ -2,8 +2,8 @@ import { Metadata } from 'next';
 import ScrollReveal from '@/components/ScrollReveal';
 
 export const metadata: Metadata = {
-  title: 'À propos - Créative Design',
-  description: 'Découvrez l\'histoire, la philosophie et l\'équipe derrière Créative Design, votre agence de communication visuelle et design graphique.',
+  title: 'À propos - sqwr.',
+  description: 'Découvrez l\'histoire, la philosophie et l\'équipe derrière sqwr., votre agence de communication visuelle et design graphique.',
 };
 
 export default function AboutPage() {
@@ -72,7 +72,7 @@ export default function AboutPage() {
 
           <ScrollReveal delay={0.2}>
             <p className="text-xl text-secondary/70 max-w-3xl leading-relaxed">
-              Créative Design est une agence de communication visuelle et design
+              sqwr. est une agence de communication visuelle et design
               graphique basée sur la passion de la création et l'excellence du
               détail.
             </p>
@@ -95,7 +95,7 @@ export default function AboutPage() {
             <ScrollReveal delay={0.2}>
               <div className="space-y-6 text-secondary/70 leading-relaxed">
                 <p>
-                  Fondée en 2016, Créative Design est née d'une vision simple :
+                  Fondée en 2016, sqwr. est née d'une vision simple :
                   faire du design un levier de transformation pour les marques
                   qui osent se démarquer.
                 </p>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
@@ -65,9 +66,16 @@ const Header = () => {
           >
             <Link
               href="/"
-              className="text-2xl font-display font-normal tracking-tight text-foreground hover:text-primary transition-colors duration-200"
+              className="flex items-center hover:opacity-80 transition-opacity duration-200"
             >
-              Créative Design
+              <Image
+                src="/sqwr-logo.svg"
+                alt="sqwr"
+                width={120}
+                height={60}
+                className="h-10 w-auto text-foreground"
+                priority
+              />
             </Link>
           </motion.div>
 

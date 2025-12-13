@@ -23,12 +23,12 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (!project) {
     return {
-      title: 'Projet non trouvé - Créative Design',
+      title: 'Projet non trouvé - sqwr.',
     };
   }
 
   return {
-    title: `${project.title} - ${project.client} | Créative Design`,
+    title: `${project.title} - ${project.client} | sqwr.`,
     description: project.description,
   };
 }

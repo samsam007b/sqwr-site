@@ -79,7 +79,7 @@ export const nl = {
     location: 'Parijs, Frankrijk',
     navigationTitle: 'Navigatie',
     contactTitle: 'Contacteer ons',
-    copyright: 'Creative Design',
+    copyright: 'sqwr.',
     legal: 'Juridische kennisgeving',
     privacy: 'Privacy',
   },

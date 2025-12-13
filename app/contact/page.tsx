@@ -48,8 +48,8 @@ export default function ContactPage() {
   const contactInfo = [
     {
       title: 'Email',
-      value: 'contact@creative-design.com',
-      link: 'mailto:contact@creative-design.com'
+      value: 'contact@sqwr.com',
+      link: 'mailto:contact@sqwr.com'
     },
     {
       title: 'Téléphone',

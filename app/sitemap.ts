@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { projects } from './data/projects';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://creative-design.com';
+  const baseUrl = 'https://sqwr.com';
 
   // Static pages
   const staticPages = [

@@ -77,10 +77,10 @@ const Footer = () => {
               {t('footer.contactTitle')}
             </h4>
             <a
-              href="mailto:contact@creative-design.com"
+              href="mailto:contact@sqwr.com"
               className="text-paper/60 hover:text-primary text-sm mb-2 block font-light transition-colors duration-300"
             >
-              contact@creative-design.com
+              contact@sqwr.com
             </a>
             <a
               href="tel:+33123456789"
