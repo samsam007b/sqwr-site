@@ -70,10 +70,10 @@ const SqwrIntroAnimation = () => {
               className="relative"
             >
               <Image
-                src="/sqwr-logo.svg"
+                src="/sqwr-logo.png"
                 alt="sqwr."
-                width={400}
-                height={200}
+                width={501}
+                height={243}
                 className="w-64 md:w-80 h-auto"
                 priority
               />

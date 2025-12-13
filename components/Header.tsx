@@ -47,11 +47,11 @@ const Header = () => {
             className="flex items-center hover:opacity-80 transition-opacity duration-200"
           >
             <Image
-              src="/sqwr-logo.svg"
+              src="/sqwr-logo.png"
               alt="sqwr"
-              width={120}
-              height={60}
-              className="h-10 w-auto text-foreground"
+              width={501}
+              height={243}
+              className="h-10 w-auto"
               priority
             />
           </Link>
