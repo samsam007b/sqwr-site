@@ -12,33 +12,16 @@ const Header = () => {
   const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [showLogo, setShowLogo] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
-    // Check if intro has already been seen
-    const introSeen = sessionStorage.getItem('intro-seen') === 'true';
-    if (introSeen || window.location.hash) {
-      setShowLogo(true);
-    }
-
-    // Listen for intro complete event
-    const handleIntroComplete = () => {
-      // Small delay to let the morph animation finish
-      setTimeout(() => {
-        setShowLogo(true);
-      }, 200);
-    };
-
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('intro-complete', handleIntroComplete);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('intro-complete', handleIntroComplete);
     };
   }, []);
 
@@ -58,34 +41,23 @@ const Header = () => {
     >
       <nav className="container mx-auto px-6 lg:px-12 py-6">
         <div className="flex items-center justify-between">
-          {/* Logo - fades in after intro */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showLogo ? 1 : 0 }}
-            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+          {/* Logo */}
+          <Link
+            href="/"
+            className="flex items-center hover:opacity-80 transition-opacity duration-200"
           >
-            <Link
-              href="/"
-              className="flex items-center hover:opacity-80 transition-opacity duration-200"
-            >
-              <Image
-                src="/sqwr-logo.svg"
-                alt="sqwr"
-                width={120}
-                height={60}
-                className="h-10 w-auto text-foreground"
-                priority
-              />
-            </Link>
-          </motion.div>
+            <Image
+              src="/sqwr-logo.svg"
+              alt="sqwr"
+              width={120}
+              height={60}
+              className="h-10 w-auto text-foreground"
+              priority
+            />
+          </Link>
 
-          {/* Desktop Menu - fades in after intro */}
-          <motion.div
-            className="hidden md:flex items-center gap-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showLogo ? 1 : 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-          >
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-4">
             <ul className="flex items-center space-x-10">
               {menuItems.map((item) => (
                 <li key={item.href}>
@@ -102,15 +74,10 @@ const Header = () => {
               <LanguageSelector />
               <ThemeToggle />
             </div>
-          </motion.div>
+          </div>
 
           {/* Mobile Menu Button + Controls */}
-          <motion.div
-            className="md:hidden flex items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: showLogo ? 1 : 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-          >
+          <div className="md:hidden flex items-center gap-2">
             <LanguageSelector />
             <ThemeToggle />
             <button
@@ -137,7 +104,7 @@ const Header = () => {
                 />
               </div>
             </button>
-          </motion.div>
+          </div>
         </div>
       </nav>
 

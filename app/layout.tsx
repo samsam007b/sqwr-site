@@ -3,7 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
-import IntroAnimation from "@/components/IntroAnimation";
+import SqwrIntroAnimation from "@/components/SqwrIntroAnimation";
 import CustomCursorTrail from "@/components/CustomCursorTrail";
 import CursorManager from "@/components/CursorManager";
 import LivingGrid from "@/components/LivingGrid";
@@ -91,7 +91,7 @@ export default function RootLayout({
             <LivingGrid />
             <CursorManager />
             <CustomCursorTrail />
-            <IntroAnimation />
+            <SqwrIntroAnimation />
             <SmoothScroll>
               <Header />
               <main className="flex-grow relative z-10">
