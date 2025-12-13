@@ -3,7 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
-import IntroAnimation from "@/components/IntroAnimation";
+import SqwrIntroAnimation from "@/components/SqwrIntroAnimation";
 import CustomCursorTrail from "@/components/CustomCursorTrail";
 import CursorManager from "@/components/CursorManager";
 import LivingGrid from "@/components/LivingGrid";
@@ -23,28 +23,28 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Créative Design - Agence de Communication Visuelle & Design",
-    template: "%s | Créative Design",
+    default: "sqwr. - Agence de Communication Visuelle & Design",
+    template: "%s | sqwr.",
   },
   description: "Agence créative spécialisée en communication visuelle, design graphique, création de logos, sites web, flyers et design réseaux sociaux. Excellence et innovation depuis 2016.",
-  keywords: ["design", "graphique", "communication visuelle", "logo", "site web", "flyers", "réseaux sociaux", "branding", "identité visuelle", "UI/UX", "agence créative", "Paris"],
-  authors: [{ name: "Créative Design" }],
-  creator: "Créative Design",
-  metadataBase: new URL('https://creative-design.com'),
+  keywords: ["design", "graphique", "communication visuelle", "logo", "site web", "flyers", "réseaux sociaux", "branding", "identité visuelle", "UI/UX", "agence créative", "Paris", "sqwr"],
+  authors: [{ name: "sqwr." }],
+  creator: "sqwr.",
+  metadataBase: new URL('https://sqwr.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "Créative Design - Agence de Communication Visuelle",
+    title: "sqwr. - Agence de Communication Visuelle",
     description: "Agence créative spécialisée en communication visuelle et design graphique. Excellence et innovation.",
-    url: 'https://creative-design.com',
-    siteName: 'Créative Design',
+    url: 'https://sqwr.com',
+    siteName: 'sqwr.',
     locale: 'fr_FR',
     type: "website",
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Créative Design - Agence de Communication Visuelle",
+    title: "sqwr. - Agence de Communication Visuelle",
     description: "Agence créative spécialisée en communication visuelle et design graphique.",
   },
   robots: {
@@ -91,7 +91,7 @@ export default function RootLayout({
             <LivingGrid />
             <CursorManager />
             <CustomCursorTrail />
-            <IntroAnimation />
+            <SqwrIntroAnimation />
             <SmoothScroll>
               <Header />
               <main className="flex-grow relative z-10">

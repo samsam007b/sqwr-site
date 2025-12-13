@@ -142,7 +142,7 @@ const IntroAnimation = () => {
               />
             </motion.svg>
 
-            {/* Text "Créative Design" - fades out during morph */}
+            {/* Text "sqwr." - fades out during morph */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={
@@ -158,7 +158,7 @@ const IntroAnimation = () => {
               className="mt-8"
             >
               <h1 className="font-display text-2xl text-foreground tracking-wider">
-                Créative Design
+                sqwr.
               </h1>
             </motion.div>
 

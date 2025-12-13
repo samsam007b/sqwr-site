@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import ScrollReveal from '@/components/ScrollReveal';
 
 export const metadata: Metadata = {
-  title: 'Services - Créative Design',
+  title: 'Services - sqwr.',
   description: 'Découvrez nos services de communication visuelle, design graphique, création de logos, sites web, flyers et design réseaux sociaux.',
 };
 
