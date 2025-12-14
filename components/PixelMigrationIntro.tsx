@@ -69,8 +69,15 @@ export default function PixelMigrationIntro() {
       const pixels: Pixel[] = [];
 
       // Header position - EXACT match with Header.tsx
-      // px-6 lg:px-16 (aligned with page content)
-      const headerPaddingX = width < 768 ? 24 : 64; // px-6 or lg:px-16
+      // Structure: <header px-6 lg:px-16><nav max-w-6xl mx-auto>
+      // lg breakpoint = 1024px (not 768px!)
+      const padding = width < 1024 ? 24 : 64; // px-6 = 24px, lg:px-16 = 64px
+      const maxNavWidth = 1152; // max-w-6xl = 1152px (6 * 16 * 12)
+      const availableWidth = width - 2 * padding;
+      const navWidth = Math.min(availableWidth, maxNavWidth);
+      const navOffsetX = padding + (availableWidth - navWidth) / 2;
+
+      const headerPaddingX = navOffsetX; // Exact position of logo in header
       const headerPaddingY = 12; // py-3
 
       // Extract black pixels
