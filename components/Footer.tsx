@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 
 const Footer = () => {
@@ -19,9 +20,15 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-20">
           {/* Brand */}
           <div className="md:col-span-5">
-            <h3 className="text-3xl font-display font-normal mb-6 text-paper">
-              {t('footer.copyright')}
-            </h3>
+            <div className="mb-6">
+              <Image
+                src="/sqwr-logo.png"
+                alt="sqwr"
+                width={501}
+                height={243}
+                className="h-12 w-auto invert"
+              />
+            </div>
             <p className="text-paper/60 text-base leading-relaxed font-light mb-8 whitespace-pre-line">
               {t('footer.tagline')}
             </p>
