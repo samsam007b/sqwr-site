@@ -52,29 +52,29 @@
     cursor: default;
   }
 
-  /* Curseur carré blanc en mode sombre */
+  /* Curseur carré blanc en mode sombre - couleur unie */
   .dark body {
-    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1' width='14' height='14' fill='%23FFFFFF' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E") 8 8, auto;
+    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, auto;
   }
 
-  /* Curseur carré noir en mode clair */
+  /* Curseur carré noir en mode clair - couleur unie */
   body {
-    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1' width='14' height='14' fill='%23111111' stroke='%23FFFFFF' stroke-width='2'/%3E%3C/svg%3E") 8 8, auto;
+    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23111111'/%3E%3C/svg%3E") 8 8, auto;
   }
 
-  /* Curseur carré rouge sur éléments interactifs - mode clair */
+  /* Curseur carré rouge sur éléments interactifs - mode clair - couleur unie */
   a, button, [role="button"], input[type="button"], input[type="submit"], .cursor-pointer {
-    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1' width='14' height='14' fill='%23E01919' stroke='%23FFFFFF' stroke-width='2'/%3E%3C/svg%3E") 8 8, pointer;
+    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23E01919'/%3E%3C/svg%3E") 8 8, pointer;
   }
 
-  /* Curseur carré blanc sur éléments interactifs - mode sombre */
+  /* Curseur carré blanc sur éléments interactifs - mode sombre - couleur unie */
   .dark a,
   .dark button,
   .dark [role="button"],
   .dark input[type="button"],
   .dark input[type="submit"],
   .dark .cursor-pointer {
-    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='1' y='1' width='14' height='14' fill='%23FFFFFF' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E") 8 8, pointer;
+    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, pointer;
   }
 
   /* HD Paper texture avec grain fin */
