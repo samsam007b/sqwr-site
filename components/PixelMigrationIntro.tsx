@@ -56,8 +56,8 @@ export default function PixelMigrationIntro() {
       const centerLogoWidth = 400;
       const centerLogoHeight = (img.height / img.width) * centerLogoWidth;
 
-      // Header logo size (small) - h-10 = 40px
-      const headerLogoHeight = 40;
+      // Header logo size (small) - h-8 = 32px
+      const headerLogoHeight = 32;
       const headerLogoWidth = (img.width / img.height) * headerLogoHeight;
 
       tempCanvas.width = centerLogoWidth / scale;
@@ -71,7 +71,7 @@ export default function PixelMigrationIntro() {
       // Header position - EXACT match with Header.tsx
       // px-6 lg:px-16 (aligned with page content)
       const headerPaddingX = width < 768 ? 24 : 64; // px-6 or lg:px-16
-      const headerPaddingY = 24; // py-6
+      const headerPaddingY = 12; // py-3
 
       // Extract black pixels
       for (let y = 0; y < tempCanvas.height; y++) {

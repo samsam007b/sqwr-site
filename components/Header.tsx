@@ -39,7 +39,7 @@ const Header = () => {
         isScrolled ? 'glass-surface shadow-sm' : 'bg-transparent'
       }`}
     >
-      <nav className="max-w-6xl mx-auto px-6 lg:px-16 py-6">
+      <nav className="max-w-6xl mx-auto px-6 lg:px-16 py-3">
         <div className="flex items-center justify-between w-full">
           {/* Logo - aligned with page content */}
           <Link
@@ -51,7 +51,7 @@ const Header = () => {
               alt="sqwr"
               width={501}
               height={243}
-              className="h-10 w-auto"
+              className="h-8 w-auto"
               priority
             />
           </Link>
