@@ -69,10 +69,8 @@ export default function PixelMigrationIntro() {
       const pixels: Pixel[] = [];
 
       // Header position - EXACT match with Header.tsx
-      // px-6 lg:px-12 + ml-12 lg:ml-24
-      const headerPaddingX = width < 768
-        ? 24 + 48   // px-6 (24px) + ml-12 (48px) = 72px
-        : 48 + 96;  // lg:px-12 (48px) + lg:ml-24 (96px) = 144px
+      // px-6 lg:px-16 (aligned with page content)
+      const headerPaddingX = width < 768 ? 24 : 64; // px-6 or lg:px-16
       const headerPaddingY = 24; // py-6
 
       // Extract black pixels

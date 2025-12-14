@@ -39,12 +39,12 @@ const Header = () => {
         isScrolled ? 'glass-surface shadow-sm' : 'bg-transparent'
       }`}
     >
-      <nav className="container mx-auto px-6 lg:px-12 py-6">
+      <nav className="container mx-auto px-6 lg:px-16 py-6">
         <div className="flex items-center justify-between">
-          {/* Logo - offset to the right for premium feel */}
+          {/* Logo - aligned with page content */}
           <Link
             href="/"
-            className="flex items-center hover:opacity-80 transition-opacity duration-200 ml-12 lg:ml-24"
+            className="flex items-center hover:opacity-80 transition-opacity duration-200"
           >
             <Image
               src="/sqwr-logo.png"
@@ -56,8 +56,8 @@ const Header = () => {
             />
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop Menu - pushed to the right */}
+          <div className="hidden md:flex items-center gap-6 lg:gap-8 ml-auto">
             <ul className="flex items-center space-x-10">
               {menuItems.map((item) => (
                 <li key={item.href}>
