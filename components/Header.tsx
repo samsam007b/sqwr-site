@@ -35,11 +35,11 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+      className={`fixed w-full top-0 z-50 transition-all duration-300 px-6 lg:px-16 py-3 ${
         isScrolled ? 'glass-surface shadow-sm' : 'bg-transparent'
       }`}
     >
-      <nav className="max-w-6xl mx-auto px-6 lg:px-16 py-3">
+      <nav className="max-w-6xl w-full mx-auto">
         <div className="flex items-center justify-between w-full">
           {/* Logo - aligned with page content */}
           <Link
