@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import PixelLogoAnimation from '@/components/PixelLogoAnimation';
+import PixelRevealAnimation from '@/components/PixelRevealAnimation';
 import Link from 'next/link';
 
 export default function DemoAnimationsPage() {
@@ -15,7 +16,12 @@ export default function DemoAnimationsPage() {
       description: 'Pixels apparaissent aléatoirement puis se réorganisent pour former le logo',
       component: PixelLogoAnimation,
     },
-    // On peut ajouter d'autres animations ici plus tard
+    {
+      id: 'pixel-reveal',
+      name: 'Progressive Pixel Reveal',
+      description: 'Les pixels apparaissent progressivement à leur position finale, révélant petit à petit le logo',
+      component: PixelRevealAnimation,
+    },
   ];
 
   return (
@@ -23,6 +29,15 @@ export default function DemoAnimationsPage() {
       {/* Show animation if active */}
       {showAnimation && currentDemo === 'pixel-chaos' && (
         <PixelLogoAnimation
+          onComplete={() => {
+            setShowAnimation(false);
+            setCurrentDemo(null);
+          }}
+        />
+      )}
+
+      {showAnimation && currentDemo === 'pixel-reveal' && (
+        <PixelRevealAnimation
           onComplete={() => {
             setShowAnimation(false);
             setCurrentDemo(null);
