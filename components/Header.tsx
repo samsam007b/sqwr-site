@@ -41,10 +41,10 @@ const Header = () => {
     >
       <nav className="container mx-auto px-6 lg:px-12 py-6">
         <div className="flex items-center justify-between">
-          {/* Logo */}
+          {/* Logo - offset to the right for premium feel */}
           <Link
             href="/"
-            className="flex items-center hover:opacity-80 transition-opacity duration-200"
+            className="flex items-center hover:opacity-80 transition-opacity duration-200 ml-12 lg:ml-24"
           >
             <Image
               src="/sqwr-logo.png"
