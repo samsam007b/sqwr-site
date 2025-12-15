@@ -31,19 +31,22 @@ const ThemeToggle = () => {
       className="relative p-2 rounded-full transition-all duration-300 group backdrop-blur-xl backdrop-saturate-150"
       style={{
         background: theme === 'dark'
-          ? 'rgba(255, 255, 255, 0.05)'
-          : 'rgba(255, 255, 255, 0.3)',
+          ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%)'
+          : 'linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%)',
         border: theme === 'dark'
-          ? '1px solid rgba(255, 255, 255, 0.1)'
-          : '1px solid rgba(255, 255, 255, 0.4)',
+          ? '1px solid rgba(255, 255, 255, 0.15)'
+          : '1px solid rgba(255, 255, 255, 0.6)',
+        boxShadow: theme === 'dark'
+          ? 'inset 0 1px 1px rgba(255, 255, 255, 0.15), inset 0 -1px 1px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3)'
+          : 'inset 0 1px 1px rgba(255, 255, 255, 0.9), inset 0 -1px 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.1)',
         WebkitBackdropFilter: 'blur(20px) saturate(150%)',
         backdropFilter: 'blur(20px) saturate(150%)',
       }}
       whileHover={{
         scale: 1.1,
         background: theme === 'dark'
-          ? 'rgba(255, 255, 255, 0.08)'
-          : 'rgba(255, 255, 255, 0.4)',
+          ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%)'
+          : 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%)',
       }}
       whileTap={{ scale: 0.95 }}
       aria-label="Toggle theme"
