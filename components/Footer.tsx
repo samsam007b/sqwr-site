@@ -156,10 +156,10 @@ const Footer = () => {
               {t('footer.contactTitle')}
             </h4>
             <a
-              href="mailto:studio@sqwr.be"
+              href="mailto:samuelbaudon@sqwr.be"
               className="text-paper/60 hover:text-primary text-sm mb-2 block font-light transition-colors duration-300"
             >
-              studio@sqwr.be
+              samuelbaudon@sqwr.be
             </a>
             <a
               href="tel:+32493302752"
