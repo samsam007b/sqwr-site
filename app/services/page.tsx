@@ -148,6 +148,42 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* Process Section */}
+      <section className="py-24 lg:py-32 px-6 lg:px-16 glass-surface">
+        <div className="max-w-6xl mx-auto">
+          <ScrollReveal>
+            <div className="text-center mb-20">
+              <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-4">
+                {t('services.processTitle')}
+              </p>
+              <h2 className="text-4xl md:text-5xl font-display font-normal mb-6 text-foreground">
+                {t('services.processSubtitle')}
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+            {[1, 2, 3, 4].map((step, index) => (
+              <ScrollReveal key={step} delay={index * 0.1}>
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-3xl font-display font-normal text-primary">
+                      {step}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-display font-normal mb-3 text-foreground">
+                    {t(`services.process${step}Title`)}
+                  </h3>
+                  <p className="text-secondary/80 text-sm leading-relaxed font-light">
+                    {t(`services.process${step}Description`)}
+                  </p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 lg:py-32 px-6 lg:px-16 bg-foreground text-paper" data-dark-bg>
         <div className="max-w-4xl mx-auto text-center">
