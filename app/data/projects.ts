@@ -23,7 +23,7 @@ export const projects: Project[] = [
     description: 'Identité visuelle complète pour une fondation culturelle du Jura suisse. Logo, charte graphique, système d\'illustrations géométriques et déclinaisons sur l\'ensemble des supports de communication — affiches, flyers, posts Instagram.',
     services: ['Logo Design', 'Charte Graphique', 'Direction Artistique', 'Illustration', 'Print Design', 'Social Media'],
     color: '#0000FF',
-    image: '/la-villa/hero-triptyque.png',
+    image: '/Projet La Villa/hero-triptyque.png',
     featured: true,
   },
   {
