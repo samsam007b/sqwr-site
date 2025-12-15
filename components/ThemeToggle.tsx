@@ -15,15 +15,36 @@ const ThemeToggle = () => {
   // Prevent rendering until mounted to avoid hydration mismatch
   if (!mounted) {
     return (
-      <div className="w-9 h-9 rounded-full glass-surface" />
+      <div
+        className="w-9 h-9 rounded-full backdrop-blur-xl"
+        style={{
+          background: 'rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+        }}
+      />
     );
   }
 
   return (
     <motion.button
       onClick={toggleTheme}
-      className="relative glass-surface p-2 rounded-full transition-all duration-300 hover:scale-110 group"
-      whileHover={{ scale: 1.1 }}
+      className="relative p-2 rounded-full transition-all duration-300 group backdrop-blur-xl backdrop-saturate-150"
+      style={{
+        background: theme === 'dark'
+          ? 'rgba(255, 255, 255, 0.05)'
+          : 'rgba(255, 255, 255, 0.3)',
+        border: theme === 'dark'
+          ? '1px solid rgba(255, 255, 255, 0.1)'
+          : '1px solid rgba(255, 255, 255, 0.4)',
+        WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+        backdropFilter: 'blur(20px) saturate(150%)',
+      }}
+      whileHover={{
+        scale: 1.1,
+        background: theme === 'dark'
+          ? 'rgba(255, 255, 255, 0.08)'
+          : 'rgba(255, 255, 255, 0.4)',
+      }}
       whileTap={{ scale: 0.95 }}
       aria-label="Toggle theme"
     >

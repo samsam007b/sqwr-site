@@ -35,7 +35,15 @@ const LanguageSelector = () => {
 
   // Prevent rendering until mounted to avoid hydration mismatch
   if (!mounted) {
-    return <div className="w-20 h-9 rounded-full glass-surface" />;
+    return (
+      <div
+        className="w-20 h-9 rounded-full backdrop-blur-xl"
+        style={{
+          background: 'rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+        }}
+      />
+    );
   }
 
   const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
@@ -44,7 +52,17 @@ const LanguageSelector = () => {
     <div className="relative" ref={dropdownRef}>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="glass-surface px-3 py-2 rounded-full flex items-center gap-2 hover:scale-105 transition-transform"
+        className="px-3 py-2 rounded-full flex items-center gap-2 transition-all backdrop-blur-xl backdrop-saturate-150"
+        style={{
+          background: 'rgba(255, 255, 255, 0.3)',
+          border: '1px solid rgba(255, 255, 255, 0.4)',
+          WebkitBackdropFilter: 'blur(20px) saturate(150%)',
+          backdropFilter: 'blur(20px) saturate(150%)',
+        }}
+        whileHover={{
+          scale: 1.05,
+          background: 'rgba(255, 255, 255, 0.4)',
+        }}
         whileTap={{ scale: 0.95 }}
         aria-label="Select language"
         aria-expanded={isOpen}
@@ -72,7 +90,13 @@ const LanguageSelector = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute top-full mt-2 right-0 glass-surface rounded-lg shadow-lg overflow-hidden min-w-[140px] z-50"
+            className="absolute top-full mt-2 right-0 rounded-lg shadow-xl overflow-hidden min-w-[140px] z-50 backdrop-blur-2xl backdrop-saturate-150"
+            style={{
+              background: 'rgba(255, 255, 255, 0.7)',
+              border: '1px solid rgba(255, 255, 255, 0.5)',
+              WebkitBackdropFilter: 'blur(30px) saturate(150%)',
+              backdropFilter: 'blur(30px) saturate(150%)',
+            }}
           >
             {languages.map((lang) => (
               <motion.button
