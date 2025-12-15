@@ -5,6 +5,7 @@ import ScrollReveal from '@/components/ScrollReveal';
 import AsymmetricProjectGrid from '@/components/AsymmetricProjectGrid';
 import MagneticButton from '@/components/MagneticButton';
 import TextReveal from '@/components/TextReveal';
+import WhySQWR from '@/components/WhySQWR';
 import { getFeaturedProjects } from '@/app/data/projects';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -118,6 +119,9 @@ export default function Home() {
           </ScrollReveal>
         </div>
       </section>
+
+      {/* Why SQWR Comparison */}
+      <WhySQWR />
 
       {/* Expertise Highlight */}
       <section className="py-40 lg:py-48 px-6 lg:px-16">
