@@ -73,8 +73,8 @@ export default function LaVillaPage() {
           <ScrollReveal delay={0.2}>
             <div className="relative aspect-[16/9] overflow-hidden rounded-lg grain-overlay">
               <Image
-                src="/Projet La Villa/IMG_5598.JPG"
-                alt="La Villa - Le Plus Petit Festival du Jura"
+                src="/Projet La Villa/hero-triptyque.png"
+                alt="La Villa - Triptyque affiches festival"
                 fill
                 className="object-cover"
                 priority
