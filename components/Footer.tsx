@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 
 const Footer = () => {
@@ -21,13 +20,86 @@ const Footer = () => {
           {/* Brand */}
           <div className="md:col-span-5">
             <div className="mb-6">
-              <Image
-                src="/sqwr-logo.png"
-                alt="sqwr"
-                width={501}
-                height={243}
-                className="h-12 w-auto invert"
-              />
+              <svg
+                width="400"
+                height="200"
+                viewBox="0 0 400 200"
+                className="h-12 w-auto text-white"
+                fill="currentColor"
+              >
+                {/* S */}
+                <rect x="20" y="40" width="20" height="20"/>
+                <rect x="40" y="40" width="20" height="20"/>
+                <rect x="60" y="40" width="20" height="20"/>
+                <rect x="80" y="40" width="20" height="20"/>
+                <rect x="20" y="60" width="20" height="20"/>
+                <rect x="20" y="80" width="20" height="20"/>
+                <rect x="40" y="80" width="20" height="20"/>
+                <rect x="60" y="80" width="20" height="20"/>
+                <rect x="80" y="80" width="20" height="20"/>
+                <rect x="80" y="100" width="20" height="20"/>
+                <rect x="80" y="120" width="20" height="20"/>
+                <rect x="20" y="140" width="20" height="20"/>
+                <rect x="40" y="140" width="20" height="20"/>
+                <rect x="60" y="140" width="20" height="20"/>
+                <rect x="80" y="140" width="20" height="20"/>
+                {/* Q */}
+                <rect x="110" y="40" width="20" height="20"/>
+                <rect x="130" y="40" width="20" height="20"/>
+                <rect x="150" y="40" width="20" height="20"/>
+                <rect x="170" y="40" width="20" height="20"/>
+                <rect x="110" y="60" width="20" height="20"/>
+                <rect x="170" y="60" width="20" height="20"/>
+                <rect x="110" y="80" width="20" height="20"/>
+                <rect x="170" y="80" width="20" height="20"/>
+                <rect x="110" y="100" width="20" height="20"/>
+                <rect x="150" y="100" width="20" height="20"/>
+                <rect x="170" y="100" width="20" height="20"/>
+                <rect x="110" y="120" width="20" height="20"/>
+                <rect x="170" y="120" width="20" height="20"/>
+                <rect x="110" y="140" width="20" height="20"/>
+                <rect x="130" y="140" width="20" height="20"/>
+                <rect x="150" y="140" width="20" height="20"/>
+                <rect x="170" y="140" width="20" height="20"/>
+                <rect x="190" y="160" width="20" height="20"/>
+                {/* W */}
+                <rect x="200" y="40" width="20" height="20"/>
+                <rect x="280" y="40" width="20" height="20"/>
+                <rect x="200" y="60" width="20" height="20"/>
+                <rect x="280" y="60" width="20" height="20"/>
+                <rect x="200" y="80" width="20" height="20"/>
+                <rect x="280" y="80" width="20" height="20"/>
+                <rect x="200" y="100" width="20" height="20"/>
+                <rect x="240" y="100" width="20" height="20"/>
+                <rect x="280" y="100" width="20" height="20"/>
+                <rect x="200" y="120" width="20" height="20"/>
+                <rect x="220" y="120" width="20" height="20"/>
+                <rect x="260" y="120" width="20" height="20"/>
+                <rect x="280" y="120" width="20" height="20"/>
+                <rect x="200" y="140" width="20" height="20"/>
+                <rect x="220" y="140" width="20" height="20"/>
+                <rect x="260" y="140" width="20" height="20"/>
+                <rect x="280" y="140" width="20" height="20"/>
+                {/* R */}
+                <rect x="310" y="40" width="20" height="20"/>
+                <rect x="330" y="40" width="20" height="20"/>
+                <rect x="350" y="40" width="20" height="20"/>
+                <rect x="370" y="40" width="20" height="20"/>
+                <rect x="310" y="60" width="20" height="20"/>
+                <rect x="370" y="60" width="20" height="20"/>
+                <rect x="310" y="80" width="20" height="20"/>
+                <rect x="330" y="80" width="20" height="20"/>
+                <rect x="350" y="80" width="20" height="20"/>
+                <rect x="370" y="80" width="20" height="20"/>
+                <rect x="310" y="100" width="20" height="20"/>
+                <rect x="350" y="100" width="20" height="20"/>
+                <rect x="310" y="120" width="20" height="20"/>
+                <rect x="370" y="120" width="20" height="20"/>
+                <rect x="310" y="140" width="20" height="20"/>
+                <rect x="380" y="140" width="20" height="20"/>
+                {/* Dot */}
+                <rect x="390" y="140" width="20" height="20"/>
+              </svg>
             </div>
             <p className="text-paper/60 text-base leading-relaxed font-light mb-8 whitespace-pre-line">
               {t('footer.tagline')}
