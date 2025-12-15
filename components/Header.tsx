@@ -7,23 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '@/context/LanguageContext';
+import { useTheme } from '@/context/ThemeContext';
 
 const Header = () => {
   const { t } = useLanguage();
+  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const menuItems = [
     { href: '/', label: t('nav.home') },
@@ -34,11 +23,30 @@ const Header = () => {
   ];
 
   return (
-    <header
-      className="fixed w-full top-0 z-50 px-6 lg:px-16 py-3 glass-header"
-    >
-      <nav className="max-w-6xl w-full mx-auto">
-        <div className="flex items-center justify-between w-full">
+    <header className="fixed top-0 left-0 right-0 z-50">
+      {/* Background layer - Glassmorphism */}
+      <div
+        className="absolute inset-0 backdrop-blur-3xl backdrop-saturate-150"
+        style={{
+          background: theme === 'dark'
+            ? 'linear-gradient(to bottom, rgba(15, 15, 18, 0.85), rgba(15, 15, 18, 0.75), rgba(15, 15, 18, 0.65))'
+            : 'linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.7), rgba(255,255,255,0.6))',
+          WebkitBackdropFilter: 'blur(40px) saturate(150%)',
+          backdropFilter: 'blur(40px) saturate(150%)'
+        }}
+      />
+
+      {/* Border layer */}
+      <div
+        className="absolute inset-0 shadow-lg"
+        style={{
+          borderBottom: `1px solid ${theme === 'dark' ? 'rgba(42, 42, 48, 0.5)' : 'rgba(255,255,255,0.3)'}`,
+        }}
+      />
+
+      {/* Content */}
+      <nav className="relative max-w-6xl mx-auto px-6 lg:px-16">
+        <div className="flex items-center justify-between h-16">
           {/* Logo - aligned with page content */}
           <Link
             href="/"
