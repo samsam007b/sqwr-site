@@ -76,7 +76,7 @@ export const en = {
   },
   footer: {
     tagline: 'Since 2016, we create visual identities\nthat connect and transform.',
-    location: 'Paris, France',
+    location: 'Brussels, Belgium',
     navigationTitle: 'Navigation',
     contactTitle: 'Contact us',
     copyright: 'sqwr.',

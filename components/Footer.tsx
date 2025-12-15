@@ -84,16 +84,16 @@ const Footer = () => {
               {t('footer.contactTitle')}
             </h4>
             <a
-              href="mailto:contact@sqwr.com"
+              href="mailto:studio@sqwr.be"
               className="text-paper/60 hover:text-primary text-sm mb-2 block font-light transition-colors duration-300"
             >
-              contact@sqwr.com
+              studio@sqwr.be
             </a>
             <a
-              href="tel:+33123456789"
+              href="tel:+32493302752"
               className="text-paper/60 hover:text-primary text-sm mb-8 block font-light transition-colors duration-300"
             >
-              +33 1 23 45 67 89
+              +32 493 30 27 52
             </a>
             <div className="flex space-x-3">
               {social.map((item) => (

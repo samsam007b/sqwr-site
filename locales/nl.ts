@@ -76,7 +76,7 @@ export const nl = {
   },
   footer: {
     tagline: 'Sinds 2016 creëren we visuele identiteiten\ndie verbinden en transformeren.',
-    location: 'Parijs, Frankrijk',
+    location: 'Brussel, België',
     navigationTitle: 'Navigatie',
     contactTitle: 'Contacteer ons',
     copyright: 'sqwr.',
