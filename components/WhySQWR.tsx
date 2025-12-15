@@ -94,55 +94,90 @@ const WhySQWR = () => {
           </ScrollReveal>
         </div>
 
-        {/* Comparison Table */}
+        {/* Comparison Table - Desktop */}
         <ScrollReveal delay={0.3}>
-          <div className="overflow-x-auto">
-            <div className="min-w-[600px]">
-              {/* Table Header */}
-              <div className="grid grid-cols-4 gap-4 mb-6">
-                <div className="font-mono text-xs uppercase tracking-[0.2em] text-secondary/60 flex items-end pb-4">
-                  {t('home.comparisonCriteria')}
-                </div>
-                <div className="text-center glass-surface rounded-t-lg p-4">
-                  <p className="font-sans text-sm font-medium text-foreground">
-                    {t('home.comparisonAgencies')}
-                  </p>
-                </div>
-                <div className="text-center glass-surface rounded-t-lg p-4">
-                  <p className="font-sans text-sm font-medium text-foreground">
-                    {t('home.comparisonFreelances')}
-                  </p>
-                </div>
-                <div className="text-center glass-surface rounded-t-lg p-4 bg-primary/5 border-2 border-primary/20">
-                  <p className="font-sans text-sm font-bold text-primary">
-                    {t('home.comparisonSqwr')}
-                  </p>
-                </div>
+          <div className="hidden md:block">
+            {/* Table Header */}
+            <div className="grid grid-cols-4 gap-4 mb-6">
+              <div className="font-mono text-xs uppercase tracking-[0.2em] text-secondary/60 flex items-end pb-4">
+                {t('home.comparisonCriteria')}
               </div>
-
-              {/* Table Rows */}
-              <div className="space-y-3">
-                {comparisonData.map((row, index) => (
-                  <div key={index} className="grid grid-cols-4 gap-4 items-center">
-                    <div className="font-sans text-sm font-medium text-foreground">
-                      {row.criteria}
-                    </div>
-                    <div className="glass-surface p-4 rounded-lg flex items-center justify-center gap-3">
-                      {getStatusIcon(row.agencies.status)}
-                      <span className="text-sm text-secondary/80">{row.agencies.text}</span>
-                    </div>
-                    <div className="glass-surface p-4 rounded-lg flex items-center justify-center gap-3">
-                      {getStatusIcon(row.freelances.status)}
-                      <span className="text-sm text-secondary/80">{row.freelances.text}</span>
-                    </div>
-                    <div className="glass-surface p-4 rounded-lg bg-primary/5 border-2 border-primary/20 flex items-center justify-center gap-3">
-                      {getStatusIcon(row.sqwr.status)}
-                      <span className="text-sm font-medium text-foreground">{row.sqwr.text}</span>
-                    </div>
-                  </div>
-                ))}
+              <div className="text-center glass-surface rounded-t-lg p-4">
+                <p className="font-sans text-sm font-medium text-foreground">
+                  {t('home.comparisonAgencies')}
+                </p>
+              </div>
+              <div className="text-center glass-surface rounded-t-lg p-4">
+                <p className="font-sans text-sm font-medium text-foreground">
+                  {t('home.comparisonFreelances')}
+                </p>
+              </div>
+              <div className="text-center glass-surface rounded-t-lg p-4 bg-primary/5 border-2 border-primary/20">
+                <p className="font-sans text-sm font-bold text-primary">
+                  {t('home.comparisonSqwr')}
+                </p>
               </div>
             </div>
+
+            {/* Table Rows */}
+            <div className="space-y-3">
+              {comparisonData.map((row, index) => (
+                <div key={index} className="grid grid-cols-4 gap-4 items-center">
+                  <div className="font-sans text-sm font-medium text-foreground">
+                    {row.criteria}
+                  </div>
+                  <div className="glass-surface p-4 rounded-lg flex items-center justify-center gap-3">
+                    {getStatusIcon(row.agencies.status)}
+                    <span className="text-sm text-secondary/80">{row.agencies.text}</span>
+                  </div>
+                  <div className="glass-surface p-4 rounded-lg flex items-center justify-center gap-3">
+                    {getStatusIcon(row.freelances.status)}
+                    <span className="text-sm text-secondary/80">{row.freelances.text}</span>
+                  </div>
+                  <div className="glass-surface p-4 rounded-lg bg-primary/5 border-2 border-primary/20 flex items-center justify-center gap-3">
+                    {getStatusIcon(row.sqwr.status)}
+                    <span className="text-sm font-medium text-foreground">{row.sqwr.text}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Comparison Cards - Mobile */}
+          <div className="md:hidden space-y-8">
+            {comparisonData.map((row, index) => (
+              <div key={index} className="glass-surface p-6 rounded-lg">
+                <h3 className="font-sans text-lg font-medium text-foreground mb-4 pb-3 border-b border-foreground/10">
+                  {row.criteria}
+                </h3>
+
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-secondary/60">{t('home.comparisonAgencies')}</span>
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(row.agencies.status)}
+                      <span className="text-sm text-foreground">{row.agencies.text}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-secondary/60">{t('home.comparisonFreelances')}</span>
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(row.freelances.status)}
+                      <span className="text-sm text-foreground">{row.freelances.text}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between py-2 px-3 bg-primary/5 rounded-lg border border-primary/20">
+                    <span className="text-sm font-medium text-primary">{t('home.comparisonSqwr')}</span>
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(row.sqwr.status)}
+                      <span className="text-sm font-bold text-foreground">{row.sqwr.text}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </ScrollReveal>
       </div>
