@@ -41,7 +41,7 @@ export default function PixelMigrationIntro() {
 
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.src = '/sqwr-logo.png';
+    img.src = '/Logo SQWR/sqwr-logo.png';
 
     img.onload = () => {
       // Create temporary canvas to read pixels
