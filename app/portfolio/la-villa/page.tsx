@@ -19,17 +19,17 @@ export default function LaVillaPage() {
   const galleryImages = [
     // Colonne gauche
     [
-      { src: '/Projet La Villa/IMG_5603.JPG', alt: 'Logo La Villa - fond gris' },
-      { src: '/Projet La Villa/IMG_5602.JPG', alt: 'Affiche Hans Meier - composition géométrique' },
-      { src: '/Projet La Villa/IMG_5601.JPG', alt: 'Programme festival - grille typographique' },
-      { src: '/Projet La Villa/IMG_5604.JPG', alt: 'Affiche Performance 14h' },
+      { src: '/projet-la-villa/IMG_5603.JPG', alt: 'Logo La Villa - fond gris' },
+      { src: '/projet-la-villa/IMG_5602.JPG', alt: 'Affiche Hans Meier - composition géométrique' },
+      { src: '/projet-la-villa/IMG_5601.JPG', alt: 'Programme festival - grille typographique' },
+      { src: '/projet-la-villa/IMG_5604.JPG', alt: 'Affiche Performance 14h' },
     ],
     // Colonne droite
     [
-      { src: '/Projet La Villa/IMG_5597.JPG', alt: 'Affiche Kool Koor - cercles bleus' },
-      { src: '/Projet La Villa/IMG_5599.JPG', alt: 'Affiche Last Minute Festival' },
-      { src: '/Projet La Villa/IMG_5606.JPG', alt: 'Affiche Fêtes des voisins - lanternes' },
-      { src: '/Projet La Villa/IMG_5605.JPG', alt: 'Affiche Conférence Kool Koor - typographie' },
+      { src: '/projet-la-villa/IMG_5597.JPG', alt: 'Affiche Kool Koor - cercles bleus' },
+      { src: '/projet-la-villa/IMG_5599.JPG', alt: 'Affiche Last Minute Festival' },
+      { src: '/projet-la-villa/IMG_5606.JPG', alt: 'Affiche Fêtes des voisins - lanternes' },
+      { src: '/projet-la-villa/IMG_5605.JPG', alt: 'Affiche Conférence Kool Koor - typographie' },
     ],
   ];
 
@@ -73,7 +73,7 @@ export default function LaVillaPage() {
           <ScrollReveal delay={0.2}>
             <div className="relative aspect-[16/9] overflow-hidden rounded-lg grain-overlay">
               <Image
-                src="/Projet La Villa/hero-triptyque.png"
+                src="/projet-la-villa/hero-triptyque.png"
                 alt="La Villa - Triptyque affiches festival"
                 fill
                 className="object-cover"
