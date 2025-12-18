@@ -75,9 +75,9 @@ export default function PortfolioPage() {
       {/* Projects Grid */}
       <section className="pb-24 lg:pb-32 px-6 lg:px-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="space-y-16 lg:space-y-24">
             {filteredProjects.map((project, index) => (
-              <ScrollReveal key={project.id} delay={index * 0.05}>
+              <ScrollReveal key={project.id} delay={0.1}>
                 <ProjectCard
                   title={project.title}
                   client={project.client}
@@ -86,6 +86,8 @@ export default function PortfolioPage() {
                   color={project.color}
                   image={project.image}
                   href={`/portfolio/${project.id}`}
+                  aspectRatio="16/9"
+                  size="large"
                 />
               </ScrollReveal>
             ))}
@@ -98,54 +100,6 @@ export default function PortfolioPage() {
               </p>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 glass-surface">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
-            <ScrollReveal>
-              <div className="text-center">
-                <div className="text-5xl font-display font-normal text-foreground mb-2">
-                  {projects.length}+
-                </div>
-                <p className="text-sm font-mono uppercase tracking-wider text-secondary">
-                  Projets Réalisés
-                </p>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal delay={0.1}>
-              <div className="text-center">
-                <div className="text-5xl font-display font-normal text-foreground mb-2">
-                  50+
-                </div>
-                <p className="text-sm font-mono uppercase tracking-wider text-secondary">
-                  Clients Satisfaits
-                </p>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal delay={0.2}>
-              <div className="text-center">
-                <div className="text-5xl font-display font-normal text-foreground mb-2">
-                  5
-                </div>
-                <p className="text-sm font-mono uppercase tracking-wider text-secondary">
-                  Années d'Expérience
-                </p>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal delay={0.3}>
-              <div className="text-center">
-                <div className="text-5xl font-display font-normal text-foreground mb-2">
-                  100%
-                </div>
-                <p className="text-sm font-mono uppercase tracking-wider text-secondary">
-                  Engagement Qualité
-                </p>
-              </div>
-            </ScrollReveal>
-          </div>
         </div>
       </section>
 
