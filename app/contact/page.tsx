@@ -48,17 +48,17 @@ export default function ContactPage() {
   const contactInfo = [
     {
       title: 'Email',
-      value: 'contact@sqwr.com',
-      link: 'mailto:contact@sqwr.com'
+      value: 'studio@sqwr.be',
+      link: 'mailto:studio@sqwr.be'
     },
     {
       title: 'Téléphone',
-      value: '+33 1 23 45 67 89',
-      link: 'tel:+33123456789'
+      value: '+32 493 30 27 52',
+      link: 'tel:+32493302752'
     },
     {
       title: 'Adresse',
-      value: '12 Rue du Design\n75001 Paris, France',
+      value: 'Bruxelles, Belgique',
       link: null
     }
   ];

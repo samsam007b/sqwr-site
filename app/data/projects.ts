@@ -14,16 +14,16 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: 'terra-nova',
-    title: 'Terra Nova',
-    client: 'Restaurant Gastronomique',
+    id: 'la-villa',
+    title: 'La Villa',
+    client: 'Fondation Culturelle',
     category: 'branding',
     categoryLabel: 'Branding',
     year: '2024',
-    description: 'Identité visuelle complète pour un restaurant gastronomique fusion. Logo, charte graphique, menu, signalétique.',
-    services: ['Identité Visuelle', 'Logo', 'Charte Graphique', 'Menu Design'],
-    color: '#2C5F2D',
-    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&h=1000&fit=crop',
+    description: 'Identité visuelle complète pour une fondation culturelle du Jura suisse. Logo, charte graphique, système d\'illustrations géométriques et déclinaisons sur l\'ensemble des supports de communication — affiches, flyers, posts Instagram.',
+    services: ['Logo Design', 'Charte Graphique', 'Direction Artistique', 'Illustration', 'Print Design', 'Social Media'],
+    color: '#0000FF',
+    image: '/projet-la-villa/hero-triptyque.png',
     featured: true,
   },
   {
