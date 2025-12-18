@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 
 const Footer = () => {
@@ -20,15 +19,9 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-16 mb-20">
           {/* Brand */}
           <div className="md:col-span-5">
-            <div className="mb-6">
-              <Image
-                src="/Logo SQWR/sqwr-logo-white.png"
-                alt="sqwr"
-                width={501}
-                height={243}
-                className="h-12 w-auto"
-              />
-            </div>
+            <h3 className="text-3xl font-display font-normal mb-6 text-paper">
+              {t('footer.copyright')}
+            </h3>
             <p className="text-paper/60 text-base leading-relaxed font-light mb-8 whitespace-pre-line">
               {t('footer.tagline')}
             </p>
@@ -84,16 +77,16 @@ const Footer = () => {
               {t('footer.contactTitle')}
             </h4>
             <a
-              href="mailto:samuelbaudon@sqwr.be"
+              href="mailto:contact@sqwr.com"
               className="text-paper/60 hover:text-primary text-sm mb-2 block font-light transition-colors duration-300"
             >
-              samuelbaudon@sqwr.be
+              contact@sqwr.com
             </a>
             <a
-              href="tel:+32493302752"
+              href="tel:+33123456789"
               className="text-paper/60 hover:text-primary text-sm mb-8 block font-light transition-colors duration-300"
             >
-              +32 493 30 27 52
+              +33 1 23 45 67 89
             </a>
             <div className="flex space-x-3">
               {social.map((item) => (

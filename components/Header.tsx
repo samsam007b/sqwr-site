@@ -1,18 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '@/context/LanguageContext';
-import { useTheme } from '@/context/ThemeContext';
 
 const Header = () => {
   const { t } = useLanguage();
-  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const menuItems = [
     { href: '/', label: t('nav.home') },
@@ -23,58 +34,30 @@ const Header = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Background layer - Glassmorphism */}
-      <div
-        className="absolute inset-0 backdrop-blur-3xl backdrop-saturate-150"
-        style={{
-          background: theme === 'dark'
-            ? 'linear-gradient(to bottom, rgba(15, 15, 18, 0.85), rgba(15, 15, 18, 0.75), rgba(15, 15, 18, 0.65))'
-            : 'linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.7), rgba(255,255,255,0.6))',
-          WebkitBackdropFilter: 'blur(40px) saturate(150%)',
-          backdropFilter: 'blur(40px) saturate(150%)'
-        }}
-      />
-
-      {/* Border layer */}
-      <div
-        className="absolute inset-0 shadow-lg"
-        style={{
-          borderBottom: `1px solid ${theme === 'dark' ? 'rgba(42, 42, 48, 0.5)' : 'rgba(255,255,255,0.3)'}`,
-        }}
-      />
-
-      {/* Content */}
-      <nav className="relative max-w-6xl mx-auto px-6 lg:px-16">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo - aligned with page content */}
+    <header
+      className={`fixed w-full top-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'glass-surface shadow-sm' : 'bg-transparent'
+      }`}
+    >
+      <nav className="container mx-auto px-6 lg:px-12 py-6">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
           <Link
             href="/"
             className="flex items-center hover:opacity-80 transition-opacity duration-200"
           >
-            {theme === 'dark' ? (
-              <Image
-                src="/Logo SQWR/sqwr-logo-white.png"
-                alt="sqwr"
-                width={501}
-                height={243}
-                className="h-8 w-auto"
-                priority
-              />
-            ) : (
-              <Image
-                src="/Logo SQWR/sqwr-logo.png"
-                alt="sqwr"
-                width={501}
-                height={243}
-                className="h-8 w-auto"
-                priority
-              />
-            )}
+            <Image
+              src="/sqwr-logo.svg"
+              alt="sqwr"
+              width={120}
+              height={60}
+              className="h-10 w-auto text-foreground"
+              priority
+            />
           </Link>
 
-          {/* Desktop Menu - pushed to the right */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-8 ml-auto">
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-4">
             <ul className="flex items-center space-x-10">
               {menuItems.map((item) => (
                 <li key={item.href}>

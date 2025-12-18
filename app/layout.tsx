@@ -3,7 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SmoothScroll from "@/components/SmoothScroll";
-import PixelMigrationIntro from "@/components/PixelMigrationIntro";
+import SqwrIntroAnimation from "@/components/SqwrIntroAnimation";
 import CustomCursorTrail from "@/components/CustomCursorTrail";
 import CursorManager from "@/components/CursorManager";
 import LivingGrid from "@/components/LivingGrid";
@@ -23,29 +23,29 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "SQWR Studio — Agence créative Bruxelles | Branding & Web sur-mesure",
-    template: "%s | SQWR Studio",
+    default: "sqwr. - Agence de Communication Visuelle & Design",
+    template: "%s | sqwr.",
   },
-  description: "Studio créatif familial à Bruxelles. Identités visuelles, sites web sur-mesure (React/Next.js), stratégie social media. Qualité agence, prix accessible. Depuis 2016.",
-  keywords: ["design", "graphique", "communication visuelle", "logo", "site web", "branding", "identité visuelle", "UI/UX", "agence créative", "Bruxelles", "Brussels", "Belgique", "Belgium", "sqwr", "sqwr studio", "React", "Next.js", "dashboards", "studio familial", "social media"],
-  authors: [{ name: "SQWR Studio" }],
-  creator: "SQWR Studio",
-  metadataBase: new URL('https://sqwr.be'),
+  description: "Agence créative spécialisée en communication visuelle, design graphique, création de logos, sites web, flyers et design réseaux sociaux. Excellence et innovation depuis 2016.",
+  keywords: ["design", "graphique", "communication visuelle", "logo", "site web", "flyers", "réseaux sociaux", "branding", "identité visuelle", "UI/UX", "agence créative", "Paris", "sqwr"],
+  authors: [{ name: "sqwr." }],
+  creator: "sqwr.",
+  metadataBase: new URL('https://sqwr.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "SQWR Studio — Agence créative Bruxelles | Branding & Web sur-mesure",
-    description: "Studio créatif familial à Bruxelles. Identités visuelles, sites web sur-mesure (React/Next.js), stratégie social media. Qualité agence, prix accessible. Depuis 2016.",
-    url: 'https://sqwr.be',
-    siteName: 'SQWR Studio',
-    locale: 'fr_BE',
+    title: "sqwr. - Agence de Communication Visuelle",
+    description: "Agence créative spécialisée en communication visuelle et design graphique. Excellence et innovation.",
+    url: 'https://sqwr.com',
+    siteName: 'sqwr.',
+    locale: 'fr_FR',
     type: "website",
   },
   twitter: {
     card: 'summary_large_image',
-    title: "SQWR Studio — Agence créative Bruxelles",
-    description: "Studio créatif familial à Bruxelles. Identités visuelles, sites web sur-mesure, stratégie social media. Depuis 2016.",
+    title: "sqwr. - Agence de Communication Visuelle",
+    description: "Agence créative spécialisée en communication visuelle et design graphique.",
   },
   robots: {
     index: true,
@@ -91,7 +91,7 @@ export default function RootLayout({
             <LivingGrid />
             <CursorManager />
             <CustomCursorTrail />
-            <PixelMigrationIntro />
+            <SqwrIntroAnimation />
             <SmoothScroll>
               <Header />
               <main className="flex-grow relative z-10">

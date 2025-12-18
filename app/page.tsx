@@ -19,12 +19,6 @@ export default function Home() {
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-6 lg:px-16 pt-24">
         <div className="max-w-6xl w-full">
-          <ScrollReveal>
-            <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary mb-12">
-              {t('hero.since')}
-            </p>
-          </ScrollReveal>
-
           <TextReveal
             className="font-display font-normal leading-[0.95] mb-12 text-balance text-foreground text-5xl md:text-6xl lg:text-7xl"
             delay={0.1}
@@ -122,46 +116,6 @@ export default function Home() {
 
       {/* Why SQWR Comparison */}
       <WhySQWR />
-
-      {/* Expertise Highlight */}
-      <section className="py-40 lg:py-48 px-6 lg:px-16">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 lg:gap-20">
-            <ScrollReveal>
-              <div>
-                <div className="text-5xl font-display font-normal mb-4 text-foreground">
-                  {t('home.stat1')}
-                </div>
-                <p className="text-sm font-mono uppercase tracking-[0.2em] text-secondary/60">
-                  {t('home.stat1Label')}
-                </p>
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.1}>
-              <div>
-                <div className="text-5xl font-display font-normal mb-4 text-foreground">
-                  {t('home.stat2')}
-                </div>
-                <p className="text-sm font-mono uppercase tracking-[0.2em] text-secondary/60">
-                  {t('home.stat2Label')}
-                </p>
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.2}>
-              <div>
-                <div className="text-5xl font-display font-normal mb-4 text-foreground">
-                  {t('home.stat3')}
-                </div>
-                <p className="text-sm font-mono uppercase tracking-[0.2em] text-secondary/60">
-                  {t('home.stat3Label')}
-                </p>
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-40 lg:py-48 px-6 lg:px-16 bg-foreground text-paper" data-dark-bg>
