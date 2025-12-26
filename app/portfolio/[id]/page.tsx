@@ -263,7 +263,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 lg:py-40 bg-foreground text-paper">
+      <section className="py-32 lg:py-40 bg-foreground text-paper" data-dark-bg>
         <div className="max-w-4xl mx-auto px-6 lg:px-16 text-center">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-display font-normal mb-10 text-balance leading-tight">
