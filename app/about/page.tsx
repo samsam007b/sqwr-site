@@ -7,48 +7,22 @@ import Link from 'next/link';
 export default function AboutPage() {
   const { t } = useLanguage();
 
-  const values = [
-    {
-      titleKey: 'Créativité',
-      descriptionKey: 'Nous repoussons les limites du design pour créer des solutions visuelles uniques et mémorables.'
-    },
-    {
-      titleKey: 'Excellence',
-      descriptionKey: 'Chaque projet bénéficie de notre attention méticuleuse aux détails et notre engagement envers la qualité.'
-    },
-    {
-      titleKey: 'Collaboration',
-      descriptionKey: 'Nous travaillons en étroite collaboration avec nos clients pour transformer leur vision en réalité.'
-    },
-    {
-      titleKey: 'Innovation',
-      descriptionKey: 'Nous restons à l\'avant-garde des tendances et technologies pour offrir des solutions modernes.'
-    }
-  ];
-
   const teamMembers = [
     {
-      nameKey: 'team1Name',
-      roleKey: 'team1Role',
-      bioKey: 'team1Bio',
+      name: 'Samuel Baudon',
+      role: 'Relations Publiques & Stratégie',
+      bio: 'Diplômé en Relations publiques et titulaire d\'un master en Affaires européennes. Samuel pilote la stratégie et la communication de nos projets.'
     },
     {
-      nameKey: 'team2Name',
-      roleKey: 'team2Role',
-      bioKey: 'team2Bio',
+      name: 'Jean-Pierre Baudon',
+      role: 'Graphic Designer',
+      bio: '15 ans d\'expérience dans l\'impression et le design graphique. Graphiste freelance, Jean-Pierre apporte son expertise technique et créative à chaque projet.'
     },
     {
-      nameKey: 'team3Name',
-      roleKey: 'team3Role',
-      bioKey: 'team3Bio',
+      name: 'Joakim Baudon',
+      role: 'Designer & Directeur Artistique',
+      bio: 'Formé 2 ans à La Cambre, actuellement étudiant à la Kunstschule de Lichtenstein. Joakim insuffle une approche contemporaine et artistique à nos créations.'
     },
-  ];
-
-  const stats = [
-    { value: '150+', label: 'Projets réalisés' },
-    { value: '80+', label: 'Clients satisfaits' },
-    { value: '9', label: 'Années d\'expérience' },
-    { value: '100%', label: 'Engagement qualité' },
   ];
 
   return (
@@ -80,7 +54,7 @@ export default function AboutPage() {
             <ScrollReveal>
               <div>
                 <h2 className="text-4xl md:text-5xl font-display font-normal mb-6 leading-tight text-foreground">
-                  Notre histoire
+                  Qui sommes-nous
                 </h2>
               </div>
             </ScrollReveal>
@@ -88,79 +62,23 @@ export default function AboutPage() {
             <ScrollReveal delay={0.2}>
               <div className="space-y-6 text-secondary/80 leading-relaxed font-light">
                 <p>
-                  Fondée en 2016 à Bruxelles, SQWR Studio est née d'une passion familiale pour le design
-                  et la création visuelle. Ce qui a commencé comme un rêve partagé est devenu
-                  une agence créative reconnue.
+                  SQWR Studio est une agence familiale basée à Bruxelles, composée de trois membres
+                  de la famille Baudon. Notre force réside dans notre diversité de compétences et
+                  notre capacité à travailler ensemble de manière fluide et réactive.
                 </p>
                 <p>
-                  Au fil des années, nous avons eu le privilège d'accompagner
-                  plus de 150 marques, des startups innovantes aux
-                  entreprises établies, dans la création et le développement de leur
-                  identité visuelle.
+                  Nous combinons des profils complémentaires : expertise en relations publiques et
+                  stratégie, savoir-faire technique en impression et design graphique, et formation
+                  artistique contemporaine. Cette synergie nous permet d'aborder chaque projet sous
+                  différents angles.
                 </p>
                 <p>
-                  Notre approche combine l'agilité d'une structure familiale avec
-                  les outils d'une agence premium. Nous intégrons l'IA et les technologies
-                  modernes pour offrir une qualité agence à des prix accessibles.
-                </p>
-                <p>
-                  Aujourd'hui, notre équipe de trois membres de la famille Baudon continue de
-                  repousser les frontières de la créativité pour offrir à nos
-                  clients des résultats exceptionnels, avec réactivité et dévouement.
+                  Notre approche est simple : créer des identités visuelles authentiques et
+                  mémorables, en restant à l'écoute de nos clients et en mettant notre créativité
+                  au service de leurs ambitions.
                 </p>
               </div>
             </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 px-6 lg:px-16">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-            {stats.map((stat, index) => (
-              <ScrollReveal key={stat.label} delay={index * 0.1}>
-                <div className="text-center">
-                  <div className="text-5xl md:text-6xl font-display font-normal mb-3 text-foreground">
-                    {stat.value}
-                  </div>
-                  <p className="text-secondary/60 text-xs font-mono uppercase tracking-[0.2em]">
-                    {stat.label}
-                  </p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Values Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-16 glass-surface">
-        <div className="max-w-6xl mx-auto">
-          <ScrollReveal>
-            <div className="text-center mb-16">
-              <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-4">
-                Nos valeurs
-              </p>
-              <h2 className="text-4xl md:text-5xl font-display font-normal mb-6 text-foreground">
-                Ce qui nous guide
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-            {values.map((value, index) => (
-              <ScrollReveal key={value.titleKey} delay={index * 0.1}>
-                <div className="glass-surface p-8 lg:p-10 rounded-lg border border-foreground/5">
-                  <h3 className="text-2xl font-display font-normal mb-4 text-foreground">
-                    {value.titleKey}
-                  </h3>
-                  <p className="text-secondary/80 leading-relaxed font-light">
-                    {value.descriptionKey}
-                  </p>
-                </div>
-              </ScrollReveal>
-            ))}
           </div>
         </div>
       </section>
@@ -171,53 +89,34 @@ export default function AboutPage() {
           <ScrollReveal>
             <div className="text-center mb-16">
               <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-4">
-                {t('about.teamTitle')}
+                L'équipe
               </p>
               <h2 className="text-4xl md:text-5xl font-display font-normal mb-6 text-foreground">
-                {t('about.teamSubtitle')}
+                La famille Baudon
               </h2>
             </div>
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {teamMembers.map((member, index) => (
-              <ScrollReveal key={member.nameKey} delay={index * 0.1}>
+              <ScrollReveal key={member.name} delay={index * 0.1}>
                 <div className="text-center">
                   {/* Placeholder for team member photo */}
                   <div className="aspect-square bg-gradient-to-br from-primary/10 to-secondary/20 mb-6 rounded-2xl grain-overlay" />
 
                   <h3 className="text-2xl font-display font-normal mb-2 text-foreground">
-                    {t(`about.${member.nameKey}`)}
+                    {member.name}
                   </h3>
                   <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary mb-4">
-                    {t(`about.${member.roleKey}`)}
+                    {member.role}
                   </p>
                   <p className="text-secondary/80 leading-relaxed font-light">
-                    {t(`about.${member.bioKey}`)}
+                    {member.bio}
                   </p>
                 </div>
               </ScrollReveal>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Philosophy Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-16 bg-foreground text-paper" data-dark-bg>
-        <div className="max-w-4xl mx-auto">
-          <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-display font-normal mb-8 text-center text-balance">
-              "L'agilité d'une équipe familiale + les outils d'une agence premium"
-            </h2>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.2}>
-            <p className="text-lg text-paper/70 text-center max-w-2xl mx-auto leading-relaxed font-light">
-              Notre force réside dans notre structure familiale unique qui nous permet
-              d'être ultra-réactifs, tout en maîtrisant les outils IA et technologies
-              modernes pour offrir une qualité agence à des prix accessibles.
-            </p>
-          </ScrollReveal>
         </div>
       </section>
 
