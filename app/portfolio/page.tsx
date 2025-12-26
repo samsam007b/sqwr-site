@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import ScrollReveal from '@/components/ScrollReveal';
 import ProjectCard from '@/components/ProjectCard';
-import OrigamiSquare from '@/components/OrigamiSquare';
 import { projects, getProjectsByCategory } from '@/app/data/projects';
 
 export default function PortfolioPage() {
@@ -40,13 +39,6 @@ export default function PortfolioPage() {
             </p>
           </ScrollReveal>
         </div>
-      </section>
-
-      {/* Origami Square Animation */}
-      <section className="py-16 lg:py-20">
-        <ScrollReveal>
-          <OrigamiSquare />
-        </ScrollReveal>
       </section>
 
       {/* Filter */}
