@@ -120,6 +120,40 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Philosophy Section - AI-driven */}
+      <section className="py-24 lg:py-32 px-6 lg:px-16 bg-foreground text-paper" data-dark-bg>
+        <div className="max-w-4xl mx-auto">
+          <ScrollReveal>
+            <div className="text-center mb-8">
+              <p className="text-xs font-mono uppercase tracking-[0.2em] text-paper/60 mb-4">
+                Notre philosophie
+              </p>
+              <h2 className="text-4xl md:text-5xl font-display font-normal mb-8 text-balance">
+                L'approche AI-driven qui démocratise le design
+              </h2>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.2}>
+            <div className="space-y-6 text-lg text-paper/80 leading-relaxed font-light">
+              <p>
+                Notre philosophie de travail <span className="text-paper font-normal">AI-driven</span> nous permet d'être
+                compétitifs en démocratisant des travaux autrefois très chronophages.
+              </p>
+              <p>
+                En automatisant les tâches répétitives que les clients ne voyaient pas auparavant
+                mais qui rendaient le prix des projets élevé, nous libérons du temps et des ressources
+                pour nous concentrer sur ce qui compte vraiment : <span className="text-paper font-normal">la Création</span>.
+              </p>
+              <p>
+                Cette approche nous permet d'offrir un service de qualité agence à des prix
+                accessibles, tout en consacrant notre énergie créative là où elle a le plus d'impact.
+              </p>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 lg:py-32 px-6 lg:px-16">
         <div className="max-w-4xl mx-auto text-center">
