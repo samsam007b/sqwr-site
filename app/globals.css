@@ -57,14 +57,14 @@
     cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23111111'/%3E%3C/svg%3E") 8 8, auto;
   }
 
-  /* Curseur carré blanc sur fond noir (indépendant du mode) - priorité haute */
-  body.cursor-on-dark {
-    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, auto !important;
+  /* Curseur carré blanc en mode sombre */
+  html.dark body {
+    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, auto;
   }
 
-  /* Curseur carré blanc en mode sombre global */
-  .dark body:not(.cursor-on-dark) {
-    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, auto;
+  /* Curseur carré blanc sur fond noir (priorité absolue - indépendant du mode) */
+  body.cursor-on-dark {
+    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, auto !important;
   }
 
   /* Curseur carré rouge sur éléments interactifs - fond clair */
@@ -72,7 +72,17 @@
     cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23E01919'/%3E%3C/svg%3E") 8 8, pointer;
   }
 
-  /* Curseur carré blanc sur éléments interactifs - fond noir */
+  /* Curseur carré blanc sur éléments interactifs - mode sombre */
+  html.dark a,
+  html.dark button,
+  html.dark [role="button"],
+  html.dark input[type="button"],
+  html.dark input[type="submit"],
+  html.dark .cursor-pointer {
+    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, pointer;
+  }
+
+  /* Curseur carré blanc sur éléments interactifs - fond noir (priorité absolue) */
   body.cursor-on-dark a,
   body.cursor-on-dark button,
   body.cursor-on-dark [role="button"],
@@ -80,16 +90,6 @@
   body.cursor-on-dark input[type="submit"],
   body.cursor-on-dark .cursor-pointer {
     cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, pointer !important;
-  }
-
-  /* Curseur carré blanc sur éléments interactifs - mode sombre global */
-  .dark:not(.cursor-on-dark) a,
-  .dark:not(.cursor-on-dark) button,
-  .dark:not(.cursor-on-dark) [role="button"],
-  .dark:not(.cursor-on-dark) input[type="button"],
-  .dark:not(.cursor-on-dark) input[type="submit"],
-  .dark:not(.cursor-on-dark) .cursor-pointer {
-    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, pointer;
   }
 
   /* HD Paper texture avec grain fin */
