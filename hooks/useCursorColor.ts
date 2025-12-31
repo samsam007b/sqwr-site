@@ -24,6 +24,11 @@ export const useCursorColor = () => {
         currentElement = currentElement.parentElement;
       }
 
+      // Debug: log when state changes
+      if (isDark !== isOnDark) {
+        console.log('🎯 Cursor on dark background:', isDark, 'Element:', element.tagName, element.className);
+      }
+
       setIsOnDark(isDark);
     };
 
@@ -32,7 +37,7 @@ export const useCursorColor = () => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, []);
+  }, [isOnDark]);
 
   return isOnDark;
 };

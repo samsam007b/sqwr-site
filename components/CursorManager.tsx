@@ -13,8 +13,10 @@ const CursorManager = () => {
     if (isTouch) return;
 
     if (isOnDark) {
+      console.log('✅ Adding cursor-on-dark class to body');
       document.body.classList.add('cursor-on-dark');
     } else {
+      console.log('❌ Removing cursor-on-dark class from body');
       document.body.classList.remove('cursor-on-dark');
     }
 
