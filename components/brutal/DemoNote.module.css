@@ -1,0 +1,30 @@
+.demoNote {
+  padding: 8vw;
+  background: var(--brutal-black);
+  color: var(--brutal-white);
+  border-top: 2px solid var(--brutal-red);
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.text {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+}
+
+.text strong {
+  color: var(--brutal-red);
+}
