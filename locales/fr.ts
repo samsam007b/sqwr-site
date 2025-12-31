@@ -113,7 +113,7 @@ export const fr = {
       title: 'Identité de Marque',
       price: '800€',
       description: 'Sublimez votre identité visuelle. Logo professionnel et charte graphique complète pour une marque cohérente.',
-      included: 'Ce qui est inclus',
+      included: 'Exemples de réalisations',
       features: [
         'Logo (3 pistes créatives)',
         'Charte graphique complète',

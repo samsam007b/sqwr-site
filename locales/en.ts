@@ -113,7 +113,7 @@ export const en = {
       title: 'Brand Identity',
       price: '€800',
       description: 'Elevate your visual identity. Professional logo and complete brand guidelines for a cohesive brand.',
-      included: 'What\'s included',
+      included: 'Examples of work',
       features: [
         'Logo (3 creative directions)',
         'Complete brand guidelines',

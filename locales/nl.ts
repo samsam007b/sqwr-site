@@ -113,7 +113,7 @@ export const nl = {
       title: 'Merkidentiteit',
       price: '€800',
       description: 'Verbeter uw visuele identiteit. Professioneel logo en complete merkrichtlijnen voor een samenhangend merk.',
-      included: 'Wat is inbegrepen',
+      included: 'Voorbeelden van werk',
       features: [
         'Logo (3 creatieve richtingen)',
         'Complete merkrichtlijnen',

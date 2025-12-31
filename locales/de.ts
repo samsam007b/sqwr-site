@@ -113,7 +113,7 @@ export const de = {
       title: 'Markenidentität',
       price: '€800',
       description: 'Verbessern Sie Ihre visuelle Identität. Professionelles Logo und vollständige Markenrichtlinien für eine kohärente Marke.',
-      included: 'Was ist enthalten',
+      included: 'Beispiele für Arbeiten',
       features: [
         'Logo (3 kreative Richtungen)',
         'Vollständige Markenrichtlinien',
