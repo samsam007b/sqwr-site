@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import PixelBackground from './PixelBackground';
 import styles from './HeroBrutal.module.css';
 
 interface HeroBrutalProps {
@@ -19,16 +20,6 @@ export default function HeroBrutal({ title, subtitle, videoSrc }: HeroBrutalProp
   const titleY = useTransform(scrollY, [0, 500], [0, 150]);
   const titleOpacity = useTransform(scrollY, [0, 300], [1, 0]);
 
-  // Grain animé
-  const [grainOffset, setGrainOffset] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setGrainOffset(Math.random() * 100);
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
-
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setCursorPos({ x: e.clientX, y: e.clientY });
@@ -39,36 +30,11 @@ export default function HeroBrutal({ title, subtitle, videoSrc }: HeroBrutalProp
 
   return (
     <section className={styles.hero} ref={containerRef} data-dark-bg>
-      {/* Video Background avec overlay */}
-      {videoSrc ? (
-        <div className={styles.videoContainer}>
-          <video autoPlay muted loop playsInline className={styles.video}>
-            <source src={videoSrc} type="video/mp4" />
-          </video>
-          {/* Dark overlay de base */}
-          <div className={styles.videoOverlay} />
-        </div>
-      ) : (
-        <div className={styles.staticBackground} />
-      )}
+      {/* Background avec pixels animés */}
+      <div className={styles.staticBackground} />
+      <PixelBackground density="high" animated color="red" />
 
-      {/* Overlay avec grain animé */}
-      <div
-        className={styles.grain}
-        style={{
-          backgroundPosition: `${grainOffset}% ${grainOffset}%`
-        }}
-      />
-
-      {/* Dark overlay qui s'éclaircit autour du curseur */}
-      <div
-        className={styles.cursorReveal}
-        style={{
-          background: `radial-gradient(circle 250px at ${cursorPos.x}px ${cursorPos.y}px, rgba(10,10,10,0.2), rgba(10,10,10,0.85))`
-        }}
-      />
-
-      {/* Titre BRUTAL qui casse tout */}
+      {/* Titre BRUTAL avec effet pixel */}
       <motion.div
         className={styles.content}
         style={{ y: titleY, opacity: titleOpacity }}
@@ -80,6 +46,7 @@ export default function HeroBrutal({ title, subtitle, videoSrc }: HeroBrutalProp
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.03, duration: 0.4 }}
+              className={styles.titleChar}
             >
               {char === ' ' ? '\u00A0' : char}
             </motion.span>
@@ -97,15 +64,34 @@ export default function HeroBrutal({ title, subtitle, videoSrc }: HeroBrutalProp
           </motion.p>
         )}
 
-        {/* Grid indicator */}
+        {/* Pixel Matrix décorative */}
+        <div className={styles.pixelMatrix}>
+          {Array.from({ length: 25 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className={styles.matrixPixel}
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: [0.2, 0.8, 0.2], scale: 1 }}
+              transition={{
+                delay: i * 0.05,
+                repeat: Infinity,
+                duration: 2,
+                repeatDelay: Math.random() * 2
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Grid indicator pixel */}
         <div className={styles.gridIndicator}>
+          <span className={styles.coordsLabel}>POSITION</span>
           <span className={styles.coords}>
-            [{Math.floor(cursorPos.x)}, {Math.floor(cursorPos.y)}]
+            X:{Math.floor(cursorPos.x)} Y:{Math.floor(cursorPos.y)}
           </span>
         </div>
       </motion.div>
 
-      {/* Scroll indicator géométrique */}
+      {/* Scroll indicator pixel */}
       <div className={styles.scrollIndicator}>
         <div className={styles.scrollSquare} />
         <span>SCROLL</span>

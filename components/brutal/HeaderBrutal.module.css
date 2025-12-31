@@ -1,0 +1,354 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 2rem 4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.header.scrolled {
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--brutal-red);
+}
+
+/* Logo Pixel */
+.logo {
+  position: relative;
+  z-index: 1001;
+}
+
+.logoPixel {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--brutal-white);
+  position: relative;
+
+  /* Effet pixelisé */
+  text-shadow:
+    2px 0 0 var(--brutal-red),
+    -2px 0 0 var(--brutal-red);
+}
+
+/* Menu Toggle - Carré Rouge */
+.menuToggle {
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: none;
+  border: none;
+  cursor: none;
+  padding: 0;
+}
+
+.square {
+  width: 40px;
+  height: 40px;
+  background: var(--brutal-red);
+  position: relative;
+  animation: pulse-square 2s infinite;
+
+  /* Effet pixel */
+  box-shadow:
+    0 0 0 2px var(--brutal-black),
+    0 0 0 4px var(--brutal-red),
+    0 0 20px rgba(224, 25, 25, 0.5);
+}
+
+.square::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  background: var(--brutal-black);
+}
+
+.square::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  background: var(--brutal-red);
+}
+
+.menuLabel {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--brutal-white);
+  text-transform: uppercase;
+}
+
+@keyframes pulse-square {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Menu Overlay Fullscreen */
+.menuOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--brutal-black);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Grille de pixels animée */
+.pixelGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 19px,
+      rgba(224, 25, 25, 0.1) 19px,
+      rgba(224, 25, 25, 0.1) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(224, 25, 25, 0.1) 19px,
+      rgba(224, 25, 25, 0.1) 20px
+    );
+  animation: grid-move 20s linear infinite;
+}
+
+@keyframes grid-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(20px, 20px); }
+}
+
+/* Close Button */
+.closeButton {
+  position: absolute;
+  top: 2rem;
+  right: 4rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: none;
+  border: none;
+  cursor: none;
+  color: var(--brutal-white);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+}
+
+.closeSquare {
+  width: 40px;
+  height: 40px;
+  background: var(--brutal-white);
+  position: relative;
+}
+
+.closeSquare::before,
+.closeSquare::after {
+  content: '';
+  position: absolute;
+  background: var(--brutal-red);
+}
+
+.closeSquare::before {
+  width: 60%;
+  height: 2px;
+  top: 50%;
+  left: 20%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.closeSquare::after {
+  width: 60%;
+  height: 2px;
+  top: 50%;
+  left: 20%;
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+/* Navigation */
+.nav {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  padding: 0 4rem;
+}
+
+.navList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid rgba(224, 25, 25, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.navLink:hover {
+  padding-left: 2rem;
+  border-bottom-color: var(--brutal-red);
+}
+
+.navIndex {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  color: var(--brutal-red);
+  letter-spacing: 0.1em;
+}
+
+.navLabel {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  color: var(--brutal-white);
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+
+  /* Effet glitch au hover */
+  position: relative;
+}
+
+.navLink:hover .navLabel {
+  animation: glitch 0.3s infinite;
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.navSquare {
+  width: 20px;
+  height: 20px;
+  background: var(--brutal-red);
+  margin-left: auto;
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.navLink:hover .navSquare {
+  opacity: 1;
+  transform: scale(1) rotate(45deg);
+}
+
+/* Menu Info */
+.menuInfo {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4rem;
+  margin-top: 4rem;
+  padding-top: 4rem;
+  border-top: 1px solid rgba(224, 25, 25, 0.2);
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.infoLabel {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  color: var(--brutal-red);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.infoText {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--brutal-white);
+  opacity: 0.7;
+}
+
+.infoLink {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  color: var(--brutal-white);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.infoLink:hover {
+  opacity: 1;
+  color: var(--brutal-red);
+}
+
+/* Pattern décoratif */
+.decorPattern {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  width: 200px;
+  height: 200px;
+}
+
+.decorPixel {
+  width: 100%;
+  height: 100%;
+  background: var(--brutal-red);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .header {
+    padding: 1.5rem 2rem;
+  }
+
+  .closeButton {
+    right: 2rem;
+  }
+
+  .nav {
+    padding: 0 2rem;
+  }
+
+  .navLink {
+    gap: 1.5rem;
+  }
+
+  .navLabel {
+    font-size: clamp(1.5rem, 8vw, 3rem);
+  }
+
+  .menuInfo {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .decorPattern {
+    width: 120px;
+    height: 120px;
+    bottom: 1rem;
+    right: 1rem;
+  }
+}

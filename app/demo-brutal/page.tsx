@@ -1,3 +1,4 @@
+import HeaderBrutal from '@/components/brutal/HeaderBrutal';
 import HeroBrutal from '@/components/brutal/HeroBrutal';
 import ServicesMarquee from '@/components/brutal/ServicesMarquee';
 import SplitScreenNarrative from '@/components/brutal/SplitScreenNarrative';
@@ -30,6 +31,9 @@ export default function DemoBrutalPage() {
 
   return (
     <>
+      {/* Header Brutal avec menu pixel */}
+      <HeaderBrutal />
+
       {/* Hero Brutal */}
       <HeroBrutal
         title="SQWR"

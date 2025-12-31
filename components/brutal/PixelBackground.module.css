@@ -1,0 +1,90 @@
+.pixelBackground {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Grille */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 19px,
+      rgba(224, 25, 25, 0.03) 19px,
+      rgba(224, 25, 25, 0.03) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(224, 25, 25, 0.03) 19px,
+      rgba(224, 25, 25, 0.03) 20px
+    );
+}
+
+/* Pixels */
+.pixel {
+  position: absolute;
+  background: var(--brutal-red);
+  will-change: transform, opacity;
+}
+
+.pixel.red {
+  background: var(--brutal-red);
+}
+
+.pixel.white {
+  background: var(--brutal-white);
+}
+
+.pixel.mixed {
+  background: var(--brutal-red);
+}
+
+.pixel.mixed:nth-child(even) {
+  background: var(--brutal-white);
+}
+
+.pixel.animated {
+  animation: float-pixel 10s infinite ease-in-out;
+}
+
+@keyframes float-pixel {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(10px, -10px) rotate(90deg);
+  }
+  50% {
+    transform: translate(-5px, 5px) rotate(180deg);
+  }
+  75% {
+    transform: translate(-10px, -5px) rotate(270deg);
+  }
+}
+
+/* Scanlines */
+.scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.05),
+    rgba(0, 0, 0, 0.05) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  opacity: 0.3;
+  animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
