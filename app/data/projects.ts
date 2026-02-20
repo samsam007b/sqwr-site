@@ -43,6 +43,21 @@ export const projects: Project[] = [
     image: '/projet-la-villa/hero-triptyque.png',
     featured: true,
   },
+  {
+    id: 'nanou',
+    title: 'Massages & Naissance',
+    client: 'Nanou Mendels',
+    category: 'web',
+    categoryLabel: 'Web Design',
+    year: '2025',
+    description: 'Site vitrine 7 pages pour une praticienne en massage, haptonomie et thérapie psycho-corporelle. Multilingue FR/NL/EN/IT, moteur i18n custom, animations orchestrées et design system cuivre × beige — déployé sur massages-et-naissance.com.',
+    impact: 'Un site qui reflète la douceur et le professionnalisme de la praticienne : navigation fluide, esthétique apaisante et accès immédiat à toutes les informations. La version multilingue (4 langues) ouvre la clientèle à toute la Belgique et au-delà.',
+    services: ['Web Design', 'Développement', 'Multilingue (4 langues)', 'Animations', 'SEO', 'Déploiement'],
+    color: '#B8956A',
+    image: '/projet-nanou/hero.png',
+    url: 'https://massages-et-naissance.com',
+    featured: true,
+  },
 ];
 
 export const getFeaturedProjects = () => projects.filter(p => p.featured);
