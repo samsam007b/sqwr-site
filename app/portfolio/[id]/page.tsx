@@ -130,13 +130,26 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     Impact
                   </h3>
                   <p className="text-lg text-secondary/70 leading-relaxed font-light">
-                    Ce projet a permis de créer une identité visuelle forte et cohérente,
-                    renforçant la présence de marque et créant une connexion authentique
-                    avec l'audience cible. Les solutions créatives mises en place ont
-                    contribué à atteindre les objectifs stratégiques du client.
+                    {project.impact}
                   </p>
                 </div>
               </ScrollReveal>
+
+              {project.url && (
+                <ScrollReveal delay={0.3}>
+                  <div className="mt-12">
+                    <a
+                      href={project.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-3 text-sm font-mono uppercase tracking-[0.15em] text-primary hover:opacity-70 transition-opacity duration-300"
+                    >
+                      Voir le site live
+                      <span>↗</span>
+                    </a>
+                  </div>
+                </ScrollReveal>
+              )}
             </div>
 
             {/* Project Info */}

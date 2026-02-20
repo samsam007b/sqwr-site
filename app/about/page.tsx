@@ -10,8 +10,8 @@ export default function AboutPage() {
   const teamMembers = [
     {
       name: 'Samuel Baudon',
-      role: 'Relations Publiques & Stratégie',
-      bio: 'Diplômé en Relations publiques et titulaire d\'un master en Affaires européennes. Samuel pilote la stratégie et la communication de nos projets.'
+      role: 'Stratégie, Communication & Entrepreneuriat',
+      bio: 'Étudiant en communication et relations publiques, Samuel est aussi entrepreneur : fondateur d\'Ears & Eyes (vernissage + soirée), porteur du projet izzico. Il pilote la stratégie, le développement commercial et la communication du studio.'
     },
     {
       name: 'Jean-Pierre Baudon',
