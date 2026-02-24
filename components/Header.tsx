@@ -62,9 +62,10 @@ function drawOverlayFrame(
 
       if (cellScale <= 0.005) continue;
 
-      const sz = CELL_SIZE * cellScale;
-      const x = c * STEP + (CELL_SIZE - sz) / 2;
-      const y = r * STEP + (CELL_SIZE - sz) / 2;
+      // Scale jusqu'à STEP (pas CELL_SIZE) pour combler les gaps et obtenir du noir plein
+      const sz = STEP * cellScale;
+      const x = c * STEP + (STEP - sz) / 2;
+      const y = r * STEP + (STEP - sz) / 2;
       ctx.fillRect(x, y, sz, sz);
     }
   }
