@@ -5,40 +5,67 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, useEffect, useState, memo } from 'react';
 import type { ProjectMockup } from '@/app/data/projects';
 
-// ── Pixel aesthetic — matches PixelGridHero constants ─────────────────────────
-const PIXEL_SIZE = 10;
+// ── Pixel constants ────────────────────────────────────────────────────────────
+// Base pixel size (like PixelGridHero). For large cards the grid auto-scales up
+// to avoid creating thousands of DOM elements (which would freeze the browser).
+const BASE_PIXEL = 10;
 const GAP = 1;
-const STEP = PIXEL_SIZE + GAP;
-const MAX_LIFT = 14;      // px translateZ on hover peak
-const HOVER_RADIUS = 90;  // px from cursor
+const BASE_STEP = BASE_PIXEL + GAP;
+const MAX_TOTAL = 1400;  // hard cap on total pixel divs per card
 const SPRING = 0.12;
-const IDLE_AMP = 1.5;     // subtle idle wave amplitude (px)
+const IDLE_AMP = 1.5;
 
-// ── PixelGrid — image sliced into many pixels with 3-D magnetic hover ─────────
+interface PixelDims {
+  cols: number;
+  rows: number;
+  pixel: number; // actual pixel square size (≥ BASE_PIXEL)
+  step: number;  // pixel + GAP
+}
+
+// ── PixelGrid ─────────────────────────────────────────────────────────────────
+// Uses a two-phase mount: first renders a measuring div, then (after layout)
+// computes the adaptive grid and starts the RAF spring loop.
 const PixelGrid = memo(({ image }: { image: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const pixelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const rafRef = useRef<number>(0);
   const liftRef = useRef<Float32Array | null>(null);
   const mouseRef = useRef({ x: 0, y: 0, inside: false });
-  const [dims, setDims] = useState<{ cols: number; rows: number } | null>(null);
+  const [dims, setDims] = useState<PixelDims | null>(null);
 
-  // Phase 1: measure container after first paint
+  // Phase 1 — measure container, compute adaptive grid dimensions
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const { width, height } = el.getBoundingClientRect();
+    if (!width || !height) return;
+
+    // How many 10-px pixels would fit? If too many, scale up the pixel size.
+    const rawTotal = Math.floor(width / BASE_STEP) * Math.floor(height / BASE_STEP);
+    const pixel = rawTotal > MAX_TOTAL
+      ? Math.ceil(BASE_PIXEL * Math.sqrt(rawTotal / MAX_TOTAL))
+      : BASE_PIXEL;
+    const step = pixel + GAP;
+
     setDims({
-      cols: Math.max(1, Math.floor(width / STEP)),
-      rows: Math.max(1, Math.floor(height / STEP)),
+      cols: Math.max(1, Math.floor(width / step)),
+      rows: Math.max(1, Math.floor(height / step)),
+      pixel,
+      step,
     });
   }, []);
 
-  // Phase 2: RAF animation loop — runs once dims are known
+  // Phase 2 — RAF animation loop (magnetic hover + idle wave)
   useEffect(() => {
     if (!dims) return;
-    const { cols, rows } = dims;
+    const { cols, rows, pixel, step } = dims;
+
     liftRef.current = new Float32Array(cols * rows);
+
+    // Scale interaction constants with pixel size so effect feels consistent
+    const maxLift = pixel * 1.4;
+    const hoverRadius = pixel * 9;
+    const idleAmp = IDLE_AMP * (pixel / BASE_PIXEL); // scale wave amplitude too
 
     const container = containerRef.current!;
 
@@ -46,7 +73,6 @@ const PixelGrid = memo(({ image }: { image: string }) => {
       mouseRef.current = { x: e.clientX, y: e.clientY, inside: true };
     };
     const onLeave = () => { mouseRef.current.inside = false; };
-
     container.addEventListener('mousemove', onMove);
     container.addEventListener('mouseleave', onLeave);
 
@@ -64,31 +90,32 @@ const PixelGrid = memo(({ image }: { image: string }) => {
           const el = pixelRefs.current[i];
           if (!el) continue;
 
-          const cx = c * STEP + PIXEL_SIZE / 2;
-          const cy = r * STEP + PIXEL_SIZE / 2;
+          // Pixel centre in container-local coords
+          const cx = c * step + pixel / 2;
+          const cy = r * step + pixel / 2;
 
-          // Magnetic attraction (always positive — toward viewer)
-          let magnetTarget = 0;
+          // Magnetic attraction toward cursor
+          let target = 0;
           if (inside) {
             const dx = cx - rx;
             const dy = cy - ry;
             const d = Math.sqrt(dx * dx + dy * dy);
-            if (d < HOVER_RADIUS) {
-              magnetTarget = ((1 - d / HOVER_RADIUS) ** 2) * MAX_LIFT;
+            if (d < hoverRadius) {
+              target = ((1 - d / hoverRadius) ** 2) * maxLift;
             }
           }
 
-          // Idle wave — organic ripple, dampened while hovering
+          // Organic idle ripple (dampened while hovering)
           const wave =
             Math.sin(t * 1.1 + c * 0.39 + r * 0.28) *
             Math.cos(t * 0.7 - c * 0.21 + r * 0.35) *
-            IDLE_AMP * (inside ? 0.15 : 1.0);
+            idleAmp * (inside ? 0.15 : 1.0);
 
-          // Spring lerp toward target
-          lift[i] += (magnetTarget + wave - lift[i]) * SPRING;
+          // Spring
+          lift[i] += (target + wave - lift[i]) * SPRING;
 
           const z = lift[i];
-          el.style.transform = Math.abs(z) > 0.02 ? `translateZ(${z.toFixed(2)}px)` : '';
+          el.style.transform = Math.abs(z) > 0.05 ? `translateZ(${z.toFixed(2)}px)` : '';
         }
       }
 
@@ -104,14 +131,15 @@ const PixelGrid = memo(({ image }: { image: string }) => {
     };
   }, [dims]);
 
-  // Before measurement: invisible placeholder that sets the ref
+  // Phase 1 placeholder (measuring only)
   if (!dims) {
     return <div ref={containerRef} className="absolute inset-0" />;
   }
 
-  const { cols, rows } = dims;
-  const bgW = cols * STEP;
-  const bgH = rows * STEP;
+  const { cols, rows, pixel, step } = dims;
+  // bgW/bgH: the image is virtually stretched to cover the entire grid area
+  const bgW = cols * step;
+  const bgH = rows * step;
 
   return (
     <div
@@ -119,13 +147,14 @@ const PixelGrid = memo(({ image }: { image: string }) => {
       className="absolute inset-0"
       style={{
         display: 'grid',
-        gridTemplateColumns: `repeat(${cols}, ${PIXEL_SIZE}px)`,
-        gridTemplateRows: `repeat(${rows}, ${PIXEL_SIZE}px)`,
+        gridTemplateColumns: `repeat(${cols}, ${pixel}px)`,
+        gridTemplateRows: `repeat(${rows}, ${pixel}px)`,
         gap: `${GAP}px`,
         justifyContent: 'center',
         alignContent: 'center',
-        perspective: '480px',
-        transformStyle: 'preserve-3d',
+        // perspective without preserve-3d: translateZ still projects correctly
+        // and isn't flattened by Framer Motion parent opacity/transform contexts
+        perspective: '600px',
         background: '#FAFAF8',
       }}
     >
@@ -137,11 +166,13 @@ const PixelGrid = memo(({ image }: { image: string }) => {
             key={i}
             ref={el => { pixelRefs.current[i] = el; }}
             style={{
-              width: PIXEL_SIZE,
-              height: PIXEL_SIZE,
+              width: pixel,
+              height: pixel,
               backgroundImage: `url(${image})`,
+              // Image stretched to cover all cols×rows + gaps
               backgroundSize: `${bgW}px ${bgH}px`,
-              backgroundPosition: `-${c * STEP}px -${r * STEP}px`,
+              // Each pixel shows its slice of the stretched image
+              backgroundPosition: `-${c * step}px -${r * step}px`,
               backgroundRepeat: 'no-repeat',
               willChange: 'transform',
             }}
@@ -199,22 +230,20 @@ const ProjectCard = ({
         transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         className="relative"
       >
-        {/* Media container */}
-        <div className="relative overflow-visible" style={{ aspectRatio }}>
-
+        {/* ── Media container ── */}
+        <div
+          className="relative overflow-visible rounded-lg grain-overlay"
+          style={{ aspectRatio, background: 'transparent' }}
+        >
           {video ? (
-            /* ── Video + landing-page mockup overlay (unchanged) ── */
+            /* ── Video + landing-page mockup (unchanged) ── */
             <motion.div
-              className="absolute inset-0 overflow-hidden"
+              className="absolute inset-0 overflow-hidden rounded-lg"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
               <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
+                autoPlay loop muted playsInline preload="auto"
                 className="w-full h-full object-cover"
               >
                 <source src={video.replace('.mp4', '.webm')} type="video/webm" />
@@ -241,7 +270,6 @@ const ProjectCard = ({
                       ))}
                     </div>
                   </div>
-
                   <div className="flex-1 flex flex-col items-center justify-center text-center px-[8%]">
                     <span className="text-white/50 uppercase font-light mb-[2%]" style={{ fontSize: 'clamp(0.3rem, 0.55vw, 0.45rem)', letterSpacing: '0.3em' }}>{mockup.eyebrow}</span>
                     <h3 className="text-white font-light leading-[0.95] mb-[2%] whitespace-pre-line" style={{ fontSize: 'clamp(0.9rem, 2.8vw, 2.8rem)', fontFamily: 'serif', letterSpacing: '-0.01em' }}>{mockup.heroTitle}</h3>
@@ -251,7 +279,6 @@ const ProjectCard = ({
                       <span className="border border-white/60 text-white px-[1.2em] py-[0.4em] font-light" style={{ fontSize: 'clamp(0.3rem, 0.6vw, 0.5rem)', letterSpacing: '0.12em' }}>{mockup.cta}</span>
                     </div>
                   </div>
-
                   <div className="flex flex-col items-center pb-[3%]">
                     <span className="text-white/30 uppercase" style={{ fontSize: 'clamp(0.25rem, 0.4vw, 0.35rem)', letterSpacing: '0.25em' }}>Défiler</span>
                     <div className="w-[1px] h-[1.5em] bg-white/20 mt-1 relative overflow-hidden">
@@ -267,9 +294,9 @@ const ProjectCard = ({
             <PixelGrid image={image} />
 
           ) : (
-            /* ── Fallback gradient ── */
+            /* ── Fallback colour gradient ── */
             <div
-              className="absolute inset-0"
+              className="absolute inset-0 rounded-lg"
               style={{ background: `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)` }}
             />
           )}
@@ -287,7 +314,7 @@ const ProjectCard = ({
           )}
         </div>
 
-        {/* Project info */}
+        {/* ── Project info ── */}
         <motion.div
           className="mt-6"
           initial={{ opacity: 0, y: 10 }}
