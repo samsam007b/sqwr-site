@@ -265,6 +265,13 @@ export default function DesktopHomePage() {
         projectColor={getProjectById('nanou')!.color}
         projectHref="/portfolio/nanou"
       />
+      <VideoRevealSection
+        videoSrc="/projet-villa-coladeira/hero-cinemagraph.mp4"
+        webmSrc="/projet-villa-coladeira/hero-cinemagraph.mp4"
+        mockup={getProjectById('villa-coladeira')!.mockup!}
+        projectColor={getProjectById('villa-coladeira')!.color}
+        projectHref="/portfolio/villa-coladeira"
+      />
       <ClosingSection />
     </>
   );
