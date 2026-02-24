@@ -31,6 +31,8 @@ const PixelGrid = memo(({ image }: { image: string }) => {
   const rafRef = useRef<number>(0);
   const liftRef = useRef<Float32Array | null>(null);
   const mouseRef = useRef({ x: 0, y: 0, inside: false });
+  // Cached bounding rect — updated on scroll/resize, NOT per-frame
+  const rectRef = useRef({ left: 0, top: 0 });
   const [dims, setDims] = useState<PixelDims | null>(null);
 
   // Phase 1 — measure container, compute adaptive grid dimensions
@@ -40,7 +42,6 @@ const PixelGrid = memo(({ image }: { image: string }) => {
     const { width, height } = el.getBoundingClientRect();
     if (!width || !height) return;
 
-    // How many 10-px pixels would fit? If too many, scale up the pixel size.
     const rawTotal = Math.floor(width / BASE_STEP) * Math.floor(height / BASE_STEP);
     const pixel = rawTotal > MAX_TOTAL
       ? Math.ceil(BASE_PIXEL * Math.sqrt(rawTotal / MAX_TOTAL))
@@ -62,12 +63,28 @@ const PixelGrid = memo(({ image }: { image: string }) => {
 
     liftRef.current = new Float32Array(cols * rows);
 
-    // Scale interaction constants with pixel size so effect feels consistent
     const maxLift = pixel * 1.4;
     const hoverRadius = pixel * 9;
-    const idleAmp = IDLE_AMP * (pixel / BASE_PIXEL); // scale wave amplitude too
+    const idleAmp = IDLE_AMP * (pixel / BASE_PIXEL);
 
     const container = containerRef.current!;
+
+    // ── Cache bounding rect (avoid getBoundingClientRect every RAF frame) ──
+    const updateRect = () => {
+      const r = container.getBoundingClientRect();
+      rectRef.current = { left: r.left, top: r.top };
+    };
+    updateRect();
+    window.addEventListener('scroll', updateRect, { passive: true });
+    window.addEventListener('resize', updateRect, { passive: true });
+
+    // ── IntersectionObserver: skip work entirely when card is off-screen ──
+    let isVisible = false;
+    const observer = new IntersectionObserver(
+      ([entry]) => { isVisible = entry.isIntersecting; },
+      { rootMargin: '100px' }
+    );
+    observer.observe(container);
 
     const onMove = (e: MouseEvent) => {
       mouseRef.current = { x: e.clientX, y: e.clientY, inside: true };
@@ -76,13 +93,26 @@ const PixelGrid = memo(({ image }: { image: string }) => {
     container.addEventListener('mousemove', onMove);
     container.addEventListener('mouseleave', onLeave);
 
+    // Throttle idle-only frames to ~24 fps (saves ~60% cost when not hovered)
+    let lastIdleFrame = 0;
+
     const loop = (time: number) => {
+      rafRef.current = requestAnimationFrame(loop);
+
+      if (!isVisible) return; // off-screen: keep RAF alive but do no work
+
+      const { inside } = mouseRef.current;
+
+      // Throttle to ~24 fps while idle (wave is slow, 24 fps is imperceptible)
+      if (!inside) {
+        if (time - lastIdleFrame < 42) return; // 1000/24 ≈ 42 ms
+        lastIdleFrame = time;
+      }
+
       const t = time / 1000;
       const lift = liftRef.current!;
-      const { x: mx, y: my, inside } = mouseRef.current;
-      const rect = container.getBoundingClientRect();
-      const rx = mx - rect.left;
-      const ry = my - rect.top;
+      const { x: mx, y: my } = mouseRef.current;
+      const { left: rLeft, top: rTop } = rectRef.current; // cached, no reflow
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
@@ -90,15 +120,14 @@ const PixelGrid = memo(({ image }: { image: string }) => {
           const el = pixelRefs.current[i];
           if (!el) continue;
 
-          // Pixel centre in container-local coords
           const cx = c * step + pixel / 2;
           const cy = r * step + pixel / 2;
 
           // Magnetic attraction toward cursor
           let target = 0;
           if (inside) {
-            const dx = cx - rx;
-            const dy = cy - ry;
+            const dx = cx - (mx - rLeft);
+            const dy = cy - (my - rTop);
             const d = Math.sqrt(dx * dx + dy * dy);
             if (d < hoverRadius) {
               target = ((1 - d / hoverRadius) ** 2) * maxLift;
@@ -111,21 +140,21 @@ const PixelGrid = memo(({ image }: { image: string }) => {
             Math.cos(t * 0.7 - c * 0.21 + r * 0.35) *
             idleAmp * (inside ? 0.15 : 1.0);
 
-          // Spring
           lift[i] += (target + wave - lift[i]) * SPRING;
 
           const z = lift[i];
           el.style.transform = Math.abs(z) > 0.05 ? `translateZ(${z.toFixed(2)}px)` : '';
         }
       }
-
-      rafRef.current = requestAnimationFrame(loop);
     };
 
     rafRef.current = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
+      observer.disconnect();
+      window.removeEventListener('scroll', updateRect);
+      window.removeEventListener('resize', updateRect);
       container.removeEventListener('mousemove', onMove);
       container.removeEventListener('mouseleave', onLeave);
     };

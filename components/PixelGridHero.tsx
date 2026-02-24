@@ -43,6 +43,7 @@ const PixelGridHero = () => {
   const colsRef = useRef(0);
   const mouseRef = useRef({ x: -1000, y: -1000 });
   const scrollRef = useRef(0);
+  const displayScrollRef = useRef(0);
   const scrollAccelRef = useRef(0);
   const introCompleteRef = useRef(false);
   const t0Ref = useRef(0);
@@ -261,8 +262,11 @@ const PixelGridHero = () => {
 
         const grid = gridRef.current;
         const travelers = travelersRef.current;
-        const scroll = scrollRef.current;
-        const scatterEased = scroll * scroll * (3 - 2 * scroll); // smoothstep — smooth at both ends
+        // Lerp toward the real scroll target — rend l'explosion fluide même au scroll brusque
+        displayScrollRef.current += (scrollRef.current - displayScrollRef.current) * 0.035;
+        const scroll = displayScrollRef.current;
+        // easeIn — démarre au ralenti, accélère ensuite
+        const scatterEased = scroll * scroll * scroll;
 
         const bg = '#FAFAF8';
         const letterCol = '#111111';

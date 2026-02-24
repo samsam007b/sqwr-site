@@ -22,17 +22,20 @@ const SmoothScroll = ({ children }: SmoothScrollProps) => {
 
     lenisRef.current = lenis;
 
+    // Store RAF id so we can cancel it on unmount (prevents memory leak)
+    let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     // ── Intro lock ──
-    // Start with scroll locked — the pixel grid intro must finish first.
-    // Wheel events during intro are captured by PixelGridHero to accelerate
-    // the animation. Once the logo is formed, we get the 'introComplete' event.
-    const hasSnapSections = document.querySelectorAll('[data-snap-section]').length > 0;
+    // Cache snap sections once — avoids querySelectorAll on every scroll event
+    const snapEls = Array.from(
+      document.querySelectorAll('[data-snap-section]')
+    ) as HTMLElement[];
+    const hasSnapSections = snapEls.length > 0;
     let introLocked = hasSnapSections;
 
     if (introLocked) {
@@ -71,10 +74,8 @@ const SmoothScroll = ({ children }: SmoothScrollProps) => {
         return;
       }
 
-      const sections = document.querySelectorAll('[data-snap-section]');
-
-      for (let i = 0; i < sections.length; i++) {
-        const rect = (sections[i] as HTMLElement).getBoundingClientRect();
+      for (let i = 0; i < snapEls.length; i++) {
+        const rect = snapEls[i].getBoundingClientRect();
         const top = Math.round(rect.top + window.scrollY);
 
         // Entered the capture zone?
@@ -111,6 +112,7 @@ const SmoothScroll = ({ children }: SmoothScrollProps) => {
     window.addEventListener('scroll', onScroll, { passive: true });
 
     return () => {
+      cancelAnimationFrame(rafId);
       window.removeEventListener('introComplete', onIntroComplete);
       window.removeEventListener('scroll', onScroll);
       lenis.destroy();

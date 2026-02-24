@@ -82,8 +82,6 @@ function PhilosophySection() {
 
   return (
     <section id="philosophy" ref={sectionRef} className="relative" style={{ height: '200vh' }}>
-      {/* Checkpoint at the "readable" scroll position */}
-      <div data-snap-section className="absolute" style={{ top: '40%' }} />
 
       <div className="sticky top-0 h-screen flex items-center px-6 lg:px-16 overflow-hidden">
         <div className="max-w-5xl mx-auto w-full">

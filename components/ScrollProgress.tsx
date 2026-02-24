@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
 
 interface Section {
@@ -19,33 +19,45 @@ const ScrollProgress = ({ sections }: ScrollProgressProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Cache element refs once — avoids getElementById on every scroll event
+  const elRefs = useRef<(HTMLElement | null)[]>([]);
+  const activeIndexRef = useRef(0);
+  const isVisibleRef = useRef(false);
 
   const startIdleTimer = useCallback(() => {
     if (idleTimer.current) clearTimeout(idleTimer.current);
     idleTimer.current = setTimeout(() => setIsScrolling(false), IDLE_DELAY);
   }, []);
 
+  // Populate element cache whenever sections list changes
+  useEffect(() => {
+    elRefs.current = sections.map(s => document.getElementById(s.id));
+  }, [sections]);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
 
-      // Show dots after first screen
-      setIsVisible(scrollY > windowHeight * 0.5);
+      // Only setState when value changes (avoids re-renders on every scroll tick)
+      const nowVisible = scrollY > windowHeight * 0.5;
+      if (nowVisible !== isVisibleRef.current) {
+        isVisibleRef.current = nowVisible;
+        setIsVisible(nowVisible);
+      }
 
-      // Labels visible while scrolling
       setIsScrolling(true);
       startIdleTimer();
 
-      // Find which section is most in view
+      // Find active section using cached refs
       for (let i = sections.length - 1; i >= 0; i--) {
-        const el = document.getElementById(sections[i].id);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          if (rect.top < windowHeight * 0.5) {
+        const el = elRefs.current[i];
+        if (el && el.getBoundingClientRect().top < windowHeight * 0.5) {
+          if (i !== activeIndexRef.current) {
+            activeIndexRef.current = i;
             setActiveIndex(i);
-            break;
           }
+          break;
         }
       }
     };

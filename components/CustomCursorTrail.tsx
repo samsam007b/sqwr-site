@@ -16,7 +16,6 @@ interface TrailParticle {
 
 const CustomCursorTrail = () => {
   const [particles, setParticles] = useState<TrailParticle[]>([]);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const lastPosRef = useRef({ x: 0, y: 0 });
   const lastTimeRef = useRef(Date.now());
   const particleIdRef = useRef(0);
@@ -37,9 +36,6 @@ const CustomCursorTrail = () => {
       const distance = Math.sqrt(dx * dx + dy * dy);
       const timeDelta = currentTime - lastTimeRef.current;
       const velocity = distance / (timeDelta || 1);
-
-      // Update mouse position
-      setMousePos(currentPos);
 
       // Only create trail if moving fast enough (velocity > 1.5)
       if (velocity > 1.5 && timeDelta > 10) {

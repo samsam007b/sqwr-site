@@ -24,20 +24,15 @@ export const useCursorColor = () => {
         currentElement = currentElement.parentElement;
       }
 
-      // Debug: log when state changes
-      if (isDark !== isOnDark) {
-        console.log('🎯 Cursor on dark background:', isDark, 'Element:', element.tagName, element.className);
-      }
-
-      setIsOnDark(isDark);
+      // Only re-render when the value actually changes
+      setIsOnDark(prev => (prev === isDark ? prev : isDark));
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [isOnDark]);
+    // passive: true — never blocks scroll
+    // [] deps — subscribe once; functional update avoids stale-closure bug
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   return isOnDark;
 };
