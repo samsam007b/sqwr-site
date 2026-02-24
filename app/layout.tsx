@@ -2,12 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import SmoothScroll from "@/components/SmoothScroll";
-import PixelMigrationIntro from "@/components/PixelMigrationIntro";
-import CustomCursorTrail from "@/components/CustomCursorTrail";
-import CursorManager from "@/components/CursorManager";
-import LivingGrid from "@/components/LivingGrid";
-import { ThemeProvider } from "@/context/ThemeContext";
+import DesktopOnlyProviders from "@/components/DesktopOnlyProviders";
+import MobileFloatingCTA from "@/components/MobileFloatingCTA";
 import { LanguageProvider } from "@/context/LanguageContext";
 
 export const viewport: Viewport = {
@@ -15,10 +11,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   userScalable: true,
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#FAFAF8' },
-    { media: '(prefers-color-scheme: dark)', color: '#FAFAF8' },
-  ],
+  themeColor: '#FAFAF8',
 };
 
 export const metadata: Metadata = {
@@ -58,11 +51,6 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    // Add your verification codes here
-    // google: 'your-google-verification-code',
-    // yandex: 'your-yandex-verification-code',
-  },
 };
 
 export default function RootLayout({
@@ -72,35 +60,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const theme = localStorage.getItem('theme') ||
-                  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                document.documentElement.classList.toggle('dark', theme === 'dark');
-              } catch (e) {}
-            `,
-          }}
-        />
-      </head>
-      <body className="min-h-screen flex flex-col font-sans relative">
-        <ThemeProvider>
-          <LanguageProvider>
-            <LivingGrid />
-            <CursorManager />
-            <CustomCursorTrail />
-            <PixelMigrationIntro />
-            <SmoothScroll>
-              <Header />
-              <main className="flex-grow relative z-10">
-                {children}
-              </main>
-              <Footer />
-            </SmoothScroll>
-          </LanguageProvider>
-        </ThemeProvider>
+      <head />
+      <body className="min-h-screen font-sans relative">
+        <LanguageProvider>
+          <DesktopOnlyProviders>
+            <Header />
+            <main className="relative z-10">
+              {children}
+            </main>
+            <Footer />
+          </DesktopOnlyProviders>
+          <MobileFloatingCTA />
+        </LanguageProvider>
       </body>
     </html>
   );

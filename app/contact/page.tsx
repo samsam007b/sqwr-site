@@ -109,8 +109,8 @@ export default function ContactPage() {
       <section className="pb-24 lg:pb-32 px-6 lg:px-12">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-            {/* Contact Form */}
-            <div className="lg:col-span-7">
+            {/* Contact Form — order-last sur mobile (info de contact passe en premier) */}
+            <div className="lg:col-span-7 order-last lg:order-first">
               <ScrollReveal>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -240,9 +240,41 @@ export default function ContactPage() {
               </ScrollReveal>
             </div>
 
-            {/* Contact Info */}
-            <div className="lg:col-span-5">
+            {/* Contact Info — order-first sur mobile (passe avant le formulaire) */}
+            <div className="lg:col-span-5 order-first lg:order-last">
               <div className="lg:sticky lg:top-32 space-y-12">
+
+                {/* Bloc contact rapide — mobile uniquement */}
+                <div className="lg:hidden p-6 bg-foreground text-paper">
+                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-paper/40 mb-5">
+                    Contact rapide
+                  </p>
+                  <a
+                    href="tel:+32493302752"
+                    className="flex items-center justify-between py-3 border-b border-paper/10 text-paper active:text-primary transition-colors duration-200"
+                  >
+                    <div>
+                      <span className="text-xs font-mono uppercase tracking-[0.15em] text-paper/40 block mb-1">
+                        T&eacute;l&eacute;phone
+                      </span>
+                      <span className="text-xl font-light">+32 493 30 27 52</span>
+                    </div>
+                    <span className="text-paper/30 text-lg flex-shrink-0 ml-4">↗</span>
+                  </a>
+                  <a
+                    href="mailto:studio@sqwr.be"
+                    className="flex items-center justify-between pt-3 text-paper active:text-primary transition-colors duration-200"
+                  >
+                    <div>
+                      <span className="text-xs font-mono uppercase tracking-[0.15em] text-paper/40 block mb-1">
+                        Email
+                      </span>
+                      <span className="text-lg font-light">studio@sqwr.be</span>
+                    </div>
+                    <span className="text-paper/30 text-lg flex-shrink-0 ml-4">↗</span>
+                  </a>
+                </div>
+
                 <ScrollReveal delay={0.2}>
                   <div>
                     <h2 className="text-2xl font-display font-bold mb-8">
