@@ -306,7 +306,7 @@ export default function VillaColadeiraPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] mb-12" style={{ color: '#6B6157' }}>
-              Direction artistique
+              Site web — Page d&apos;accueil
             </p>
           </ScrollReveal>
 
@@ -318,10 +318,10 @@ export default function VillaColadeiraPage() {
               style={{ aspectRatio: '16/9' }}
             >
               <Image
-                src="/projet-villa-coladeira/panoramic.jpg"
-                alt="Villa Coladeira — vue panoramique"
+                src="/projet-villa-coladeira/web-site-01.png"
+                alt="Villa Coladeira — homepage, design cinématique avec header et héro"
                 fill
-                className="object-cover object-center"
+                className="object-cover object-top"
                 sizes="100vw"
               />
             </motion.div>
@@ -334,26 +334,26 @@ export default function VillaColadeiraPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-12">
-              Photographie éditoriale
+              Site web — Détail des pages
             </p>
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[
-              { src: '/projet-villa-coladeira/volcanic-facade.jpg', alt: 'Façade en pierre volcanique' },
-              { src: '/projet-villa-coladeira/pool-night.jpg', alt: 'Piscine à débordement de nuit' },
+              { src: '/projet-villa-coladeira/web-site-02.png', alt: 'Page chambres — Suite Carmim, lit framboise et vue mer' },
+              { src: '/projet-villa-coladeira/web-site-03.png', alt: 'Page expériences — carte interactive São Vicente avec marqueurs Pano di Terra' },
             ].map((img, i) => (
               <ScrollReveal key={img.src} delay={i * 0.1}>
                 <motion.div
                   whileHover={{ scale: 1.01 }}
                   transition={{ duration: 0.3 }}
-                  className="relative aspect-[16/10] overflow-hidden rounded-2xl grain-overlay"
+                  className="relative aspect-[16/10] overflow-hidden rounded-2xl shadow-lg"
                 >
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
-                    className="object-cover object-center"
+                    className="object-cover object-top"
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </motion.div>
@@ -364,16 +364,16 @@ export default function VillaColadeiraPage() {
       </section>
 
       {/* ─── COLOR SYSTEM ──────────────────────────────────────────────────── */}
-      <section className="py-24 lg:py-32" style={{ backgroundColor: OCEAN }}>
+      <section className="py-24 lg:py-32" style={{ backgroundColor: '#F5F5F3' }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
-            <p className="text-xs font-mono uppercase tracking-[0.2em] mb-4" style={{ color: GOLD }}>
+            <p className="text-xs font-mono uppercase tracking-[0.2em] mb-4" style={{ color: '#8B7D6B' }}>
               Color System
             </p>
-            <h2 className="text-3xl md:text-4xl font-display font-light text-white mb-4 leading-tight">
+            <h2 className="text-3xl md:text-4xl font-display font-light mb-4 leading-tight" style={{ color: OCEAN }}>
               Un langage chromatique<br />ancré dans l&apos;environnement
             </h2>
-            <p className="text-white/50 font-light mb-16 max-w-xl leading-relaxed">
+            <p className="font-light mb-16 max-w-xl leading-relaxed" style={{ color: '#8B7D6B' }}>
               Chaque couleur est tirée du paysage naturel de São Vicente — pierre volcanique,
               océan Atlantique, bois de teck, sable de São Pedro, or du coucher de soleil.
             </p>
@@ -382,12 +382,12 @@ export default function VillaColadeiraPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {palette.map((c, i) => (
               <ScrollReveal key={c.hex} delay={i * 0.05}>
-                <div className="rounded-xl overflow-hidden">
+                <div className="rounded-xl overflow-hidden border border-black/5">
                   <div className="h-16" style={{ backgroundColor: c.hex }} />
-                  <div className="px-4 py-3" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
-                    <p className="text-sm font-display text-white/90 mb-0.5">{c.name}</p>
+                  <div className="px-4 py-3" style={{ backgroundColor: 'rgba(0,0,0,0.03)' }}>
+                    <p className="text-sm font-display mb-0.5" style={{ color: OCEAN }}>{c.name}</p>
                     <p className="text-xs font-mono" style={{ color: GOLD }}>{c.hex}</p>
-                    <p className="text-[11px] text-white/35 leading-relaxed mt-1">{c.label}</p>
+                    <p className="text-[11px] leading-relaxed mt-1" style={{ color: '#A89B8C' }}>{c.label}</p>
                   </div>
                 </div>
               </ScrollReveal>
@@ -541,6 +541,73 @@ export default function VillaColadeiraPage() {
                   <line x1="17" y1="7" x2="7" y2="17" />
                 </IconShell>
               </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CARTE INTERACTIVE ─────────────────────────────────────────────── */}
+      <section className="py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-6 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            {/* Texte gauche */}
+            <ScrollReveal className="lg:col-span-5">
+              <p className="text-xs font-mono uppercase tracking-[0.2em] mb-6" style={{ color: '#8B7D6B' }}>
+                Carte interactive
+              </p>
+              <h2 className="text-3xl md:text-4xl font-display font-light leading-tight mb-8" style={{ color: OCEAN }}>
+                Des icônes<br />au composant interactif
+              </h2>
+              <p className="font-light leading-relaxed mb-6" style={{ color: '#6B6157' }}>
+                Une fois le système d&apos;icônes créé, chaque motif Pano di Terra a été intégré
+                directement dans une carte SVG sur-mesure de l&apos;île de São Vicente. Douze
+                marqueurs interactifs — chacun dessiné selon le vocabulaire géométrique ancestral
+                — guident le visiteur vers les expériences de la villa.
+              </p>
+              <p className="font-light leading-relaxed mb-12" style={{ color: '#6B6157' }}>
+                Survol, clic, défilement synchronisé : les icônes ne sont plus de simples
+                ornements visuels — elles deviennent l&apos;interface de navigation.
+              </p>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { value: '12', label: 'marqueurs actifs' },
+                  { value: '1', label: 'île SVG custom' },
+                  { value: '∞', label: 'interactions' },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="text-center py-5 px-3 rounded-xl"
+                    style={{ backgroundColor: 'rgba(27,58,75,0.06)' }}
+                  >
+                    <p className="text-3xl font-display font-light mb-1" style={{ color: OCEAN }}>
+                      {stat.value}
+                    </p>
+                    <p className="text-xs font-mono uppercase tracking-[0.08em]" style={{ color: '#8B7D6B' }}>
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </ScrollReveal>
+
+            {/* Screenshot carte droite */}
+            <ScrollReveal delay={0.15} className="lg:col-span-7">
+              <motion.div
+                whileHover={{ scale: 1.005 }}
+                transition={{ duration: 0.4 }}
+                className="relative overflow-hidden rounded-2xl shadow-2xl"
+                style={{ aspectRatio: '4/3' }}
+              >
+                <Image
+                  src="/projet-villa-coladeira/web-site-03.png"
+                  alt="Carte interactive des expériences — São Vicente, marqueurs Pano di Terra"
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 1024px) 100vw, 58vw"
+                />
+              </motion.div>
             </ScrollReveal>
           </div>
         </div>
