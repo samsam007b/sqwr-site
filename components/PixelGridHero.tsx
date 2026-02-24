@@ -1,400 +1,462 @@
 'use client';
 
 import { useEffect, useRef, useCallback, useState } from 'react';
-import { useTheme } from '@/context/ThemeContext';
 
 interface GridCell {
   x: number;
   y: number;
-  targetOpacity: number;
-  currentOpacity: number;
+  col: number;
+  row: number;
   isLetter: boolean;
-  delay: number;
-  baseScale: number;
-  currentScale: number;
+  emergeDelay: number;
   breathPhase: number;
   breathSpeed: number;
+  scatterAngle: number;
+  scatterDist: number;
 }
 
-const CELL_SIZE = 24;
+interface Traveler {
+  path: [number, number][];
+  startTime: number;
+  speed: number;
+}
+
+const CELL_SIZE = 10;
 const GAP = 2;
 const STEP = CELL_SIZE + GAP;
+const TRAIL_LENGTH = 3;
+const SCATTER_RADIUS = 1200;
+const BG_OP = 0.04;
+
+// Animation timeline (seconds)
+const T_EMERGE = 0.2;
+const T_EMERGE_WAVE = 1.6;
+const T_TRAVEL = 2.2;
+const T_CONVERGE = 5.2;
+const T_BREATHE = 5.6;
 
 const PixelGridHero = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<GridCell[]>([]);
+  const travelersRef = useRef<Traveler[]>([]);
+  const colsRef = useRef(0);
   const mouseRef = useRef({ x: -1000, y: -1000 });
-  const animationPhaseRef = useRef<'scatter' | 'forming' | 'breathing'>('scatter');
-  const startTimeRef = useRef(0);
+  const scrollRef = useRef(0);
+  const scrollAccelRef = useRef(0);
+  const introCompleteRef = useRef(false);
+  const t0Ref = useRef(0);
   const rafRef = useRef<number>(0);
-  const { theme } = useTheme();
+  const skipIntroRef = useRef(false);
+  const isReadyRef = useRef(false);
   const [isReady, setIsReady] = useState(false);
 
-  // Sample the SVG logo to find which grid cells should be "on"
-  // Uses high-res rendering + multi-point sampling for accurate reproduction
-  const sampleLogo = useCallback((
-    canvasWidth: number,
-    canvasHeight: number,
-    cellSize: number,
-    step: number,
-  ): Promise<Set<string>> => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => {
-        // Render at 4x resolution for precise sampling
-        const scale = 4;
-        const offscreen = document.createElement('canvas');
-        offscreen.width = canvasWidth * scale;
-        offscreen.height = canvasHeight * scale;
-        const ctx = offscreen.getContext('2d');
-        if (!ctx) { resolve(new Set()); return; }
-
-        // Calculate logo dimensions to fill ~60% of viewport width
-        const targetWidth = canvasWidth * 0.6;
-        const logoAspect = img.naturalWidth / img.naturalHeight;
-        const logoWidth = targetWidth;
-        const logoHeight = logoWidth / logoAspect;
-
-        // Center the logo
-        const logoX = (canvasWidth - logoWidth) / 2;
-        const logoY = (canvasHeight - logoHeight) / 2 - logoHeight * 0.05;
-
-        // Draw at high resolution
-        ctx.drawImage(
-          img,
-          logoX * scale, logoY * scale,
-          logoWidth * scale, logoHeight * scale
-        );
-
-        const imgW = offscreen.width;
-        const imgH = offscreen.height;
-        const imageData = ctx.getImageData(0, 0, imgW, imgH);
-        const letterCells = new Set<string>();
-
-        const cols = Math.ceil(canvasWidth / step);
-        const rows = Math.ceil(canvasHeight / step);
-
-        // Multi-point sampling: 6x6 grid per cell
-        const samplesPerSide = 6;
-        const coverageThreshold = 0.2; // 20% coverage = cell is "on"
-
-        for (let row = 0; row < rows; row++) {
-          for (let col = 0; col < cols; col++) {
-            let hits = 0;
-            const totalSamples = samplesPerSide * samplesPerSide;
-
-            for (let sy = 0; sy < samplesPerSide; sy++) {
-              for (let sx = 0; sx < samplesPerSide; sx++) {
-                // Sample points distributed across the cell area
-                const px = (col * step + (sx + 0.5) * cellSize / samplesPerSide) * scale;
-                const py = (row * step + (sy + 0.5) * cellSize / samplesPerSide) * scale;
-
-                if (px < imgW && py < imgH) {
-                  const idx = (Math.floor(py) * imgW + Math.floor(px)) * 4;
-                  const alpha = imageData.data[idx + 3];
-                  if (alpha > 30) hits++;
-                }
-              }
-            }
-
-            if (hits / totalSamples >= coverageThreshold) {
-              letterCells.add(`${col},${row}`);
-            }
-          }
-        }
-
-        resolve(letterCells);
-      };
-
-      img.onerror = () => resolve(new Set());
-
-      // Load SVG and ensure all paths render as solid black
+  const loadLogo = useCallback((): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
       fetch('/Logo SQWR/sqwr-logo.svg')
         .then(r => r.text())
-        .then(svgText => {
-          // Add explicit fill to paths without one, and replace currentColor
-          let colored = svgText.replace(/currentColor/g, '#000000');
-          // Inject a default style for paths without explicit fill
-          colored = colored.replace(
-            '<svg',
-            '<svg style="fill:#000000"'
-          );
-          const blob = new Blob([colored], { type: 'image/svg+xml' });
-          img.src = URL.createObjectURL(blob);
+        .then(svg => {
+          let s = svg.replace(/currentColor/g, '#000000');
+          s = s.replace('<svg', '<svg style="fill:#000000"');
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          img.src = URL.createObjectURL(new Blob([s], { type: 'image/svg+xml' }));
         })
-        .catch(() => resolve(new Set()));
+        .catch(reject);
     });
   }, []);
 
+  const sampleLogo = useCallback((
+    img: HTMLImageElement, w: number, h: number,
+  ): Set<string> => {
+    const S = 2;
+    const rw = Math.ceil(w * S), rh = Math.ceil(h * S);
+    const off = document.createElement('canvas');
+    off.width = rw; off.height = rh;
+    const c = off.getContext('2d');
+    if (!c) return new Set();
+    const tw = w * 0.6;
+    const aspect = img.naturalWidth / img.naturalHeight;
+    const lw = tw, lh = lw / aspect;
+    const lx = (w - lw) / 2, ly = (h - lh) / 2 - lh * 0.05;
+    c.drawImage(img, lx * S, ly * S, lw * S, lh * S);
+    const id = c.getImageData(0, 0, rw, rh);
+    const result = new Set<string>();
+    const cols = Math.ceil(w / STEP), rows = Math.ceil(h / STEP);
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        const x0 = Math.floor(col * STEP * S), y0 = Math.floor(row * STEP * S);
+        const x1 = Math.min(Math.floor((col * STEP + CELL_SIZE) * S), rw);
+        const y1 = Math.min(Math.floor((row * STEP + CELL_SIZE) * S), rh);
+        let hit = 0, total = 0;
+        for (let py = y0; py < y1; py++) {
+          for (let px = x0; px < x1; px++) {
+            total++;
+            if (id.data[(py * rw + px) * 4 + 3] > 30) hit++;
+          }
+        }
+        if (total > 0 && hit / total >= 0.4) result.add(`${col},${row}`);
+      }
+    }
+    return result;
+  }, []);
+
+  const makePath = useCallback((
+    sc: number, sr: number, ec: number, er: number,
+    cols: number, rows: number,
+  ): [number, number][] => {
+    const path: [number, number][] = [[sc, sr]];
+    let c = sc, r = sr;
+    const maxSteps = (Math.abs(ec - sc) + Math.abs(er - sr)) * 2 + 20;
+    for (let i = 0; i < maxSteps && (c !== ec || r !== er); i++) {
+      const dx = ec - c, dy = er - r;
+      const ax = Math.abs(dx), ay = Math.abs(dy);
+      if (ax + ay <= 3) {
+        if (ax >= ay && ax > 0) c += Math.sign(dx);
+        else if (ay > 0) r += Math.sign(dy);
+        else c += Math.sign(dx);
+        path.push([c, r]); continue;
+      }
+      const rnd = Math.random();
+      if (rnd < 0.5) {
+        if (ax >= ay) c += Math.sign(dx); else r += Math.sign(dy);
+      } else if (rnd < 0.8) {
+        if (ax < ay && ax > 0) c += Math.sign(dx);
+        else if (ay > 0) r += Math.sign(dy);
+        else if (ax > 0) c += Math.sign(dx);
+        else r += Math.random() > 0.5 ? 1 : -1;
+      } else {
+        if (ax >= ay) r += Math.random() > 0.5 ? 1 : -1;
+        else c += Math.random() > 0.5 ? 1 : -1;
+      }
+      c = Math.max(0, Math.min(cols - 1, c));
+      r = Math.max(0, Math.min(rows - 1, r));
+      path.push([c, r]);
+    }
+    if (c !== ec || r !== er) path.push([ec, er]);
+    return path;
+  }, []);
+
   const initGrid = useCallback(async (width: number, height: number) => {
+    const img = await loadLogo();
     const cols = Math.ceil(width / STEP);
     const rows = Math.ceil(height / STEP);
-    const letterCells = await sampleLogo(width, height, CELL_SIZE, STEP);
-
+    colsRef.current = cols;
+    const letters = sampleLogo(img, width, height);
     const grid: GridCell[] = [];
-    const centerX = width / 2;
-    const centerY = height / 2;
+    const travelers: Traveler[] = [];
+    const cx = width / 2, cy = height / 2;
+    const maxD = Math.sqrt(cx * cx + cy * cy);
 
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < cols; col++) {
-        const x = col * STEP;
-        const y = row * STEP;
-        const key = `${col},${row}`;
-        const isLetter = letterCells.has(key);
-
-        // Distance from center for staggered animation
-        const dx = x - centerX;
-        const dy = y - centerY;
+        const x = col * STEP, y = row * STEP;
+        const isLetter = letters.has(`${col},${row}`);
+        const dx = x + CELL_SIZE / 2 - cx;
+        const dy = y + CELL_SIZE / 2 - cy;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const maxDist = Math.sqrt(centerX * centerX + centerY * centerY);
+
+        const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.6;
+        const sDist = 0.6 + Math.random() * 0.8;
 
         grid.push({
-          x,
-          y,
-          targetOpacity: isLetter ? 1 : 0.04,
-          currentOpacity: 0,
-          isLetter,
-          delay: (dist / maxDist) * 1.2 + Math.random() * 0.3,
-          baseScale: 1,
-          currentScale: isLetter ? 0 : 0.5,
+          x, y, col, row, isLetter,
+          emergeDelay: (dist / maxD) * T_EMERGE_WAVE,
           breathPhase: Math.random() * Math.PI * 2,
           breathSpeed: 0.3 + Math.random() * 0.4,
+          scatterAngle: angle,
+          scatterDist: sDist,
         });
+
+        if (isLetter) {
+          const edge = Math.floor(Math.random() * 4);
+          let sc: number, sr: number;
+          if (edge === 0) { sc = Math.floor(Math.random() * cols); sr = 0; }
+          else if (edge === 1) { sc = cols - 1; sr = Math.floor(Math.random() * rows); }
+          else if (edge === 2) { sc = Math.floor(Math.random() * cols); sr = rows - 1; }
+          else { sc = 0; sr = Math.floor(Math.random() * rows); }
+          const path = makePath(sc, sr, col, row, cols, rows);
+          const speed = 40 + Math.random() * 35;
+          const dur = path.length / speed;
+          const win = T_CONVERGE - T_TRAVEL;
+          const target = win - 0.3 + Math.random() * 0.6;
+          const startTime = Math.max(0, target - dur);
+          travelers.push({ path, startTime, speed });
+        }
       }
     }
 
     gridRef.current = grid;
-    animationPhaseRef.current = 'scatter';
-    startTimeRef.current = performance.now();
-  }, [sampleLogo]);
+    travelersRef.current = travelers;
+    t0Ref.current = performance.now();
+  }, [loadLogo, sampleLogo, makePath]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    let cleanup: (() => void) | undefined;
+
     const setup = async () => {
-      const rect = container.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
+      // Overflow by one STEP so edge cells are never clipped
+      const W = window.innerWidth + STEP;
+      const H = window.innerHeight + STEP;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width = `${W}px`;
+      canvas.style.height = `${H}px`;
       ctx.scale(dpr, dpr);
 
-      await initGrid(rect.width, rect.height);
+      await initGrid(W, H);
+      isReadyRef.current = true;
       setIsReady(true);
 
-      const handleMouse = (e: MouseEvent) => {
-        const r = canvas.getBoundingClientRect();
-        mouseRef.current = { x: e.clientX - r.left, y: e.clientY - r.top };
+      // Listen on window since canvas has pointer-events-none
+      const onMouse = (e: MouseEvent) => {
+        mouseRef.current = { x: e.clientX, y: e.clientY };
+      };
+      const onLeave = () => { mouseRef.current = { x: -1000, y: -1000 }; };
+      const onScroll = () => {
+        // Scatter completes over 70vh of scroll (slower, more progressive)
+        scrollRef.current = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.7)));
       };
 
-      const handleMouseLeave = () => {
-        mouseRef.current = { x: -1000, y: -1000 };
+      // During intro, wheel events accelerate the timeline instead of scrolling
+      const onWheel = (e: WheelEvent) => {
+        if (!introCompleteRef.current && !skipIntroRef.current) {
+          // Only accelerate on scroll-down gestures
+          if (e.deltaY > 0) {
+            scrollAccelRef.current += e.deltaY * 0.003;
+          }
+        }
       };
 
-      canvas.addEventListener('mousemove', handleMouse);
-      canvas.addEventListener('mouseleave', handleMouseLeave);
+      window.addEventListener('mousemove', onMouse);
+      document.addEventListener('mouseleave', onLeave);
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('wheel', onWheel, { passive: true });
+
+      // If intro was already completed (e.g. navigated back), signal immediately
+      if (skipIntroRef.current) {
+        introCompleteRef.current = true;
+        window.dispatchEvent(new CustomEvent('introComplete'));
+      }
 
       const animate = (time: number) => {
-        const elapsed = (time - startTimeRef.current) / 1000;
+        const baseTime = (time - t0Ref.current) / 1000;
+        const t = skipIntroRef.current
+          ? T_BREATHE + baseTime
+          : baseTime + scrollAccelRef.current;
+
+        // Detect when intro animation reaches the breathe phase
+        if (!introCompleteRef.current && !skipIntroRef.current && t >= T_BREATHE) {
+          introCompleteRef.current = true;
+          window.dispatchEvent(new CustomEvent('introComplete'));
+        }
+
         const grid = gridRef.current;
-        const isDark = document.documentElement.classList.contains('dark');
+        const travelers = travelersRef.current;
+        const scroll = scrollRef.current;
+        const scatterEased = scroll * scroll * (3 - 2 * scroll); // smoothstep — smooth at both ends
 
-        // Colors
-        const bgColor = isDark ? '#0A0A0A' : '#FAFAF8';
-        const letterColor = isDark ? '#FAFAF8' : '#111111';
-        const gridColor = isDark ? 'rgba(255,255,255,' : 'rgba(17,17,17,';
-        const accentColor = '#E01919';
+        const bg = '#FAFAF8';
+        const letterCol = '#111111';
+        const gridPre = 'rgba(17,17,17,';
+        const accent = '#E01919';
 
-        ctx.fillStyle = bgColor;
-        ctx.fillRect(0, 0, rect.width, rect.height);
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
 
         const { x: mx, y: my } = mouseRef.current;
+        const breathing = t > T_BREATHE;
 
+        // ── Background grid — ALL cells including letter positions ──
         for (let i = 0; i < grid.length; i++) {
           const cell = grid[i];
 
-          // Animation progress
-          const cellElapsed = Math.max(0, elapsed - cell.delay);
+          const eElapsed = Math.max(0, t - T_EMERGE - cell.emergeDelay);
+          const eProg = Math.min(1, eElapsed / 0.4);
+          if (eProg <= 0) continue;
+          const eased = easeOutCubic(eProg);
 
-          if (animationPhaseRef.current === 'scatter') {
-            // Phase 1: Background grid fades in
-            if (!cell.isLetter) {
-              const bgProgress = Math.min(1, cellElapsed / 0.6);
-              cell.currentOpacity = cell.targetOpacity * easeOutCubic(bgProgress);
-              cell.currentScale = 0.5 + 0.5 * easeOutCubic(bgProgress);
-            } else {
-              cell.currentOpacity = 0;
-              cell.currentScale = 0;
-            }
+          let op = BG_OP * eased;
+          let scale = 0.3 + 0.7 * eased;
 
-            if (elapsed > 2.0) {
-              animationPhaseRef.current = 'forming';
-              startTimeRef.current = time;
-            }
-          } else if (animationPhaseRef.current === 'forming') {
-            // Phase 2: Logo cells emerge
-            if (cell.isLetter) {
-              const formProgress = Math.min(1, cellElapsed / 0.8);
-              const eased = easeOutQuart(formProgress);
-              cell.currentOpacity = eased;
-              cell.currentScale = eased;
-            } else {
-              cell.currentOpacity = cell.targetOpacity;
-              cell.currentScale = 1;
-            }
-
-            if (elapsed > 2.0) {
-              animationPhaseRef.current = 'breathing';
-              startTimeRef.current = time;
-            }
-          } else {
-            // Phase 3: Breathing
-            const breathTime = elapsed;
-            const breath = Math.sin(breathTime * cell.breathSpeed + cell.breathPhase) * 0.02;
-
-            cell.currentOpacity = cell.targetOpacity + (cell.isLetter ? breath : breath * 0.5);
-            cell.currentScale = 1;
+          if (breathing) {
+            const bt = t - T_BREATHE;
+            op = BG_OP + Math.sin(bt * cell.breathSpeed + cell.breathPhase) * 0.01;
+            scale = 1;
           }
 
-          // Mouse interaction — magnetic repulsion
-          const cellCenterX = cell.x + CELL_SIZE / 2;
-          const cellCenterY = cell.y + CELL_SIZE / 2;
-          const dmx = cellCenterX - mx;
-          const dmy = cellCenterY - my;
-          const mouseDist = Math.sqrt(dmx * dmx + dmy * dmy);
-          const mouseRadius = 120;
-
-          let offsetX = 0;
-          let offsetY = 0;
-          let mouseScale = 1;
-          let isHovered = false;
-
-          if (mouseDist < mouseRadius) {
-            const force = (1 - mouseDist / mouseRadius);
-            const easedForce = force * force;
-            offsetX = dmx * easedForce * 0.3;
-            offsetY = dmy * easedForce * 0.3;
-            mouseScale = 1 + easedForce * 0.4;
-            isHovered = mouseDist < CELL_SIZE * 2;
-          }
-
-          // Draw cell
-          const finalScale = cell.currentScale * mouseScale;
-          const size = CELL_SIZE * finalScale;
-          const drawX = cell.x + offsetX + (CELL_SIZE - size) / 2;
-          const drawY = cell.y + offsetY + (CELL_SIZE - size) / 2;
-
-          if (cell.currentOpacity <= 0.001) continue;
-
-          if (cell.isLetter) {
-            if (isHovered) {
-              ctx.fillStyle = accentColor;
-              ctx.globalAlpha = Math.min(1, cell.currentOpacity * 1.2);
-            } else {
-              ctx.fillStyle = letterColor;
-              ctx.globalAlpha = cell.currentOpacity;
+          let ox = 0, oy = 0, ms = 1, hov = false;
+          if (breathing && scroll === 0) {
+            const cxc = cell.x + CELL_SIZE / 2, cyc = cell.y + CELL_SIZE / 2;
+            const dmx = cxc - mx, dmy = cyc - my;
+            const d = Math.sqrt(dmx * dmx + dmy * dmy);
+            if (d < 120) {
+              const f = ((1 - d / 120) ** 2);
+              ox = dmx * f * 0.3; oy = dmy * f * 0.3;
+              ms = 1 + f * 0.4;
+              hov = d < 30;
             }
-          } else {
-            const opacity = cell.currentOpacity * (isHovered ? 3 : 1);
-            ctx.fillStyle = isHovered ? accentColor : `${gridColor}${Math.min(1, opacity).toFixed(3)})`;
-            ctx.globalAlpha = isHovered ? 0.6 : 1;
           }
 
-          ctx.fillRect(drawX, drawY, size, size);
+          const sz = CELL_SIZE * scale * ms;
+          const drawX = cell.x + ox + (CELL_SIZE - sz) / 2;
+          const drawY = cell.y + oy + (CELL_SIZE - sz) / 2;
+          if (op <= 0.001) continue;
+
+          const finalOp = op * (hov ? 3 : 1);
+          ctx.fillStyle = hov ? accent : `${gridPre}${Math.min(1, finalOp).toFixed(3)})`;
+          ctx.globalAlpha = hov ? 0.6 : 1;
+          ctx.fillRect(drawX, drawY, sz, sz);
           ctx.globalAlpha = 1;
+        }
+
+        // ── Letter cells (drawn on top of background) ──
+        if (t > T_TRAVEL) {
+          const tRel = t - T_TRAVEL;
+
+          for (let i = 0; i < travelers.length; i++) {
+            const tr = travelers[i];
+            const te = tRel - tr.startTime;
+            if (te < 0) continue;
+
+            const pi = Math.min(Math.floor(te * tr.speed), tr.path.length - 1);
+            const atDest = pi >= tr.path.length - 1;
+            const [fc, fr] = tr.path[tr.path.length - 1];
+
+            if (atDest && breathing) {
+              // Letter at destination — scatter on scroll
+              const baseX = fc * STEP, baseY = fr * STEP;
+              const gi = fr * colsRef.current + fc;
+              const gc = grid[gi];
+              const bt = t - T_BREATHE;
+              const breath = gc ? Math.sin(bt * gc.breathSpeed + gc.breathPhase) * 0.02 : 0;
+
+              let scX = 0, scY = 0;
+              let cellOp = 1 + breath;
+              if (scroll > 0 && gc) {
+                const dist = scatterEased * SCATTER_RADIUS * gc.scatterDist;
+                scX = Math.cos(gc.scatterAngle) * dist;
+                scY = Math.sin(gc.scatterAngle) * dist;
+                cellOp *= (1 - scatterEased);
+              }
+
+              let ox = scX, oy = scY, ms = 1, hov = false;
+              if (scroll === 0) {
+                const ccx = baseX + CELL_SIZE / 2, ccy = baseY + CELL_SIZE / 2;
+                const dmx = ccx - mx, dmy = ccy - my;
+                const d = Math.sqrt(dmx * dmx + dmy * dmy);
+                if (d < 120) {
+                  const f = ((1 - d / 120) ** 2);
+                  ox += dmx * f * 0.3; oy += dmy * f * 0.3;
+                  ms = 1 + f * 0.4;
+                  hov = d < 30;
+                }
+              }
+
+              if (cellOp <= 0.001) continue;
+
+              const sz = CELL_SIZE * ms;
+              ctx.fillStyle = hov ? accent : letterCol;
+              ctx.globalAlpha = Math.min(1, cellOp * (hov ? 1.2 : 1));
+              ctx.fillRect(
+                baseX + ox + (CELL_SIZE - sz) / 2,
+                baseY + oy + (CELL_SIZE - sz) / 2,
+                sz, sz
+              );
+              ctx.globalAlpha = 1;
+            } else if (!atDest) {
+              // Traveling: head + trail
+              for (let trail = TRAIL_LENGTH; trail >= 0; trail--) {
+                const idx = pi - trail;
+                if (idx < 0) continue;
+                const [c, r] = tr.path[idx];
+                const fade = trail === 0 ? 1 : (1 - trail / (TRAIL_LENGTH + 1)) * 0.35;
+                ctx.fillStyle = letterCol;
+                ctx.globalAlpha = fade;
+                ctx.fillRect(c * STEP, r * STEP, CELL_SIZE, CELL_SIZE);
+              }
+              ctx.globalAlpha = 1;
+            } else {
+              // At dest but not yet breathing — draw static
+              ctx.fillStyle = letterCol;
+              ctx.globalAlpha = 1;
+              ctx.fillRect(fc * STEP, fr * STEP, CELL_SIZE, CELL_SIZE);
+            }
+          }
         }
 
         rafRef.current = requestAnimationFrame(animate);
       };
 
       rafRef.current = requestAnimationFrame(animate);
-
-      return () => {
+      cleanup = () => {
         cancelAnimationFrame(rafRef.current);
-        canvas.removeEventListener('mousemove', handleMouse);
-        canvas.removeEventListener('mouseleave', handleMouseLeave);
+        window.removeEventListener('mousemove', onMouse);
+        document.removeEventListener('mouseleave', onLeave);
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('wheel', onWheel);
       };
     };
 
     setup();
-  }, [initGrid, theme]);
+    return () => cleanup?.();
+  }, [initGrid]);
 
-  // Handle resize
   useEffect(() => {
     const handleResize = () => {
       const canvas = canvasRef.current;
-      const container = containerRef.current;
-      if (!canvas || !container) return;
-
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
-
-      const rect = container.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
+      const W = window.innerWidth + STEP;
+      const H = window.innerHeight + STEP;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width = `${W}px`;
+      canvas.style.height = `${H}px`;
       ctx.scale(dpr, dpr);
-
-      initGrid(rect.width, rect.height);
-      animationPhaseRef.current = 'breathing';
-      startTimeRef.current = performance.now() - 5000;
+      skipIntroRef.current = true;
+      initGrid(W, H);
     };
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [initGrid]);
 
+  // External opacity control for video reveal
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const opacity = (e as CustomEvent).detail as number;
+      if (containerRef.current) {
+        containerRef.current.style.opacity = String(isReadyRef.current ? opacity : 0);
+      }
+    };
+    window.addEventListener('videoRevealGridOpacity', handler);
+    return () => window.removeEventListener('videoRevealGridOpacity', handler);
+  }, []);
+
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-screen overflow-hidden"
+      className={`fixed inset-0 z-[-1] pointer-events-none overflow-hidden transition-opacity duration-1000 ${
+        isReady ? 'opacity-100' : 'opacity-0'
+      }`}
     >
-      <canvas
-        ref={canvasRef}
-        className={`absolute inset-0 transition-opacity duration-1000 ${isReady ? 'opacity-100' : 'opacity-0'}`}
-      />
-
-      {/* Subtitle — appears after grid forms */}
-      <div
-        className={`absolute bottom-16 left-0 right-0 text-center transition-all duration-1000 delay-[3000ms] ${
-          isReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-        }`}
-      >
-        <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/50">
-          Studio cr&eacute;atif &middot; Bruxelles
-        </p>
-      </div>
-
-      {/* Scroll indicator */}
-      <div
-        className={`absolute bottom-6 left-1/2 -translate-x-1/2 transition-all duration-1000 delay-[3500ms] ${
-          isReady ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <div className="w-[1px] h-8 bg-foreground/20 relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-foreground/60 animate-scroll-line" />
-        </div>
-      </div>
+      <canvas ref={canvasRef} className="block" />
     </div>
   );
 };
 
-// Easing functions
 function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
-}
-
-function easeOutQuart(t: number): number {
-  return 1 - Math.pow(1 - t, 4);
 }
 
 export default PixelGridHero;

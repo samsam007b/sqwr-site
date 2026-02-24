@@ -6,6 +6,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef, useState, useMemo, useCallback, memo } from 'react';
 import { useRouter } from 'next/navigation';
 import Card3D from './Card3D';
+import type { ProjectMockup } from '@/app/data/projects';
 
 interface ProjectCardProps {
   title: string;
@@ -14,6 +15,8 @@ interface ProjectCardProps {
   year?: string;
   color: string;
   image?: string;
+  video?: string;
+  mockup?: ProjectMockup;
   href: string;
   aspectRatio?: string; // e.g., "16/9", "4/3", "4/5"
   size?: 'small' | 'medium' | 'large';
@@ -167,6 +170,8 @@ const ProjectCard = ({
   year,
   color,
   image,
+  video,
+  mockup,
   href,
   aspectRatio = '4/5',
   size = 'medium'
@@ -258,7 +263,74 @@ const ProjectCard = ({
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseMove}
         >
-          {image ? (
+          {video ? (
+            <>
+              {/* Video + landing page mockup overlay */}
+              <motion.div
+                className="absolute inset-0 overflow-hidden rounded-lg"
+                animate={isClicked ? { scale: 1.1, opacity: 0 } : isHovered ? { scale: 1.02 } : { scale: 1 }}
+                transition={isClicked ? { duration: 0.6 } : { duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {/* Video layer */}
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  className="w-full h-full object-cover"
+                >
+                  <source src={video.replace('.mp4', '.webm')} type="video/webm" />
+                  <source src={video} type="video/mp4" />
+                </video>
+
+                {/* Dark vignette overlay */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50" />
+
+                {/* Landing page mockup UI */}
+                {mockup && (
+                  <div className="absolute inset-0 flex flex-col">
+                    {/* Navigation bar */}
+                    <div className="flex items-center justify-between px-[5%] py-[3%]">
+                      <div className="hidden sm:flex items-center gap-[1.2em]">
+                        {mockup.navLeft.map((item) => (
+                          <span key={item} className="text-white/70 font-light" style={{ fontSize: 'clamp(0.35rem, 0.8vw, 0.65rem)', letterSpacing: '0.08em' }}>{item}</span>
+                        ))}
+                      </div>
+                      <div className="flex-1 flex flex-col items-center">
+                        <span className="text-white font-light tracking-wide" style={{ fontSize: 'clamp(0.45rem, 1vw, 0.75rem)', fontFamily: 'serif', letterSpacing: '0.1em' }}>{mockup.brandName}</span>
+                        <span className="text-white/40" style={{ fontSize: 'clamp(0.3rem, 0.6vw, 0.5rem)', fontFamily: 'serif', fontStyle: 'italic' }}>{mockup.brandSub}</span>
+                      </div>
+                      <div className="hidden sm:flex items-center gap-[1.2em]">
+                        {mockup.navRight.map((item) => (
+                          <span key={item} className="text-white/70 font-light" style={{ fontSize: 'clamp(0.35rem, 0.8vw, 0.65rem)', letterSpacing: '0.08em' }}>{item}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Hero content — centered */}
+                    <div className="flex-1 flex flex-col items-center justify-center text-center px-[8%]">
+                      <span className="text-white/50 uppercase font-light mb-[2%]" style={{ fontSize: 'clamp(0.3rem, 0.55vw, 0.45rem)', letterSpacing: '0.3em' }}>{mockup.eyebrow}</span>
+                      <h3 className="text-white font-light leading-[0.95] mb-[2%] whitespace-pre-line" style={{ fontSize: 'clamp(0.9rem, 2.8vw, 2.8rem)', fontFamily: 'serif', letterSpacing: '-0.01em' }}>{mockup.heroTitle}</h3>
+                      <div className="w-[3em] h-[1px] bg-white/30 mb-[2%]" />
+                      <p className="text-white/70 font-light italic" style={{ fontSize: 'clamp(0.35rem, 0.75vw, 0.65rem)', fontFamily: 'serif', letterSpacing: '0.04em' }}>{mockup.heroSub}</p>
+                      <div className="mt-[3%] flex gap-[0.8em]">
+                        <span className="border border-white/60 text-white px-[1.2em] py-[0.4em] font-light" style={{ fontSize: 'clamp(0.3rem, 0.6vw, 0.5rem)', letterSpacing: '0.12em' }}>{mockup.cta}</span>
+                      </div>
+                    </div>
+
+                    {/* Scroll indicator */}
+                    <div className="flex flex-col items-center pb-[3%]">
+                      <span className="text-white/30 uppercase" style={{ fontSize: 'clamp(0.25rem, 0.4vw, 0.35rem)', letterSpacing: '0.25em' }}>Défiler</span>
+                      <div className="w-[1px] h-[1.5em] bg-white/20 mt-1 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-full bg-white/50 animate-scroll-line" />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </>
+          ) : image ? (
             <>
               {/* Wave Sinusoidal - 3x3 grid with organic wave motion */}
               <div

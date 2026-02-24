@@ -8,7 +8,7 @@ const DemoOrigamiPage = () => {
   const exampleImage = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80';
 
   return (
-    <div className="min-h-screen bg-paper dark:bg-background py-20 px-6">
+    <div className="min-h-screen bg-paper py-20 px-6">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-5xl font-display mb-4 text-center">
           Origami Animation Options

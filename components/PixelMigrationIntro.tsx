@@ -123,8 +123,6 @@ export default function PixelMigrationIntro() {
       // Sort pixels by appear time for smooth reveal
       pixels.sort((a, b) => a.appearTime - b.appearTime);
 
-      console.log(`Animating ${pixels.length} pixels`);
-
       // Animation timeline - FASTER
       const startTime = Date.now();
       const revealDuration = 800; // 0.8s reveal (faster!)

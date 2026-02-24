@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
@@ -20,13 +20,42 @@ const MagneticButton = ({
   strength = 0.3
 }: MagneticButtonProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
-  // Disabled magnetic effect - keep only transition on tap
+  const handleMouse = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    setPosition({
+      x: (e.clientX - centerX) * strength,
+      y: (e.clientY - centerY) * strength,
+    });
+  }, [strength]);
+
+  const handleMouseLeave = useCallback(() => {
+    setPosition({ x: 0, y: 0 });
+  }, []);
+
   const content = (
     <motion.div
       ref={ref}
-      whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.15 }}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleMouseLeave}
+      animate={{
+        x: position.x,
+        y: position.y,
+      }}
+      whileTap={{ scale: 0.97 }}
+      transition={{
+        type: 'spring',
+        stiffness: 350,
+        damping: 15,
+        mass: 0.2,
+      }}
       className={className}
     >
       {children}

@@ -53,9 +53,9 @@ export const en = {
     stat2Label: 'Of creative expertise',
     stat3: '100%',
     stat3Label: 'Excellence & passion',
-    ctaTitle: 'Ready to bring your\nproject to life?',
-    ctaSubtitle: 'Every great brand starts with a conversation.\nYours starts here.',
-    ctaButton: 'Let\'s talk about your project',
+    ctaTitle: 'The next great brand\nis yours.',
+    ctaSubtitle: 'A coffee, a conversation, a shared vision.',
+    ctaButton: 'Start a project',
   },
   services: {
     title: 'Our Services',

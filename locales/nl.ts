@@ -53,9 +53,9 @@ export const nl = {
     stat2Label: 'Creatieve expertise',
     stat3: '100%',
     stat3Label: 'Excellentie & passie',
-    ctaTitle: 'Klaar om uw project\ntot leven te brengen?',
-    ctaSubtitle: 'Elk groot merk begint met een gesprek.\nHet uwe begint hier.',
-    ctaButton: 'Laten we praten over uw project',
+    ctaTitle: 'Het volgende grote merk\nis het uwe.',
+    ctaSubtitle: 'Een koffie, een gesprek, een gedeelde visie.',
+    ctaButton: 'Een project starten',
   },
   services: {
     title: 'Onze Diensten',

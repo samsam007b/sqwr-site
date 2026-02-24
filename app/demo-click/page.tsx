@@ -7,7 +7,7 @@ const DemoClickPage = () => {
   const exampleImage = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80';
 
   return (
-    <div className="min-h-screen bg-paper dark:bg-background py-20 px-6">
+    <div className="min-h-screen bg-paper py-20 px-6">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-5xl font-display mb-4 text-center">
           Click Transition Effects
@@ -234,7 +234,7 @@ const ClickCardDemo = ({ image, effectType }: { image: string; effectType: strin
         animate={showProjectPage ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
         transition={{ duration: 0.4 }}
       >
-        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 dark:from-primary/10 dark:to-primary/5 flex items-center justify-center rounded-lg border border-primary/20">
+        <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center rounded-lg border border-primary/20">
           <div className="text-center p-8">
             <h3 className="text-2xl font-display mb-2">Project Page</h3>
             <p className="text-secondary/60">The project page appears here</p>

@@ -276,28 +276,39 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 lg:py-40 bg-foreground text-paper" data-dark-bg>
-        <div className="max-w-4xl mx-auto px-6 lg:px-16 text-center">
-          <ScrollReveal>
-            <h2 className="text-4xl md:text-5xl font-display font-normal mb-10 text-balance leading-tight">
-              Un projet en tête ?
-            </h2>
-          </ScrollReveal>
+      <section className="py-32 lg:py-40 px-6 lg:px-16 bg-foreground text-paper relative overflow-hidden" data-dark-bg>
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary/60" />
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-end">
+            <div className="lg:col-span-7">
+              <ScrollReveal>
+                <h2 className="font-display font-normal text-4xl md:text-5xl lg:text-6xl leading-[0.95] text-paper">
+                  Un projet en tête ?
+                </h2>
+              </ScrollReveal>
+            </div>
 
-          <ScrollReveal delay={0.2}>
-            <p className="text-xl text-paper/70 mb-14 max-w-2xl mx-auto font-light leading-relaxed">
-              Créons ensemble une identité visuelle qui marque les esprits.
-            </p>
-          </ScrollReveal>
+            <div className="lg:col-span-4 lg:col-start-9 flex flex-col gap-8">
+              <ScrollReveal delay={0.2}>
+                <p className="text-lg text-paper/40 font-light leading-relaxed">
+                  Créons ensemble une identité visuelle qui marque les esprits.
+                </p>
+              </ScrollReveal>
+              <ScrollReveal delay={0.4}>
+                <Link
+                  href="/contact"
+                  className="inline-block w-fit px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300"
+                >
+                  Démarrer une conversation
+                </Link>
+              </ScrollReveal>
+            </div>
+          </div>
 
-          <ScrollReveal delay={0.4}>
-            <Link
-              href="/contact"
-              className="inline-block px-10 py-5 bg-primary text-paper hover:opacity-90 transition-opacity duration-300 rounded-lg text-lg"
-            >
-              Démarrer une conversation
-            </Link>
-          </ScrollReveal>
+          <div className="mt-24 lg:mt-32 pt-8 border-t border-paper/10 flex items-center justify-between">
+            <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">SQWR Studio</span>
+            <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">&copy; {new Date().getFullYear()}</span>
+          </div>
         </div>
       </section>
     </>
