@@ -1,13 +1,160 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion, useInView } from 'framer-motion';
-import { useRef, useState, useMemo, useCallback, memo } from 'react';
-import { useRouter } from 'next/navigation';
-import Card3D from './Card3D';
+import { useRef, useEffect, useState, memo } from 'react';
 import type { ProjectMockup } from '@/app/data/projects';
 
+// ── Pixel aesthetic — matches PixelGridHero constants ─────────────────────────
+const PIXEL_SIZE = 10;
+const GAP = 1;
+const STEP = PIXEL_SIZE + GAP;
+const MAX_LIFT = 14;      // px translateZ on hover peak
+const HOVER_RADIUS = 90;  // px from cursor
+const SPRING = 0.12;
+const IDLE_AMP = 1.5;     // subtle idle wave amplitude (px)
+
+// ── PixelGrid — image sliced into many pixels with 3-D magnetic hover ─────────
+const PixelGrid = memo(({ image }: { image: string }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pixelRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const rafRef = useRef<number>(0);
+  const liftRef = useRef<Float32Array | null>(null);
+  const mouseRef = useRef({ x: 0, y: 0, inside: false });
+  const [dims, setDims] = useState<{ cols: number; rows: number } | null>(null);
+
+  // Phase 1: measure container after first paint
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+    setDims({
+      cols: Math.max(1, Math.floor(width / STEP)),
+      rows: Math.max(1, Math.floor(height / STEP)),
+    });
+  }, []);
+
+  // Phase 2: RAF animation loop — runs once dims are known
+  useEffect(() => {
+    if (!dims) return;
+    const { cols, rows } = dims;
+    liftRef.current = new Float32Array(cols * rows);
+
+    const container = containerRef.current!;
+
+    const onMove = (e: MouseEvent) => {
+      mouseRef.current = { x: e.clientX, y: e.clientY, inside: true };
+    };
+    const onLeave = () => { mouseRef.current.inside = false; };
+
+    container.addEventListener('mousemove', onMove);
+    container.addEventListener('mouseleave', onLeave);
+
+    const loop = (time: number) => {
+      const t = time / 1000;
+      const lift = liftRef.current!;
+      const { x: mx, y: my, inside } = mouseRef.current;
+      const rect = container.getBoundingClientRect();
+      const rx = mx - rect.left;
+      const ry = my - rect.top;
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const i = r * cols + c;
+          const el = pixelRefs.current[i];
+          if (!el) continue;
+
+          const cx = c * STEP + PIXEL_SIZE / 2;
+          const cy = r * STEP + PIXEL_SIZE / 2;
+
+          // Magnetic attraction (always positive — toward viewer)
+          let magnetTarget = 0;
+          if (inside) {
+            const dx = cx - rx;
+            const dy = cy - ry;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d < HOVER_RADIUS) {
+              magnetTarget = ((1 - d / HOVER_RADIUS) ** 2) * MAX_LIFT;
+            }
+          }
+
+          // Idle wave — organic ripple, dampened while hovering
+          const wave =
+            Math.sin(t * 1.1 + c * 0.39 + r * 0.28) *
+            Math.cos(t * 0.7 - c * 0.21 + r * 0.35) *
+            IDLE_AMP * (inside ? 0.15 : 1.0);
+
+          // Spring lerp toward target
+          lift[i] += (magnetTarget + wave - lift[i]) * SPRING;
+
+          const z = lift[i];
+          el.style.transform = Math.abs(z) > 0.02 ? `translateZ(${z.toFixed(2)}px)` : '';
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(loop);
+    };
+
+    rafRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      container.removeEventListener('mousemove', onMove);
+      container.removeEventListener('mouseleave', onLeave);
+    };
+  }, [dims]);
+
+  // Before measurement: invisible placeholder that sets the ref
+  if (!dims) {
+    return <div ref={containerRef} className="absolute inset-0" />;
+  }
+
+  const { cols, rows } = dims;
+  const bgW = cols * STEP;
+  const bgH = rows * STEP;
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0"
+      style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${cols}, ${PIXEL_SIZE}px)`,
+        gridTemplateRows: `repeat(${rows}, ${PIXEL_SIZE}px)`,
+        gap: `${GAP}px`,
+        justifyContent: 'center',
+        alignContent: 'center',
+        perspective: '480px',
+        transformStyle: 'preserve-3d',
+        background: '#FAFAF8',
+      }}
+    >
+      {Array.from({ length: cols * rows }, (_, i) => {
+        const c = i % cols;
+        const r = Math.floor(i / cols);
+        return (
+          <div
+            key={i}
+            ref={el => { pixelRefs.current[i] = el; }}
+            style={{
+              width: PIXEL_SIZE,
+              height: PIXEL_SIZE,
+              backgroundImage: `url(${image})`,
+              backgroundSize: `${bgW}px ${bgH}px`,
+              backgroundPosition: `-${c * STEP}px -${r * STEP}px`,
+              backgroundRepeat: 'no-repeat',
+              willChange: 'transform',
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+});
+
+PixelGrid.displayName = 'PixelGrid';
+
+// ── ProjectCard ───────────────────────────────────────────────────────────────
 interface ProjectCardProps {
   title: string;
   client?: string;
@@ -18,150 +165,9 @@ interface ProjectCardProps {
   video?: string;
   mockup?: ProjectMockup;
   href: string;
-  aspectRatio?: string; // e.g., "16/9", "4/3", "4/5"
+  aspectRatio?: string;
   size?: 'small' | 'medium' | 'large';
 }
-
-// Memoized grid square component for performance
-const GridSquare = memo(({
-  i,
-  image,
-  gridCols,
-  gridRows,
-  isInView,
-  isHovered,
-  isClicked,
-  mousePosition,
-  getSquarePosition
-}: {
-  i: number;
-  image: string;
-  gridCols: number;
-  gridRows: number;
-  isInView: boolean;
-  isHovered: boolean;
-  isClicked: boolean;
-  mousePosition: { x: number; y: number };
-  getSquarePosition: (index: number) => { row: number; col: number };
-}) => {
-  const { row, col } = getSquarePosition(i);
-  const waveDelay = (col * 0.15) + (row * 0.1);
-
-  // Memoize calculations
-  const squareCenterX = useMemo(() => (col / (gridCols - 1)) * 100, [col, gridCols]);
-  const squareCenterY = useMemo(() => (row / (gridRows - 1)) * 100, [row, gridRows]);
-
-  // Mouse repulsion calculations
-  const repulsion = useMemo(() => {
-    if (!isHovered || isClicked) return { pushX: 0, pushY: 0, pushZ: 0, rotateXHover: 0, rotateYHover: 0 };
-
-    const deltaX = mousePosition.x - squareCenterX;
-    const deltaY = mousePosition.y - squareCenterY;
-    const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-    const normalizedDistance = Math.min(distance / 141, 1);
-    const repulsionStrength = Math.max(0, 1 - normalizedDistance);
-    const angle = Math.atan2(-deltaY, -deltaX);
-
-    return {
-      pushX: Math.cos(angle) * repulsionStrength * 20,
-      pushY: Math.sin(angle) * repulsionStrength * 20,
-      pushZ: repulsionStrength * 40,
-      rotateXHover: Math.sin(angle) * repulsionStrength * 20 * 0.8,
-      rotateYHover: -Math.cos(angle) * repulsionStrength * 20 * 0.8,
-    };
-  }, [isHovered, isClicked, mousePosition, squareCenterX, squareCenterY]);
-
-  // Explosion effect calculations
-  const explosion = useMemo(() => {
-    const isCenter = i === 4;
-    const depthMultiplier = isCenter ? 1.5 : Math.random() * 0.5 + 0.7;
-    return {
-      translateZ: 300 + (depthMultiplier * 200),
-      rotateX: (Math.random() - 0.5) * 30,
-      rotateY: (Math.random() - 0.5) * 30,
-    };
-  }, [i]);
-
-  return (
-    <motion.div
-      style={{
-        backgroundImage: `url(${image})`,
-        backgroundSize: `${gridCols * 100}% ${gridRows * 100}%`,
-        backgroundPosition: `${col * 50}% ${row * 50}%`,
-        backgroundRepeat: 'no-repeat',
-        transformStyle: 'preserve-3d',
-        transformOrigin: 'center',
-        boxShadow: 'inset 0 0 0 0.5px rgba(0, 0, 0, 0.08)',
-        backfaceVisibility: 'hidden',
-        WebkitBackfaceVisibility: 'hidden',
-      }}
-      initial={{
-        translateZ: 0,
-        rotateX: 0,
-        x: 0,
-        y: 0,
-      }}
-      animate={
-        isClicked
-          ? {
-              translateZ: explosion.translateZ,
-              scale: 1.5,
-              opacity: 0,
-              rotateX: explosion.rotateX,
-              rotateY: explosion.rotateY,
-              x: 0,
-              y: 0,
-            }
-          : isInView
-          ? (isHovered
-              ? {
-                  translateZ: repulsion.pushZ,
-                  rotateX: repulsion.rotateXHover,
-                  rotateY: repulsion.rotateYHover,
-                  x: repulsion.pushX,
-                  y: repulsion.pushY,
-                }
-              : {
-                  translateZ: [0, 80, 0, -40, 0],
-                  rotateX: [0, 15, 0, -10, 0],
-                  x: 0,
-                  y: 0,
-                  rotateY: 0,
-                })
-          : {
-              translateZ: 0,
-              rotateX: 0,
-              x: 0,
-              y: 0,
-              rotateY: 0,
-            }
-      }
-      transition={
-        isClicked
-          ? {
-              duration: 0.6,
-              delay: i * 0.02,
-              ease: [0.6, 0.01, 0.05, 0.95],
-            }
-          : isHovered
-          ? {
-              type: 'spring',
-              stiffness: 150,
-              damping: 15,
-              mass: 0.1,
-            }
-          : {
-              duration: 2,
-              delay: 0.3 + waveDelay,
-              ease: [0.42, 0, 0.58, 1],
-              times: [0, 0.3, 0.5, 0.7, 1],
-            }
-      }
-    />
-  );
-});
-
-GridSquare.displayName = 'GridSquare';
 
 const ProjectCard = ({
   title,
@@ -174,215 +180,104 @@ const ProjectCard = ({
   mockup,
   href,
   aspectRatio = '4/5',
-  size = 'medium'
+  size = 'medium',
 }: ProjectCardProps) => {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [isHovered, setIsHovered] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isClicked, setIsClicked] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
+  const isInView = useInView(ref, { once: true, margin: '-100px' });
 
-  // Dynamic sizing based on size prop
   const titleSize = {
     small: 'text-xl',
     medium: 'text-2xl',
-    large: 'text-3xl lg:text-4xl'
+    large: 'text-3xl lg:text-4xl',
   }[size];
-
-  // Dynamic image quality based on size
-  const imageQuality = {
-    small: 75,
-    medium: 80,
-    large: 90
-  }[size];
-
-  // Dynamic sizes attribute for responsive images
-  const imageSizes = {
-    small: '(max-width: 768px) 100vw, 33vw',
-    medium: '(max-width: 768px) 100vw, 50vw',
-    large: '100vw'
-  }[size];
-
-  // Wave Sinusoidal grid settings - 3x3 grid for optimal performance
-  const gridCols = 3;
-  const gridRows = 3;
-  const totalSquares = gridCols * gridRows;
-
-  // Helper to get square position
-  const getSquarePosition = (index: number) => {
-    const row = Math.floor(index / gridCols);
-    const col = index % gridCols;
-    return { row, col };
-  };
-
-  // Memoized handlers for performance
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current || isClicked) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    setMousePosition({ x, y });
-  }, [isClicked]);
-
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsClicked(true);
-    setIsHovered(false);
-    setTimeout(() => router.push(href), 800);
-  }, [href, router]);
-
-  const handleMouseEnter = useCallback(() => {
-    if (!isClicked) setIsHovered(true);
-  }, [isClicked]);
-
-  const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
-  }, []);
 
   return (
-    <Link href={href} className="group block" ref={ref} onClick={handleClick}>
-      <Card3D intensity={3}>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
-          whileHover={!isClicked ? { y: -2 } : {}}
-          className="relative"
-        >
-        {/* Image Container */}
-        <div
-          ref={containerRef}
-          className="relative overflow-visible rounded-lg grain-overlay"
-          style={{
-            aspectRatio,
-            background: 'transparent',
-          }}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onMouseMove={handleMouseMove}
-        >
+    <Link href={href} className="group block" ref={ref}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+        className="relative"
+      >
+        {/* Media container */}
+        <div className="relative overflow-visible" style={{ aspectRatio }}>
+
           {video ? (
-            <>
-              {/* Video + landing page mockup overlay */}
-              <motion.div
-                className="absolute inset-0 overflow-hidden rounded-lg"
-                animate={isClicked ? { scale: 1.1, opacity: 0 } : isHovered ? { scale: 1.02 } : { scale: 1 }}
-                transition={isClicked ? { duration: 0.6 } : { duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            /* ── Video + landing-page mockup overlay (unchanged) ── */
+            <motion.div
+              className="absolute inset-0 overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className="w-full h-full object-cover"
               >
-                {/* Video layer */}
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  className="w-full h-full object-cover"
-                >
-                  <source src={video.replace('.mp4', '.webm')} type="video/webm" />
-                  <source src={video} type="video/mp4" />
-                </video>
+                <source src={video.replace('.mp4', '.webm')} type="video/webm" />
+                <source src={video} type="video/mp4" />
+              </video>
 
-                {/* Dark vignette overlay */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50" />
 
-                {/* Landing page mockup UI */}
-                {mockup && (
-                  <div className="absolute inset-0 flex flex-col">
-                    {/* Navigation bar */}
-                    <div className="flex items-center justify-between px-[5%] py-[3%]">
-                      <div className="hidden sm:flex items-center gap-[1.2em]">
-                        {mockup.navLeft.map((item) => (
-                          <span key={item} className="text-white/70 font-light" style={{ fontSize: 'clamp(0.35rem, 0.8vw, 0.65rem)', letterSpacing: '0.08em' }}>{item}</span>
-                        ))}
-                      </div>
-                      <div className="flex-1 flex flex-col items-center">
-                        <span className="text-white font-light tracking-wide" style={{ fontSize: 'clamp(0.45rem, 1vw, 0.75rem)', fontFamily: 'serif', letterSpacing: '0.1em' }}>{mockup.brandName}</span>
-                        <span className="text-white/40" style={{ fontSize: 'clamp(0.3rem, 0.6vw, 0.5rem)', fontFamily: 'serif', fontStyle: 'italic' }}>{mockup.brandSub}</span>
-                      </div>
-                      <div className="hidden sm:flex items-center gap-[1.2em]">
-                        {mockup.navRight.map((item) => (
-                          <span key={item} className="text-white/70 font-light" style={{ fontSize: 'clamp(0.35rem, 0.8vw, 0.65rem)', letterSpacing: '0.08em' }}>{item}</span>
-                        ))}
-                      </div>
+              {mockup && (
+                <div className="absolute inset-0 flex flex-col">
+                  <div className="flex items-center justify-between px-[5%] py-[3%]">
+                    <div className="hidden sm:flex items-center gap-[1.2em]">
+                      {mockup.navLeft.map((item) => (
+                        <span key={item} className="text-white/70 font-light" style={{ fontSize: 'clamp(0.35rem, 0.8vw, 0.65rem)', letterSpacing: '0.08em' }}>{item}</span>
+                      ))}
                     </div>
-
-                    {/* Hero content — centered */}
-                    <div className="flex-1 flex flex-col items-center justify-center text-center px-[8%]">
-                      <span className="text-white/50 uppercase font-light mb-[2%]" style={{ fontSize: 'clamp(0.3rem, 0.55vw, 0.45rem)', letterSpacing: '0.3em' }}>{mockup.eyebrow}</span>
-                      <h3 className="text-white font-light leading-[0.95] mb-[2%] whitespace-pre-line" style={{ fontSize: 'clamp(0.9rem, 2.8vw, 2.8rem)', fontFamily: 'serif', letterSpacing: '-0.01em' }}>{mockup.heroTitle}</h3>
-                      <div className="w-[3em] h-[1px] bg-white/30 mb-[2%]" />
-                      <p className="text-white/70 font-light italic" style={{ fontSize: 'clamp(0.35rem, 0.75vw, 0.65rem)', fontFamily: 'serif', letterSpacing: '0.04em' }}>{mockup.heroSub}</p>
-                      <div className="mt-[3%] flex gap-[0.8em]">
-                        <span className="border border-white/60 text-white px-[1.2em] py-[0.4em] font-light" style={{ fontSize: 'clamp(0.3rem, 0.6vw, 0.5rem)', letterSpacing: '0.12em' }}>{mockup.cta}</span>
-                      </div>
+                    <div className="flex-1 flex flex-col items-center">
+                      <span className="text-white font-light tracking-wide" style={{ fontSize: 'clamp(0.45rem, 1vw, 0.75rem)', fontFamily: 'serif', letterSpacing: '0.1em' }}>{mockup.brandName}</span>
+                      <span className="text-white/40" style={{ fontSize: 'clamp(0.3rem, 0.6vw, 0.5rem)', fontFamily: 'serif', fontStyle: 'italic' }}>{mockup.brandSub}</span>
                     </div>
-
-                    {/* Scroll indicator */}
-                    <div className="flex flex-col items-center pb-[3%]">
-                      <span className="text-white/30 uppercase" style={{ fontSize: 'clamp(0.25rem, 0.4vw, 0.35rem)', letterSpacing: '0.25em' }}>Défiler</span>
-                      <div className="w-[1px] h-[1.5em] bg-white/20 mt-1 relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-full bg-white/50 animate-scroll-line" />
-                      </div>
+                    <div className="hidden sm:flex items-center gap-[1.2em]">
+                      {mockup.navRight.map((item) => (
+                        <span key={item} className="text-white/70 font-light" style={{ fontSize: 'clamp(0.35rem, 0.8vw, 0.65rem)', letterSpacing: '0.08em' }}>{item}</span>
+                      ))}
                     </div>
                   </div>
-                )}
-              </motion.div>
-            </>
+
+                  <div className="flex-1 flex flex-col items-center justify-center text-center px-[8%]">
+                    <span className="text-white/50 uppercase font-light mb-[2%]" style={{ fontSize: 'clamp(0.3rem, 0.55vw, 0.45rem)', letterSpacing: '0.3em' }}>{mockup.eyebrow}</span>
+                    <h3 className="text-white font-light leading-[0.95] mb-[2%] whitespace-pre-line" style={{ fontSize: 'clamp(0.9rem, 2.8vw, 2.8rem)', fontFamily: 'serif', letterSpacing: '-0.01em' }}>{mockup.heroTitle}</h3>
+                    <div className="w-[3em] h-[1px] bg-white/30 mb-[2%]" />
+                    <p className="text-white/70 font-light italic" style={{ fontSize: 'clamp(0.35rem, 0.75vw, 0.65rem)', fontFamily: 'serif', letterSpacing: '0.04em' }}>{mockup.heroSub}</p>
+                    <div className="mt-[3%] flex gap-[0.8em]">
+                      <span className="border border-white/60 text-white px-[1.2em] py-[0.4em] font-light" style={{ fontSize: 'clamp(0.3rem, 0.6vw, 0.5rem)', letterSpacing: '0.12em' }}>{mockup.cta}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-center pb-[3%]">
+                    <span className="text-white/30 uppercase" style={{ fontSize: 'clamp(0.25rem, 0.4vw, 0.35rem)', letterSpacing: '0.25em' }}>Défiler</span>
+                    <div className="w-[1px] h-[1.5em] bg-white/20 mt-1 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-full bg-white/50 animate-scroll-line" />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+
           ) : image ? (
-            <>
-              {/* Wave Sinusoidal - 3x3 grid with organic wave motion */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
-                  gridTemplateRows: `repeat(${gridRows}, 1fr)`,
-                  gap: '1px',
-                  perspective: '1200px',
-                  background: 'transparent',
-                }}
-              >
-                {Array.from({ length: totalSquares }, (_, i) => (
-                  <GridSquare
-                    key={i}
-                    i={i}
-                    image={image}
-                    gridCols={gridCols}
-                    gridRows={gridRows}
-                    isInView={isInView}
-                    isHovered={isHovered}
-                    isClicked={isClicked}
-                    mousePosition={mousePosition}
-                    getSquarePosition={getSquarePosition}
-                  />
-                ))}
-              </div>
-            </>
+            /* ── Pixel grid with magnetic hover ── */
+            <PixelGrid image={image} />
+
           ) : (
-            <>
-              {/* Fallback gradient */}
-              <div
-                className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.02]"
-                style={{
-                  background: `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)`,
-                }}
-              />
-              {/* Subtle pattern overlay */}
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.05) 10px, rgba(255,255,255,.05) 20px)',
-                }}
-              />
-            </>
+            /* ── Fallback gradient ── */
+            <div
+              className="absolute inset-0"
+              style={{ background: `linear-gradient(135deg, ${color} 0%, ${color}dd 100%)` }}
+            />
           )}
 
           {/* Year badge */}
           {year && (
             <motion.div
-              className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-20 transition-opacity duration-300 group-hover:opacity-90"
+              className="absolute top-4 right-4 glass-surface px-3 py-1 rounded z-20"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.4, delay: 1.8 }}
@@ -392,7 +287,7 @@ const ProjectCard = ({
           )}
         </div>
 
-        {/* Project Info */}
+        {/* Project info */}
         <motion.div
           className="mt-6"
           initial={{ opacity: 0, y: 10 }}
@@ -411,8 +306,7 @@ const ProjectCard = ({
             {title}
           </h3>
         </motion.div>
-        </motion.div>
-      </Card3D>
+      </motion.div>
     </Link>
   );
 };
