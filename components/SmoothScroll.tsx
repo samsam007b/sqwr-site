@@ -55,6 +55,16 @@ const SmoothScroll = ({ children }: SmoothScrollProps) => {
 
     window.addEventListener('introComplete', onIntroComplete, { once: true });
 
+    // ── Replay intro (triggered by logo click / pixel wipe) ──
+    const onReplayIntro = () => {
+      introLocked = true;
+      lenis.stop();
+      window.scrollTo(0, 0);
+      // Re-listen for the next introComplete
+      window.addEventListener('introComplete', onIntroComplete, { once: true });
+    };
+    window.addEventListener('replayIntro', onReplayIntro);
+
     // ── Checkpoint system ──
     // Free scroll, but entering a checkpoint's capture zone triggers
     // smooth deceleration (magnetic pull) instead of an abrupt stop.
@@ -114,6 +124,7 @@ const SmoothScroll = ({ children }: SmoothScrollProps) => {
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('introComplete', onIntroComplete);
+      window.removeEventListener('replayIntro', onReplayIntro);
       window.removeEventListener('scroll', onScroll);
       lenis.destroy();
       lenisRef.current = null;

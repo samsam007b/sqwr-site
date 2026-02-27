@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DesktopOnlyProviders from "@/components/DesktopOnlyProviders";
+import PixelWipeTransition from "@/components/PixelWipeTransition";
 import MobileFloatingCTA from "@/components/MobileFloatingCTA";
 import { LanguageProvider } from "@/context/LanguageContext";
 
@@ -65,6 +66,7 @@ export default function RootLayout({
         <LanguageProvider>
           <DesktopOnlyProviders>
             <Header />
+            <PixelWipeTransition />
             <main className="relative z-10">
               {children}
             </main>

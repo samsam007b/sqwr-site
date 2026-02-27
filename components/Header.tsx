@@ -234,7 +234,15 @@ const Header = () => {
         <Link
           href="/"
           className="block group"
-          onClick={overlayVisible ? handleCloseMenu : undefined}
+          onClick={(e) => {
+            if (overlayVisible) {
+              handleCloseMenu();
+            } else {
+              // Pixel wipe transition → home + replay SQWR intro
+              e.preventDefault();
+              window.dispatchEvent(new CustomEvent('pixelWipeStart'));
+            }
+          }}
         >
           <motion.div
             className={`w-6 h-6 transition-colors duration-500 ${

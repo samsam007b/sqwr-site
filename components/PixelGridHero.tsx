@@ -447,6 +447,40 @@ const PixelGridHero = () => {
     return () => window.removeEventListener('videoRevealGridOpacity', handler);
   }, []);
 
+  // Replay intro when logo is clicked (pixel wipe transition)
+  useEffect(() => {
+    const handler = async () => {
+      // Reset all intro state
+      skipIntroRef.current = false;
+      introCompleteRef.current = false;
+      scrollAccelRef.current = 0;
+      scrollRef.current = 0;
+      displayScrollRef.current = 0;
+
+      // Re-init grid and restart timeline
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const dpr = window.devicePixelRatio || 1;
+        const W = window.innerWidth + STEP;
+        const H = window.innerHeight + STEP;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = `${W}px`;
+        canvas.style.height = `${H}px`;
+        const ctx = canvas.getContext('2d');
+        if (ctx) ctx.scale(dpr, dpr);
+        await initGrid(W, H);
+      }
+
+      // Ensure container is visible
+      if (containerRef.current) {
+        containerRef.current.style.opacity = '1';
+      }
+    };
+    window.addEventListener('replayIntro', handler);
+    return () => window.removeEventListener('replayIntro', handler);
+  }, [initGrid]);
+
   return (
     <div
       ref={containerRef}
