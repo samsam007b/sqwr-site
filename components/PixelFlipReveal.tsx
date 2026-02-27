@@ -39,6 +39,7 @@ const P = {
 
 /* ── Flip animation params ── */
 const FLIP_WINDOW = 0.5; // each cell takes 50% of the wave duration to flip
+const GAP_CLOSE_START = 0.15; // start closing gaps at 15% of flip wave
 
 interface FlipCell {
   x: number;
@@ -407,6 +408,15 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
           ? clamp((scroll - P.exitStart) / (P.exitEnd - P.exitStart), 0, 1)
           : 0;
 
+        // ── Gap closing: progressively expand video cells to fill gaps ──
+        const gapCloseRaw = exitGlobal > 0
+          ? 1 - easeInOutCubic(clamp(exitGlobal / 0.35, 0, 1))     // reopen during exit
+          : flip1Global >= 1
+            ? 1                                                       // fully closed after flip1 completes
+            : flip1Global > GAP_CLOSE_START
+              ? easeInOutCubic(clamp((flip1Global - GAP_CLOSE_START) / (1 - GAP_CLOSE_START), 0, 1))
+              : 0;
+
         // ── Clear canvas ──
         ctx.fillStyle = BG_COLOR;
         ctx.fillRect(0, 0, W, H);
@@ -518,13 +528,16 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
           }
 
           // ── Draw the cell ──
-          const cellW = CELL_SIZE * Math.max(scaleX, 0.02);
-          const drawX = cell.x + (CELL_SIZE - cellW) / 2;
-
           if (showColor) {
-            // Video pixel
+            // Video pixel — expand to progressively fill gaps
+            const expand = GAP * gapCloseRaw;
+            const fullW = CELL_SIZE + expand;
+            const fullH = CELL_SIZE + expand;
+            const vidW = fullW * Math.max(scaleX, 0.02);
+            const vidX = cell.x - expand / 2 + (fullW - vidW) / 2;
+            const vidY = cell.y - expand / 2;
             ctx.fillStyle = showColor;
-            ctx.fillRect(drawX, cell.y, cellW, CELL_SIZE);
+            ctx.fillRect(vidX, vidY, vidW, fullH);
           } else {
             // Background cell — matches PixelGridHero exactly:
             // dark dots at low opacity on #FAFAF8 bg
