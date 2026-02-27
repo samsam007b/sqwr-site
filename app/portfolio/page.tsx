@@ -25,7 +25,7 @@ function ProjectRow({
 }: {
   project: Project;
   index: number;
-  onHoverStart: () => void;
+  onHoverStart: (e: React.MouseEvent) => void;
   onHoverEnd: () => void;
 }) {
   const ref = useRef(null);
@@ -37,9 +37,9 @@ function ProjectRow({
       ref={ref}
       href={`/portfolio/${project.id}`}
       className="group block"
-      onMouseEnter={() => {
+      onMouseEnter={(e) => {
         setIsHovered(true);
-        onHoverStart();
+        onHoverStart(e);
       }}
       onMouseLeave={() => {
         setIsHovered(false);
@@ -89,22 +89,31 @@ function ProjectRow({
             </span>
           </div>
 
-          {/* Services pills — desktop hover only */}
-          <div className="hidden lg:flex items-center gap-2 shrink-0">
+          {/* Services pills — absolutely positioned so they don't shift layout */}
+          <div className="hidden lg:block relative shrink-0 w-0">
             <AnimatePresence>
-              {isHovered &&
-                project.services.slice(0, 2).map((service, i) => (
-                  <motion.span
-                    key={service}
-                    className="text-[10px] font-mono uppercase tracking-wider text-secondary/50 border border-secondary/15 px-2.5 py-1"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    transition={{ duration: 0.3, delay: i * 0.05 }}
-                  >
-                    {service}
-                  </motion.span>
-                ))}
+              {isHovered && (
+                <motion.div
+                  className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  {project.services.slice(0, 2).map((service, i) => (
+                    <motion.span
+                      key={service}
+                      className="text-[10px] font-mono uppercase tracking-wider text-secondary/50 border border-secondary/15 px-2.5 py-1 whitespace-nowrap bg-background/90 backdrop-blur-sm"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 10 }}
+                      transition={{ duration: 0.3, delay: i * 0.05 }}
+                    >
+                      {service}
+                    </motion.span>
+                  ))}
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
 
@@ -138,9 +147,9 @@ export default function PortfolioPage() {
   const [hoveredProject, setHoveredProject] = useState<Project | null>(null);
   const ctaRef = useRef<HTMLElement>(null);
 
-  // Mouse tracking for floating preview
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+  // Mouse tracking — start off-screen so first hover doesn't flash from (0,0)
+  const mouseX = useMotionValue(-1000);
+  const mouseY = useMotionValue(-1000);
   const springX = useSpring(mouseX, { stiffness: 200, damping: 25, mass: 0.5 });
   const springY = useSpring(mouseY, { stiffness: 200, damping: 25, mass: 0.5 });
 
@@ -151,6 +160,12 @@ export default function PortfolioPage() {
     },
     [mouseX, mouseY],
   );
+
+  // Clear hover on filter change
+  const handleFilterChange = useCallback((filterId: string) => {
+    setHoveredProject(null);
+    setActiveFilter(filterId);
+  }, []);
 
   // CTA dark cursor
   useEffect(() => {
@@ -186,19 +201,24 @@ export default function PortfolioPage() {
   return (
     <>
       {/* ─── HERO ──────────────────────────────────────────────────────────────── */}
-      <section className="pt-32 pb-8 lg:pt-44 lg:pb-12 px-6 lg:px-16 relative overflow-hidden">
+      <section className="pt-32 pb-8 lg:pt-44 lg:pb-12 px-6 lg:px-16 relative">
         <div className="max-w-7xl mx-auto relative">
-          {/* Ghost number */}
-          <motion.div
-            className="absolute -top-6 -left-3 lg:-top-14 lg:-left-6 select-none pointer-events-none"
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.4, ease: EASE }}
-          >
-            <span className="font-display font-normal text-[10rem] lg:text-[16rem] leading-none text-foreground/[0.04]">
-              {String(filteredProjects.length).padStart(2, '0')}
-            </span>
-          </motion.div>
+          {/* Ghost number — animated on filter change */}
+          <div className="absolute -top-6 -left-3 lg:-top-14 lg:-left-6 select-none pointer-events-none">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={filteredProjects.length}
+                className="font-display font-normal text-[10rem] lg:text-[16rem] leading-none block"
+                style={{ color: 'rgba(17,17,17,0.04)' }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{ duration: 0.6, ease: EASE }}
+              >
+                {String(filteredProjects.length).padStart(2, '0')}
+              </motion.span>
+            </AnimatePresence>
+          </div>
 
           <motion.p
             className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8 relative z-10"
@@ -247,7 +267,7 @@ export default function PortfolioPage() {
               return (
                 <button
                   key={cat.id}
-                  onClick={() => setActiveFilter(cat.id)}
+                  onClick={() => handleFilterChange(cat.id)}
                   className={`relative px-5 py-3 text-xs font-mono uppercase tracking-[0.12em] transition-colors duration-300 whitespace-nowrap ${
                     activeFilter === cat.id
                       ? 'text-foreground'
@@ -282,6 +302,7 @@ export default function PortfolioPage() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeFilter}
+              className="border-t border-secondary/10"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -292,7 +313,14 @@ export default function PortfolioPage() {
                   key={project.id}
                   project={project}
                   index={index}
-                  onHoverStart={() => setHoveredProject(project)}
+                  onHoverStart={(e) => {
+                    // Snap spring to cursor so preview doesn't fly in from off-screen
+                    mouseX.set(e.clientX);
+                    mouseY.set(e.clientY);
+                    springX.set(e.clientX);
+                    springY.set(e.clientY);
+                    setHoveredProject(project);
+                  }}
                   onHoverEnd={() => setHoveredProject(null)}
                 />
               ))}
