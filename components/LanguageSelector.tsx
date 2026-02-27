@@ -4,22 +4,25 @@ import { useLanguage, Locale } from '@/context/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
 
-const languages = [
-  { code: 'fr' as Locale, label: 'Français' },
-  { code: 'en' as Locale, label: 'English' },
-  { code: 'nl' as Locale, label: 'Nederlands' },
-  { code: 'de' as Locale, label: 'Deutsch' },
+const languages: { code: Locale; label: string }[] = [
+  { code: 'fr', label: 'FR' },
+  { code: 'en', label: 'EN' },
+  { code: 'nl', label: 'NL' },
+  { code: 'de', label: 'DE' },
 ];
 
-const LanguageSelector = () => {
+interface LanguageSelectorProps {
+  /** When true, uses inverted colors (white square, dark text) for the overlay menu */
+  inverted?: boolean;
+}
+
+const LanguageSelector = ({ inverted = false }: LanguageSelectorProps) => {
   const { locale, setLocale } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  useEffect(() => { setMounted(true); }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -28,112 +31,74 @@ const LanguageSelector = () => {
         setIsOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Prevent rendering until mounted to avoid hydration mismatch
+  // SSR placeholder — matches the square dimensions
   if (!mounted) {
-    return (
-      <div
-        className="w-20 h-9 rounded-full backdrop-blur-xl"
-        style={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-        }}
-      />
-    );
+    return <div className="w-6 h-6" />;
   }
 
-  const currentLanguage = languages.find(lang => lang.code === locale) || languages[0];
+  const otherLanguages = languages.filter(l => l.code !== locale);
+  const currentLabel = languages.find(l => l.code === locale)?.label ?? 'FR';
+
+  const bgClass = inverted
+    ? 'bg-paper hover:bg-primary'
+    : 'bg-foreground hover:bg-primary';
+
+  const textClass = inverted
+    ? 'text-foreground'
+    : 'text-paper';
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <motion.button
-        onClick={() => setIsOpen(!isOpen)}
-        className="px-3 py-2 rounded-full flex items-center gap-2 transition-all backdrop-blur-xl backdrop-saturate-150"
-        style={{
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 100%)',
-          border: '1px solid rgba(255, 255, 255, 0.6)',
-          boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.9), inset 0 -1px 1px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.1)',
-          WebkitBackdropFilter: 'blur(20px) saturate(150%)',
-          backdropFilter: 'blur(20px) saturate(150%)',
-        }}
-        whileHover={{
-          scale: 1.05,
-          background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 100%)',
-        }}
-        whileTap={{ scale: 0.95 }}
-        aria-label="Select language"
-        aria-expanded={isOpen}
-      >
-        <span className="text-xs font-mono uppercase tracking-wider text-foreground">
-          {currentLanguage.code}
-        </span>
-        <motion.svg
-          className="w-3 h-3 text-foreground"
-          animate={{ rotate: isOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </motion.svg>
-      </motion.button>
-
+      {/* Other languages — stacked above */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="absolute top-full mt-2 right-0 rounded-lg overflow-hidden min-w-[140px] z-50 backdrop-blur-2xl backdrop-saturate-150"
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%)',
-              border: '1px solid rgba(255, 255, 255, 0.7)',
-              boxShadow: 'inset 0 1px 1px rgba(255, 255, 255, 0.9), inset 0 -1px 1px rgba(0, 0, 0, 0.05), 0 8px 32px rgba(0, 0, 0, 0.15)',
-              WebkitBackdropFilter: 'blur(30px) saturate(150%)',
-              backdropFilter: 'blur(30px) saturate(150%)',
-            }}
-          >
-            {languages.map((lang) => (
+          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+            {otherLanguages.map((lang, index) => (
               <motion.button
                 key={lang.code}
                 onClick={() => {
                   setLocale(lang.code);
                   setIsOpen(false);
                 }}
-                className={`w-full px-4 py-2.5 flex items-center gap-3 text-left transition-colors ${
-                  locale === lang.code
-                    ? 'bg-primary/10 text-primary'
-                    : 'hover:bg-foreground/5 text-foreground'
-                }`}
-                whileHover={{ x: 4 }}
-                transition={{ duration: 0.2 }}
+                className={`w-6 h-6 flex items-center justify-center transition-colors duration-300 ${bgClass}`}
+                initial={{ opacity: 0, y: 8, scale: 0.6 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.6 }}
+                transition={{
+                  delay: index * 0.05,
+                  duration: 0.25,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                whileHover={{ scale: 1.15 }}
+                whileTap={{ scale: 0.9 }}
               >
-                <span className="text-sm font-sans">{lang.label}</span>
-                {locale === lang.code && (
-                  <motion.svg
-                    className="w-4 h-4 ml-auto text-primary"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </motion.svg>
-                )}
+                <span className={`text-[7px] font-mono font-bold leading-none tracking-wider ${textClass} group-hover:text-paper`}>
+                  {lang.label}
+                </span>
               </motion.button>
             ))}
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
+
+      {/* Current language square */}
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-6 h-6 flex items-center justify-center transition-colors duration-500 ${bgClass}`}
+        whileHover={{ scale: 1.15 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+        aria-label="Select language"
+        aria-expanded={isOpen}
+      >
+        <span className={`text-[7px] font-mono font-bold leading-none tracking-wider ${textClass}`}>
+          {currentLabel}
+        </span>
+      </motion.button>
     </div>
   );
 };

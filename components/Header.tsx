@@ -368,7 +368,7 @@ const Header = () => {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <LanguageSelector />
+                <LanguageSelector inverted />
               </div>
             </motion.div>
           </div>
