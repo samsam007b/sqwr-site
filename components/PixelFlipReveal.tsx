@@ -249,7 +249,7 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       const onScroll = () => {
         measureSection();
         const vh = window.innerHeight;
-        const rangeStart = sectionTopRef.current - vh;
+        const rangeStart = sectionTopRef.current;
         const rangeEnd = sectionTopRef.current + sectionHeightRef.current;
         const totalRange = rangeEnd - rangeStart;
         if (totalRange <= 0) return;
@@ -274,9 +274,8 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       const animate = (time: number) => {
         const t = (time - t0Ref.current) / 1000;
 
-        // Lerp scroll for smoothness
-        displayScrollRef.current += (scrollRef.current - displayScrollRef.current) * 0.04;
-        const scroll = displayScrollRef.current;
+        // Direct scroll tracking — Lenis handles smoothing, no double-interpolation
+        const scroll = scrollRef.current;
 
         const cells = cellsRef.current;
         const cols = colsRef.current;

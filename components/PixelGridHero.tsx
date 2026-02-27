@@ -262,9 +262,8 @@ const PixelGridHero = () => {
 
         const grid = gridRef.current;
         const travelers = travelersRef.current;
-        // Lerp toward the real scroll target — rend l'explosion fluide même au scroll brusque
-        displayScrollRef.current += (scrollRef.current - displayScrollRef.current) * 0.035;
-        const scroll = displayScrollRef.current;
+        // Direct scroll tracking — Lenis handles smoothing, no double-interpolation
+        const scroll = scrollRef.current;
         // easeIn — démarre au ralenti, accélère ensuite
         const scatterEased = scroll * scroll * scroll;
 
