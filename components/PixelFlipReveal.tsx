@@ -78,6 +78,27 @@ function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
+/** Draw a video onto the canvas using object-cover mapping */
+function drawVideoObjectCover(
+  ctx: CanvasRenderingContext2D,
+  video: HTMLVideoElement,
+  W: number,
+  H: number,
+) {
+  const vw = video.videoWidth;
+  const vh = video.videoHeight;
+  if (!vw || !vh) return;
+  const va = vw / vh;
+  const ca = W / H;
+  let dw: number, dh: number, dx: number, dy: number;
+  if (ca > va) {
+    dw = W; dh = W / va; dx = 0; dy = (H - dh) / 2;
+  } else {
+    dh = H; dw = H * va; dx = (W - dw) / 2; dy = 0;
+  }
+  ctx.drawImage(video, dx, dy, dw, dh);
+}
+
 /* ── Pixel font for year display — 5×7 bitmap per digit, scaled up ── */
 const FONT_SCALE = 3; // each font pixel = 3×3 grid cells
 const DIGIT_W = 5;
@@ -139,8 +160,6 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([null, null]);
-  const sampleCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const sampleCtxRef = useRef<CanvasRenderingContext2D | null>(null);
   const cellsRef = useRef<FlipCell[]>([]);
   const colsRef = useRef(0);
   const rowsRef = useRef(0);
@@ -189,14 +208,6 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       }
     }
     cellsRef.current = cells;
-
-    // Create/resize sample canvas for video pixel extraction
-    if (!sampleCanvasRef.current) {
-      sampleCanvasRef.current = document.createElement('canvas');
-      sampleCtxRef.current = sampleCanvasRef.current.getContext('2d', { willReadFrequently: true });
-    }
-    sampleCanvasRef.current.width = cols;
-    sampleCanvasRef.current.height = rows;
   }, []);
 
   /* ── Measure section position ── */
@@ -238,8 +249,6 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       const onScroll = () => {
         measureSection();
         const vh = window.innerHeight;
-        // scrollYProgress equivalent: offset ['start end', 'end start']
-        // progress=0 when section top = viewport bottom, progress=1 when section bottom = viewport top
         const rangeStart = sectionTopRef.current - vh;
         const rangeEnd = sectionTopRef.current + sectionHeightRef.current;
         const totalRange = rangeEnd - rangeStart;
@@ -249,17 +258,6 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
 
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
-
-      /* ── Sample video into low-res canvas ── */
-      const sampleVideo = (videoIndex: number): ImageData | null => {
-        const video = videoRefs.current[videoIndex];
-        const sCtx = sampleCtxRef.current;
-        const sCanvas = sampleCanvasRef.current;
-        if (!video || !sCtx || !sCanvas) return null;
-        if (video.readyState < 2) return null;
-        sCtx.drawImage(video, 0, 0, sCanvas.width, sCanvas.height);
-        return sCtx.getImageData(0, 0, sCanvas.width, sCanvas.height);
-      };
 
       /* ── Compute per-cell flip progress for a given phase ── */
       const cellFlipProgress = (
@@ -271,11 +269,6 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         const raw = clamp((globalProgress - cellStart) / (cellEnd - cellStart), 0, 1);
         return easeInOutCubic(raw);
       };
-
-      /* ── Cached ImageData refs ── */
-      let cachedImg1: ImageData | null = null;
-      let cachedImg2: ImageData | null = null;
-      let lastSampleFrame = -1;
 
       /* ── Render loop ── */
       const animate = (time: number) => {
@@ -315,16 +308,6 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         }
         container.style.opacity = '1';
 
-        // Sample videos (once per frame, only when needed)
-        const frameKey = Math.floor(time / 16); // ~60fps
-        if (frameKey !== lastSampleFrame) {
-          const needsVideo1 = scroll >= P.flip1Start && scroll <= P.flip2End;
-          const needsVideo2 = scroll >= P.flip2Start && scroll <= P.exitEnd;
-          if (needsVideo1) cachedImg1 = sampleVideo(0);
-          if (needsVideo2) cachedImg2 = sampleVideo(1);
-          lastSampleFrame = frameKey;
-        }
-
         // Mockup overlay opacity
         const m1 = scroll >= P.mock1Start && scroll <= P.mock1End
           ? clamp((scroll - P.mock1Start) / 0.04, 0, 1) * clamp((P.mock1End - scroll) / 0.04, 0, 1)
@@ -336,35 +319,28 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         setMockup2Opacity(m2);
 
         // ── HD video dissolve logic ──
-        // When flip1 wave nears completion → dissolve canvas, show HD video 1
         const flip1Ratio = scroll >= P.flip1Start && scroll <= P.flip1End
           ? clamp((scroll - P.flip1Start) / (P.flip1End - P.flip1Start), 0, 1)
           : scroll > P.flip1End && scroll < P.flip2Start ? 1 : 0;
         const dissolve1 = clamp((flip1Ratio - DISSOLVE_START) / (DISSOLVE_END - DISSOLVE_START), 0, 1);
 
-        // When flip2 wave nears completion → dissolve canvas, show HD video 2
         const flip2Ratio = scroll >= P.flip2Start && scroll <= P.flip2End
           ? clamp((scroll - P.flip2Start) / (P.flip2End - P.flip2Start), 0, 1)
           : scroll > P.flip2End && scroll < P.exitStart ? 1 : 0;
         const dissolve2 = clamp((flip2Ratio - DISSOLVE_START) / (DISSOLVE_END - DISSOLVE_START), 0, 1);
 
-        // Exit phase: bring canvas back, hide video 2
         const exitRatio = scroll >= P.exitStart
           ? clamp((scroll - P.exitStart) / (P.exitEnd - P.exitStart), 0, 1)
           : 0;
 
-        // Canvas opacity: fade out when a dissolve is active, fade back in during exit or flip2 start
         let cOpacity = 1;
         if (dissolve1 > 0 && flip2Ratio === 0 && exitRatio === 0) {
           cOpacity = 1 - dissolve1;
         } else if (dissolve2 > 0 && exitRatio === 0) {
           cOpacity = 1 - dissolve2;
         } else if (exitRatio > 0) {
-          // During exit, canvas comes back to show the reverse flip
           cOpacity = exitRatio > 0.1 ? 1 : exitRatio / 0.1;
         }
-
-        // When flip2 starts, canvas must reappear (to show the flip from v1→v2)
         if (scroll >= P.flip2Start - 0.02 && scroll <= P.flip2Start + 0.04) {
           cOpacity = 1;
         }
@@ -373,11 +349,10 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         setHdVideo1Opacity(dissolve1 > 0 && flip2Ratio === 0 ? dissolve1 : (flip2Ratio > 0 ? 1 - clamp(flip2Ratio / 0.1, 0, 1) : 0));
         setHdVideo2Opacity(dissolve2 > 0 ? dissolve2 : (exitRatio > 0 ? 1 - exitRatio : 0));
 
-        // Play/pause videos — keep playing through transitions so pixels stay animated
+        // Play/pause videos
         const v1 = videoRefs.current[0];
         const v2 = videoRefs.current[1];
         if (v1) {
-          // Video 1: play from flip1 start all the way through flip2 (it's still the "front face" of unflipped cells)
           if (scroll >= P.flip1Start - 0.02 && scroll <= P.flip2End) {
             v1.play().catch(() => {});
           } else {
@@ -393,26 +368,23 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         }
 
         // ── Determine flip states ──
-        // Phase 1: flip from white → video 1 (top-right origin)
         const flip1Global = scroll >= P.flip1Start && scroll <= P.flip1End
           ? clamp((scroll - P.flip1Start) / (P.flip1End - P.flip1Start), 0, 1)
           : scroll > P.flip1End ? 1 : 0;
 
-        // Phase 3: flip from video 1 → video 2 (top-left origin)
         const flip2Global = scroll >= P.flip2Start && scroll <= P.flip2End
           ? clamp((scroll - P.flip2Start) / (P.flip2End - P.flip2Start), 0, 1)
           : scroll > P.flip2End ? 1 : 0;
 
-        // Phase 5: reverse flip from video 2 → white (bottom-left origin)
         const exitGlobal = scroll >= P.exitStart
           ? clamp((scroll - P.exitStart) / (P.exitEnd - P.exitStart), 0, 1)
           : 0;
 
-        // ── Gap closing: progressively expand video cells to fill gaps ──
+        // ── Gap closing ──
         const gapCloseRaw = exitGlobal > 0
-          ? 1 - easeInOutCubic(clamp(exitGlobal / 0.35, 0, 1))     // reopen during exit
+          ? 1 - easeInOutCubic(clamp(exitGlobal / 0.35, 0, 1))
           : flip1Global >= 1
-            ? 1                                                       // fully closed after flip1 completes
+            ? 1
             : flip1Global > GAP_CLOSE_START
               ? easeInOutCubic(clamp((flip1Global - GAP_CLOSE_START) / (1 - GAP_CLOSE_START), 0, 1))
               : 0;
@@ -421,20 +393,23 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         ctx.fillStyle = BG_COLOR;
         ctx.fillRect(0, 0, W, H);
 
-        // ── Draw each cell ──
+        // ── Build clip paths for HD video + draw white cells ──
+        const v1Path = new Path2D();
+        const v2Path = new Path2D();
+        let hasV1Clip = false;
+        let hasV2Clip = false;
+
         for (let i = 0; i < cells.length; i++) {
           const cell = cells[i];
-          const pixelIdx = (cell.row * cols + cell.col) * 4;
-
-          // Determine what this cell currently shows and its flip state
-          let showColor: string | null = null; // null = white/breathing
-          let scaleX = 1;
+          const cellIdx = cell.row * cols + cell.col;
 
           // Year mask: cells forming the year text stay white during flip
-          const cellIdx = cell.row * cols + cell.col;
           const inYearMask =
             (flip1Global > 0 && flip2Global === 0 && exitGlobal === 0 && yearMask1Ref.current.has(cellIdx))
             || (flip2Global > 0 && exitGlobal === 0 && yearMask2Ref.current.has(cellIdx));
+
+          let videoNum = 0; // 0=white, 1=video1, 2=video2
+          let scaleX = 1;
 
           if (inYearMask) {
             // Force white — skip all flip logic
@@ -442,28 +417,13 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
             // Phase 5: video 2 → white (bottom-left propagation)
             const p = cellFlipProgress(exitGlobal, cell.delayBL);
             if (p > 0 && p < 1) {
-              // Mid-flip
               const angle = p * Math.PI;
               scaleX = Math.abs(Math.cos(angle));
-              if (p < 0.5 && cachedImg2) {
-                // Showing video 2 face (shrinking)
-                const r = cachedImg2.data[pixelIdx];
-                const g = cachedImg2.data[pixelIdx + 1];
-                const b = cachedImg2.data[pixelIdx + 2];
-                showColor = `rgb(${r},${g},${b})`;
-              }
-              // else showing white face (growing) → showColor stays null
+              videoNum = p < 0.5 ? 2 : 0;
             } else if (p >= 1) {
-              // Fully flipped back to white
-              showColor = null;
+              videoNum = 0;
             } else {
-              // Not started yet: still showing video 2
-              if (cachedImg2) {
-                const r = cachedImg2.data[pixelIdx];
-                const g = cachedImg2.data[pixelIdx + 1];
-                const b = cachedImg2.data[pixelIdx + 2];
-                showColor = `rgb(${r},${g},${b})`;
-              }
+              videoNum = 2;
             }
           } else if (flip2Global > 0) {
             // Phase 3: video 1 → video 2 (top-left propagation)
@@ -471,35 +431,11 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
             if (p > 0 && p < 1) {
               const angle = p * Math.PI;
               scaleX = Math.abs(Math.cos(angle));
-              if (p < 0.5 && cachedImg1) {
-                // Showing video 1 face
-                const r = cachedImg1.data[pixelIdx];
-                const g = cachedImg1.data[pixelIdx + 1];
-                const b = cachedImg1.data[pixelIdx + 2];
-                showColor = `rgb(${r},${g},${b})`;
-              } else if (p >= 0.5 && cachedImg2) {
-                // Showing video 2 face
-                const r = cachedImg2.data[pixelIdx];
-                const g = cachedImg2.data[pixelIdx + 1];
-                const b = cachedImg2.data[pixelIdx + 2];
-                showColor = `rgb(${r},${g},${b})`;
-              }
+              videoNum = p < 0.5 ? 1 : 2;
             } else if (p >= 1) {
-              // Fully flipped to video 2
-              if (cachedImg2) {
-                const r = cachedImg2.data[pixelIdx];
-                const g = cachedImg2.data[pixelIdx + 1];
-                const b = cachedImg2.data[pixelIdx + 2];
-                showColor = `rgb(${r},${g},${b})`;
-              }
+              videoNum = 2;
             } else {
-              // Not started: showing video 1
-              if (cachedImg1) {
-                const r = cachedImg1.data[pixelIdx];
-                const g = cachedImg1.data[pixelIdx + 1];
-                const b = cachedImg1.data[pixelIdx + 2];
-                showColor = `rgb(${r},${g},${b})`;
-              }
+              videoNum = 1;
             }
           } else if (flip1Global > 0) {
             // Phase 1: white → video 1 (top-right propagation)
@@ -507,50 +443,55 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
             if (p > 0 && p < 1) {
               const angle = p * Math.PI;
               scaleX = Math.abs(Math.cos(angle));
-              if (p >= 0.5 && cachedImg1) {
-                // Showing video 1 face
-                const r = cachedImg1.data[pixelIdx];
-                const g = cachedImg1.data[pixelIdx + 1];
-                const b = cachedImg1.data[pixelIdx + 2];
-                showColor = `rgb(${r},${g},${b})`;
-              }
-              // else showing white face → showColor null
+              videoNum = p >= 0.5 ? 1 : 0;
             } else if (p >= 1) {
-              // Fully flipped to video 1
-              if (cachedImg1) {
-                const r = cachedImg1.data[pixelIdx];
-                const g = cachedImg1.data[pixelIdx + 1];
-                const b = cachedImg1.data[pixelIdx + 2];
-                showColor = `rgb(${r},${g},${b})`;
-              }
+              videoNum = 1;
             }
             // else p===0: white cell (no flip started)
           }
 
-          // ── Draw the cell ──
-          if (showColor) {
-            // Video pixel — expand to progressively fill gaps
+          if (videoNum > 0) {
+            // Video cell — add to clip path (with gap closing expansion)
             const expand = GAP * gapCloseRaw;
             const fullW = CELL_SIZE + expand;
             const fullH = CELL_SIZE + expand;
             const vidW = fullW * Math.max(scaleX, 0.02);
             const vidX = cell.x - expand / 2 + (fullW - vidW) / 2;
             const vidY = cell.y - expand / 2;
-            ctx.fillStyle = showColor;
-            ctx.fillRect(vidX, vidY, vidW, fullH);
+
+            if (videoNum === 1) {
+              v1Path.rect(vidX, vidY, vidW, fullH);
+              hasV1Clip = true;
+            } else {
+              v2Path.rect(vidX, vidY, vidW, fullH);
+              hasV2Clip = true;
+            }
           } else {
-            // Background cell — matches PixelGridHero exactly:
-            // dark dots at low opacity on #FAFAF8 bg
+            // White / breathing cell
             const bt = t * cell.breathSpeed + cell.breathPhase;
-            const op = BG_OP + Math.sin(bt) * 0.01; // 0.03–0.05 opacity
+            const op = BG_OP + Math.sin(bt) * 0.01;
             if (op <= 0.001) continue;
 
             const sz = CELL_SIZE * Math.max(scaleX, 0.02);
             const bx = cell.x + (CELL_SIZE - sz) / 2;
-
             ctx.fillStyle = `${GRID_COL}${Math.min(1, op).toFixed(3)})`;
             ctx.fillRect(bx, cell.y, sz, CELL_SIZE);
           }
+        }
+
+        // ── Draw HD videos through clip paths ──
+        if (hasV1Clip && v1 && v1.readyState >= 2) {
+          ctx.save();
+          ctx.clip(v1Path);
+          drawVideoObjectCover(ctx, v1, W, H);
+          ctx.restore();
+        }
+
+        if (hasV2Clip && v2 && v2.readyState >= 2) {
+          ctx.save();
+          ctx.clip(v2Path);
+          drawVideoObjectCover(ctx, v2, W, H);
+          ctx.restore();
         }
 
         rafRef.current = requestAnimationFrame(animate);
