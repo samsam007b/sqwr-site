@@ -178,6 +178,8 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
   const [hdVideo1Opacity, setHdVideo1Opacity] = useState(0);
   const [hdVideo2Opacity, setHdVideo2Opacity] = useState(0);
   const [canvasOpacity, setCanvasOpacity] = useState(1);
+  const [year1Opacity, setYear1Opacity] = useState(0);
+  const [year2Opacity, setYear2Opacity] = useState(0);
 
   /* ── Init grid cells ── */
   const initGrid = useCallback((width: number, height: number) => {
@@ -317,6 +319,16 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
           : 0;
         setMockup1Opacity(m1);
         setMockup2Opacity(m2);
+
+        // Year overlay — visible from mid-flip through entire viewing phase
+        const y1 = scroll >= P.flip1Start + 0.08 && scroll < P.flip2Start
+          ? clamp((scroll - P.flip1Start - 0.08) / 0.04, 0, 1) * clamp((P.flip2Start - scroll) / 0.04, 0, 1)
+          : 0;
+        const y2 = scroll >= P.flip2Start + 0.08 && scroll < P.exitStart
+          ? clamp((scroll - P.flip2Start - 0.08) / 0.04, 0, 1) * clamp((P.exitStart - scroll) / 0.04, 0, 1)
+          : 0;
+        setYear1Opacity(y1);
+        setYear2Opacity(y2);
 
         // ── HD video dissolve logic ──
         const flip1Ratio = scroll >= P.flip1Start && scroll <= P.flip1End
@@ -611,6 +623,32 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         >
           <MockupOverlay mockup={projects[1].mockup} href={projects[1].projectHref} />
         </div>
+      </div>
+
+      {/* Year overlay — DOM-based, persists through entire video viewing */}
+      <div
+        className="fixed bottom-[6%] right-[4%] pointer-events-none font-mono text-white/90 tracking-[0.25em]"
+        style={{
+          zIndex: 11,
+          fontSize: 'clamp(0.65rem, 1vw, 0.85rem)',
+          opacity: year1Opacity,
+          transition: 'opacity 0.3s ease',
+          mixBlendMode: 'difference',
+        }}
+      >
+        {projects[0].year}
+      </div>
+      <div
+        className="fixed bottom-[6%] right-[4%] pointer-events-none font-mono text-white/90 tracking-[0.25em]"
+        style={{
+          zIndex: 11,
+          fontSize: 'clamp(0.65rem, 1vw, 0.85rem)',
+          opacity: year2Opacity,
+          transition: 'opacity 0.3s ease',
+          mixBlendMode: 'difference',
+        }}
+      >
+        {projects[1].year}
       </div>
     </section>
   );
