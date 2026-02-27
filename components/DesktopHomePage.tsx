@@ -264,6 +264,7 @@ export default function DesktopHomePage() {
             mockup: getProjectById('nanou')!.mockup!,
             projectColor: getProjectById('nanou')!.color,
             projectHref: '/portfolio/nanou',
+            year: getProjectById('nanou')!.year,
           },
           {
             videoSrc: '/projet-villa-coladeira/hero-cinemagraph.mp4',
@@ -271,6 +272,7 @@ export default function DesktopHomePage() {
             mockup: getProjectById('villa-coladeira')!.mockup!,
             projectColor: getProjectById('villa-coladeira')!.color,
             projectHref: '/portfolio/villa-coladeira',
+            year: getProjectById('villa-coladeira')!.year,
           },
         ]}
       />

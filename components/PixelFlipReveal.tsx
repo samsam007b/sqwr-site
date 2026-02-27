@@ -61,6 +61,7 @@ export interface FlipProject {
   mockup: ProjectMockup;
   projectColor: string;
   projectHref: string;
+  year: string;
 }
 
 interface PixelFlipRevealProps {
@@ -74,6 +75,61 @@ function clamp(v: number, min: number, max: number) {
 
 function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/* ── Pixel font for year display — 5×7 bitmap per digit, scaled up ── */
+const FONT_SCALE = 3; // each font pixel = 3×3 grid cells
+const DIGIT_W = 5;
+const DIGIT_H = 7;
+const DIGIT_GAP = 2; // grid-cell gap between digits
+
+const DIGIT_BITMAPS: Record<string, string[]> = {
+  '0': ['.XXX.', 'X...X', 'X...X', 'X...X', 'X...X', 'X...X', '.XXX.'],
+  '1': ['..X..', '.XX..', '..X..', '..X..', '..X..', '..X..', '.XXX.'],
+  '2': ['.XXX.', 'X...X', '....X', '..XX.', '.X...', 'X....', 'XXXXX'],
+  '3': ['.XXX.', 'X...X', '....X', '..XX.', '....X', 'X...X', '.XXX.'],
+  '4': ['X...X', 'X...X', 'X...X', 'XXXXX', '....X', '....X', '....X'],
+  '5': ['XXXXX', 'X....', 'XXXX.', '....X', '....X', 'X...X', '.XXX.'],
+  '6': ['.XXX.', 'X....', 'X....', 'XXXX.', 'X...X', 'X...X', '.XXX.'],
+  '7': ['XXXXX', '....X', '...X.', '..X..', '..X..', '..X..', '..X..'],
+  '8': ['.XXX.', 'X...X', 'X...X', '.XXX.', 'X...X', 'X...X', '.XXX.'],
+  '9': ['.XXX.', 'X...X', 'X...X', '.XXXX', '....X', '....X', '.XXX.'],
+};
+
+/** Build a Set of cell indices (row * cols + col) that form the year text */
+function computeYearMask(year: string, cols: number, rows: number): Set<number> {
+  const scaledW = DIGIT_W * FONT_SCALE;
+  const scaledH = DIGIT_H * FONT_SCALE;
+  const totalW = year.length * scaledW + (year.length - 1) * DIGIT_GAP;
+
+  // Position: bottom-right with ~4-6% margin
+  const padR = Math.max(4, Math.floor(cols * 0.04));
+  const padB = Math.max(4, Math.floor(rows * 0.06));
+  const startCol = cols - padR - totalW;
+  const startRow = rows - padB - scaledH;
+
+  const mask = new Set<number>();
+  for (let d = 0; d < year.length; d++) {
+    const bitmap = DIGIT_BITMAPS[year[d]];
+    if (!bitmap) continue;
+    const dCol = startCol + d * (scaledW + DIGIT_GAP);
+    for (let br = 0; br < DIGIT_H; br++) {
+      for (let bc = 0; bc < DIGIT_W; bc++) {
+        if (bitmap[br][bc] === 'X') {
+          for (let sy = 0; sy < FONT_SCALE; sy++) {
+            for (let sx = 0; sx < FONT_SCALE; sx++) {
+              const c = dCol + bc * FONT_SCALE + sx;
+              const r = startRow + br * FONT_SCALE + sy;
+              if (c >= 0 && c < cols && r >= 0 && r < rows) {
+                mask.add(r * cols + c);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return mask;
 }
 
 /* ── Component ── */
@@ -93,6 +149,8 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
   const t0Ref = useRef(0);
   const sectionTopRef = useRef(0);
   const sectionHeightRef = useRef(0);
+  const yearMask1Ref = useRef<Set<number>>(new Set());
+  const yearMask2Ref = useRef<Set<number>>(new Set());
 
   const [mockup1Opacity, setMockup1Opacity] = useState(0);
   const [mockup2Opacity, setMockup2Opacity] = useState(0);
@@ -170,6 +228,8 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       ctx.scale(dpr, dpr);
 
       initGrid(W, H);
+      yearMask1Ref.current = computeYearMask(projects[0].year, colsRef.current, rowsRef.current);
+      yearMask2Ref.current = computeYearMask(projects[1].year, colsRef.current, rowsRef.current);
       measureSection();
       t0Ref.current = performance.now();
 
@@ -312,11 +372,12 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         setHdVideo1Opacity(dissolve1 > 0 && flip2Ratio === 0 ? dissolve1 : (flip2Ratio > 0 ? 1 - clamp(flip2Ratio / 0.1, 0, 1) : 0));
         setHdVideo2Opacity(dissolve2 > 0 ? dissolve2 : (exitRatio > 0 ? 1 - exitRatio : 0));
 
-        // Play/pause videos
+        // Play/pause videos — keep playing through transitions so pixels stay animated
         const v1 = videoRefs.current[0];
         const v2 = videoRefs.current[1];
         if (v1) {
-          if (scroll >= P.flip1Start - 0.02 && scroll <= P.flip2Start) {
+          // Video 1: play from flip1 start all the way through flip2 (it's still the "front face" of unflipped cells)
+          if (scroll >= P.flip1Start - 0.02 && scroll <= P.flip2End) {
             v1.play().catch(() => {});
           } else {
             v1.pause();
@@ -359,7 +420,15 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
           let showColor: string | null = null; // null = white/breathing
           let scaleX = 1;
 
-          if (exitGlobal > 0) {
+          // Year mask: cells forming the year text stay white during flip
+          const cellIdx = cell.row * cols + cell.col;
+          const inYearMask =
+            (flip1Global > 0 && flip2Global === 0 && exitGlobal === 0 && yearMask1Ref.current.has(cellIdx))
+            || (flip2Global > 0 && exitGlobal === 0 && yearMask2Ref.current.has(cellIdx));
+
+          if (inYearMask) {
+            // Force white — skip all flip logic
+          } else if (exitGlobal > 0) {
             // Phase 5: video 2 → white (bottom-left propagation)
             const p = cellFlipProgress(exitGlobal, cell.delayBL);
             if (p > 0 && p < 1) {
@@ -506,6 +575,8 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         canvas.style.height = `${H}px`;
         ctx.scale(dpr, dpr);
         initGrid(W, H);
+        yearMask1Ref.current = computeYearMask(projects[0].year, colsRef.current, rowsRef.current);
+        yearMask2Ref.current = computeYearMask(projects[1].year, colsRef.current, rowsRef.current);
         measureSection();
       }, 200);
     };
