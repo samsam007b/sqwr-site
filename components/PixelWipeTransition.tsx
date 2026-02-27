@@ -29,12 +29,13 @@ const PixelWipeTransition = () => {
     const onWipeStart = () => {
       if (activeRef.current) return;
       activeRef.current = true;
-      setVisible(true);
 
       const canvas = canvasRef.current;
-      if (!canvas) { activeRef.current = false; setVisible(false); return; }
+      if (!canvas) { activeRef.current = false; return; }
       const ctx = canvas.getContext('2d');
-      if (!ctx) { activeRef.current = false; setVisible(false); return; }
+      if (!ctx) { activeRef.current = false; return; }
+
+      setVisible(true);
 
       const dpr = window.devicePixelRatio || 1;
       const W = window.innerWidth;
@@ -135,10 +136,15 @@ const PixelWipeTransition = () => {
     return () => window.removeEventListener('pixelWipeStart', onWipeStart);
   }, [router, pathname]);
 
-  if (!visible) return null;
-
   return (
-    <div className="fixed inset-0" style={{ zIndex: 9999, pointerEvents: 'all' }}>
+    <div
+      className="fixed inset-0"
+      style={{
+        zIndex: 9999,
+        pointerEvents: visible ? 'all' : 'none',
+        visibility: visible ? 'visible' : 'hidden',
+      }}
+    >
       <canvas ref={canvasRef} className="block" />
     </div>
   );
