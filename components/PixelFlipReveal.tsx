@@ -17,24 +17,25 @@ const DISSOLVE_START = 0.88; // start dissolving canvas at 88% of flip wave
 const DISSOLVE_END = 1.0;    // fully dissolved at 100%
 
 /* ── Scroll-phase boundaries (fraction of section scroll 0-1) ── */
+/* Section = 800vh → each 1% = 8vh ≈ 0.6s of scroll                */
 const P = {
-  // Phase 0: breathing grid visible
-  breathEnd: 0.06,
-  // Phase 1: flip top-right → reveal video 1
-  flip1Start: 0.06,
-  flip1End: 0.36,
-  // Phase 2: video 1 fully visible + mockup
-  mock1Start: 0.32,
-  mock1End: 0.48,
-  // Phase 3: flip top-left → reveal video 2
-  flip2Start: 0.52,
-  flip2End: 0.82,
-  // Phase 4: video 2 fully visible + mockup
-  mock2Start: 0.78,
-  mock2End: 0.92,
-  // Phase 5: reverse flip → back to white
-  exitStart: 0.92,
-  exitEnd: 1.0,
+  // Phase 0: breathing grid visible (32vh)
+  breathEnd: 0.04,
+  // Phase 1: flip top-right → reveal video 1 (144vh)
+  flip1Start: 0.04,
+  flip1End: 0.22,
+  // Phase 2: video 1 fully visible + mockup (~144vh viewing window)
+  mock1Start: 0.20,
+  mock1End: 0.38,
+  // Phase 3: flip top-left → reveal video 2 (144vh)
+  flip2Start: 0.40,
+  flip2End: 0.58,
+  // Phase 4: video 2 fully visible + mockup (~144vh viewing window)
+  mock2Start: 0.56,
+  mock2End: 0.74,
+  // Phase 5: reverse flip → back to white (112vh)
+  exitStart: 0.76,
+  exitEnd: 0.90,
 };
 
 /* ── Flip animation params ── */
@@ -286,7 +287,7 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         const isVisible = scroll > 0.001 && scroll < 0.999;
 
         // Control PixelGridHero visibility
-        const gridHeroOpacity = scroll < 0.02 ? 1 : scroll > 0.96 ? 1 : 0;
+        const gridHeroOpacity = scroll < 0.02 ? 1 : scroll > 0.92 ? 1 : 0;
         window.dispatchEvent(new CustomEvent('videoRevealGridOpacity', { detail: gridHeroOpacity }));
 
         // Control header visibility
@@ -541,10 +542,10 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
   }, [initGrid, measureSection]);
 
   return (
-    <section ref={sectionRef} id="work" className="relative" style={{ height: '500vh' }}>
-      {/* Snap checkpoints */}
-      <div data-snap-section className="absolute" style={{ top: '42%' }} />
-      <div data-snap-section className="absolute" style={{ top: '86%' }} />
+    <section ref={sectionRef} id="work" className="relative" style={{ height: '800vh' }}>
+      {/* Snap checkpoints — at peak of each video viewing window */}
+      <div data-snap-section className="absolute" style={{ top: '29%' }} />
+      <div data-snap-section className="absolute" style={{ top: '65%' }} />
 
       {/* HD video layers — positioned behind canvas, revealed on dissolve */}
       <div
