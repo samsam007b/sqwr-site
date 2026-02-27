@@ -7,7 +7,7 @@ export const en = {
     contact: 'Contact',
   },
   hero: {
-    since: 'SINCE 2016 — BRUSSELS',
+    since: 'BRUSSELS',
     title: 'Your brand deserves\nbetter than a template',
     subtitle: 'Custom websites, strategic visual identities, personalized dashboards — delivered by a responsive family team, at a price that makes sense.',
     cta: 'Discover our projects',
@@ -162,7 +162,7 @@ export const en = {
   about: {
     title: 'About',
     subtitle: 'A passionate creative agency',
-    description: 'Since 2016, we have been supporting our clients in their visual communication projects with creativity and professionalism.',
+    description: 'We support our clients in their visual communication projects with creativity and professionalism.',
     teamTitle: 'Our team',
     teamSubtitle: 'A passionate and talented family team',
     team1Name: 'Samuel Baudon',
@@ -188,7 +188,7 @@ export const en = {
     error: 'Error sending message',
   },
   footer: {
-    tagline: 'Since 2016, we create visual identities\nthat connect and transform.',
+    tagline: 'We create visual identities\nthat connect and transform.',
     location: 'Brussels, Belgium',
     navigationTitle: 'Navigation',
     contactTitle: 'Contact us',

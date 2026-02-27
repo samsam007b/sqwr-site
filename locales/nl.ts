@@ -7,7 +7,7 @@ export const nl = {
     contact: 'Contact',
   },
   hero: {
-    since: 'SINDS 2016 — BRUSSEL',
+    since: 'BRUSSEL',
     title: 'Uw merk verdient\nbeter dan een template',
     subtitle: 'Op maat gemaakte websites, strategische visuele identiteiten, gepersonaliseerde dashboards — geleverd door een flexibel familieteam, tegen een prijs die zinvol is.',
     cta: 'Ontdek onze projecten',
@@ -162,7 +162,7 @@ export const nl = {
   about: {
     title: 'Over ons',
     subtitle: 'Een gepassioneerd creatief bureau',
-    description: 'Sinds 2016 ondersteunen wij onze klanten in hun visuele communicatieprojecten met creativiteit en professionaliteit.',
+    description: 'Wij ondersteunen onze klanten in hun visuele communicatieprojecten met creativiteit en professionaliteit.',
     teamTitle: 'Ons team',
     teamSubtitle: 'Een gepassioneerd en getalenteerd familieteam',
     team1Name: 'Samuel Baudon',
@@ -188,7 +188,7 @@ export const nl = {
     error: 'Fout bij het verzenden van bericht',
   },
   footer: {
-    tagline: 'Sinds 2016 creëren we visuele identiteiten\ndie verbinden en transformeren.',
+    tagline: 'Wij creëren visuele identiteiten\ndie verbinden en transformeren.',
     location: 'Brussel, België',
     navigationTitle: 'Navigatie',
     contactTitle: 'Contacteer ons',

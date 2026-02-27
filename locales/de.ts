@@ -7,7 +7,7 @@ export const de = {
     contact: 'Kontakt',
   },
   hero: {
-    since: 'SEIT 2016 — BRÜSSEL',
+    since: 'BRÜSSEL',
     title: 'Ihre Marke verdient\nmehr als ein Template',
     subtitle: 'Maßgeschneiderte Websites, strategische visuelle Identitäten, personalisierte Dashboards — geliefert von einem reaktionsschnellen Familienteam, zu einem sinnvollen Preis.',
     cta: 'Entdecken Sie unsere Projekte',
@@ -162,7 +162,7 @@ export const de = {
   about: {
     title: 'Über uns',
     subtitle: 'Eine leidenschaftliche Kreativagentur',
-    description: 'Seit 2016 unterstützen wir unsere Kunden bei ihren visuellen Kommunikationsprojekten mit Kreativität und Professionalität.',
+    description: 'Wir unterstützen unsere Kunden bei ihren visuellen Kommunikationsprojekten mit Kreativität und Professionalität.',
     teamTitle: 'Unser Team',
     teamSubtitle: 'Ein leidenschaftliches und talentiertes Familienteam',
     team1Name: 'Samuel Baudon',
@@ -188,7 +188,7 @@ export const de = {
     error: 'Fehler beim Senden der Nachricht',
   },
   footer: {
-    tagline: 'Seit 2016 schaffen wir visuelle Identitäten,\ndie verbinden und transformieren.',
+    tagline: 'Wir schaffen visuelle Identitäten,\ndie verbinden und transformieren.',
     location: 'Brüssel, Belgien',
     navigationTitle: 'Navigation',
     contactTitle: 'Kontaktieren Sie uns',

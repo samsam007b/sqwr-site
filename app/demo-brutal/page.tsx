@@ -37,7 +37,7 @@ export default function DemoBrutalPage() {
       {/* Hero Brutal */}
       <HeroBrutal
         title="SQWR"
-        subtitle="Studio Bruxellois · AI-Driven Design · Depuis 2016"
+        subtitle="Studio Bruxellois · AI-Driven Design"
       />
 
       {/* Services Marquee */}

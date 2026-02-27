@@ -1,0 +1,626 @@
+'use client';
+
+import { useEffect, useRef, useCallback, useState } from 'react';
+import Link from 'next/link';
+import type { ProjectMockup } from '@/app/data/projects';
+
+/* ── Grid constants — must match PixelGridHero ── */
+const CELL_SIZE = 10;
+const GAP = 2;
+const STEP = CELL_SIZE + GAP;
+const BG_COLOR = '#FAFAF8';
+
+/* ── Scroll-phase boundaries (fraction of section scroll 0-1) ── */
+const P = {
+  // Phase 0: breathing grid visible
+  breathEnd: 0.06,
+  // Phase 1: flip top-right → reveal video 1
+  flip1Start: 0.06,
+  flip1End: 0.36,
+  // Phase 2: video 1 fully visible + mockup
+  mock1Start: 0.32,
+  mock1End: 0.48,
+  // Phase 3: flip top-left → reveal video 2
+  flip2Start: 0.52,
+  flip2End: 0.82,
+  // Phase 4: video 2 fully visible + mockup
+  mock2Start: 0.78,
+  mock2End: 0.92,
+  // Phase 5: reverse flip → back to white
+  exitStart: 0.92,
+  exitEnd: 1.0,
+};
+
+/* ── Flip animation params ── */
+const FLIP_WINDOW = 0.5; // each cell takes 50% of the wave duration to flip
+
+interface FlipCell {
+  x: number;
+  y: number;
+  col: number;
+  row: number;
+  breathPhase: number;
+  breathSpeed: number;
+  /** Normalized delay from top-right corner (0-1) */
+  delayTR: number;
+  /** Normalized delay from top-left corner (0-1) */
+  delayTL: number;
+  /** Normalized delay from bottom-left corner (0-1) */
+  delayBL: number;
+}
+
+export interface FlipProject {
+  videoSrc: string;
+  webmSrc: string;
+  mockup: ProjectMockup;
+  projectColor: string;
+  projectHref: string;
+}
+
+interface PixelFlipRevealProps {
+  projects: [FlipProject, FlipProject];
+}
+
+/* ── Helpers ── */
+function clamp(v: number, min: number, max: number) {
+  return v < min ? min : v > max ? max : v;
+}
+
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/* ── Component ── */
+const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([null, null]);
+  const sampleCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const sampleCtxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const cellsRef = useRef<FlipCell[]>([]);
+  const colsRef = useRef(0);
+  const rowsRef = useRef(0);
+  const scrollRef = useRef(0);
+  const displayScrollRef = useRef(0);
+  const rafRef = useRef(0);
+  const t0Ref = useRef(0);
+  const sectionTopRef = useRef(0);
+  const sectionHeightRef = useRef(0);
+
+  const [mockup1Opacity, setMockup1Opacity] = useState(0);
+  const [mockup2Opacity, setMockup2Opacity] = useState(0);
+
+  /* ── Init grid cells ── */
+  const initGrid = useCallback((width: number, height: number) => {
+    const cols = Math.ceil(width / STEP);
+    const rows = Math.ceil(height / STEP);
+    colsRef.current = cols;
+    rowsRef.current = rows;
+
+    const maxCol = cols - 1;
+    const maxRow = rows - 1;
+    const maxDistTR = maxCol + maxRow;
+    const maxDistTL = maxCol + maxRow;
+    const maxDistBL = maxCol + maxRow;
+
+    const cells: FlipCell[] = [];
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        cells.push({
+          x: col * STEP,
+          y: row * STEP,
+          col,
+          row,
+          breathPhase: Math.random() * Math.PI * 2,
+          breathSpeed: 0.3 + Math.random() * 0.4,
+          delayTR: ((maxCol - col) + row) / maxDistTR,
+          delayTL: (col + row) / maxDistTL,
+          delayBL: ((maxRow - row) + col) / maxDistBL,
+        });
+      }
+    }
+    cellsRef.current = cells;
+
+    // Create/resize sample canvas for video pixel extraction
+    if (!sampleCanvasRef.current) {
+      sampleCanvasRef.current = document.createElement('canvas');
+      sampleCtxRef.current = sampleCanvasRef.current.getContext('2d', { willReadFrequently: true });
+    }
+    sampleCanvasRef.current.width = cols;
+    sampleCanvasRef.current.height = rows;
+  }, []);
+
+  /* ── Measure section position ── */
+  const measureSection = useCallback(() => {
+    if (sectionRef.current) {
+      const rect = sectionRef.current.getBoundingClientRect();
+      sectionTopRef.current = rect.top + window.scrollY;
+      sectionHeightRef.current = sectionRef.current.offsetHeight;
+    }
+  }, []);
+
+  /* ── Main setup + render loop ── */
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let cleanup: (() => void) | undefined;
+
+    const setup = () => {
+      const dpr = window.devicePixelRatio || 1;
+      const W = window.innerWidth + STEP;
+      const H = window.innerHeight + STEP;
+      canvas.width = W * dpr;
+      canvas.height = H * dpr;
+      canvas.style.width = `${W}px`;
+      canvas.style.height = `${H}px`;
+      ctx.scale(dpr, dpr);
+
+      initGrid(W, H);
+      measureSection();
+      t0Ref.current = performance.now();
+
+      /* ── Scroll handler ── */
+      const onScroll = () => {
+        measureSection();
+        const vh = window.innerHeight;
+        // scrollYProgress equivalent: offset ['start end', 'end start']
+        // progress=0 when section top = viewport bottom, progress=1 when section bottom = viewport top
+        const rangeStart = sectionTopRef.current - vh;
+        const rangeEnd = sectionTopRef.current + sectionHeightRef.current;
+        const totalRange = rangeEnd - rangeStart;
+        if (totalRange <= 0) return;
+        scrollRef.current = clamp((window.scrollY - rangeStart) / totalRange, 0, 1);
+      };
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      /* ── Sample video into low-res canvas ── */
+      const sampleVideo = (videoIndex: number): ImageData | null => {
+        const video = videoRefs.current[videoIndex];
+        const sCtx = sampleCtxRef.current;
+        const sCanvas = sampleCanvasRef.current;
+        if (!video || !sCtx || !sCanvas) return null;
+        if (video.readyState < 2) return null;
+        sCtx.drawImage(video, 0, 0, sCanvas.width, sCanvas.height);
+        return sCtx.getImageData(0, 0, sCanvas.width, sCanvas.height);
+      };
+
+      /* ── Compute per-cell flip progress for a given phase ── */
+      const cellFlipProgress = (
+        globalProgress: number,
+        delay: number,
+      ): number => {
+        const cellStart = delay * (1 - FLIP_WINDOW);
+        const cellEnd = cellStart + FLIP_WINDOW;
+        const raw = clamp((globalProgress - cellStart) / (cellEnd - cellStart), 0, 1);
+        return easeInOutCubic(raw);
+      };
+
+      /* ── Cached ImageData refs ── */
+      let cachedImg1: ImageData | null = null;
+      let cachedImg2: ImageData | null = null;
+      let lastSampleFrame = -1;
+
+      /* ── Render loop ── */
+      const animate = (time: number) => {
+        const t = (time - t0Ref.current) / 1000;
+
+        // Lerp scroll for smoothness
+        displayScrollRef.current += (scrollRef.current - displayScrollRef.current) * 0.04;
+        const scroll = displayScrollRef.current;
+
+        const cells = cellsRef.current;
+        const cols = colsRef.current;
+        const W = canvas.width / (window.devicePixelRatio || 1);
+        const H = canvas.height / (window.devicePixelRatio || 1);
+
+        // Determine active phase and visibility
+        const isVisible = scroll > 0.001 && scroll < 0.999;
+
+        // Control PixelGridHero visibility
+        const gridHeroOpacity = scroll < 0.02 ? 1 : scroll > 0.96 ? 1 : 0;
+        window.dispatchEvent(new CustomEvent('videoRevealGridOpacity', { detail: gridHeroOpacity }));
+
+        // Control header visibility
+        const anyVideoVisible = scroll > P.flip1Start + 0.15 && scroll < P.exitEnd - 0.04;
+        window.dispatchEvent(new CustomEvent('videoRevealUIHidden', { detail: anyVideoVisible ? 1 : 0 }));
+
+        // Grain suppression
+        if (anyVideoVisible) {
+          document.body.classList.add('video-reveal-active');
+        } else {
+          document.body.classList.remove('video-reveal-active');
+        }
+
+        if (!isVisible) {
+          container.style.opacity = '0';
+          rafRef.current = requestAnimationFrame(animate);
+          return;
+        }
+        container.style.opacity = '1';
+
+        // Sample videos (once per frame, only when needed)
+        const frameKey = Math.floor(time / 16); // ~60fps
+        if (frameKey !== lastSampleFrame) {
+          const needsVideo1 = scroll >= P.flip1Start && scroll <= P.flip2End;
+          const needsVideo2 = scroll >= P.flip2Start && scroll <= P.exitEnd;
+          if (needsVideo1) cachedImg1 = sampleVideo(0);
+          if (needsVideo2) cachedImg2 = sampleVideo(1);
+          lastSampleFrame = frameKey;
+        }
+
+        // Mockup overlay opacity
+        const m1 = scroll >= P.mock1Start && scroll <= P.mock1End
+          ? clamp((scroll - P.mock1Start) / 0.04, 0, 1) * clamp((P.mock1End - scroll) / 0.04, 0, 1)
+          : 0;
+        const m2 = scroll >= P.mock2Start && scroll <= P.mock2End
+          ? clamp((scroll - P.mock2Start) / 0.04, 0, 1) * clamp((P.mock2End - scroll) / 0.04, 0, 1)
+          : 0;
+        setMockup1Opacity(m1);
+        setMockup2Opacity(m2);
+
+        // Play/pause videos
+        const v1 = videoRefs.current[0];
+        const v2 = videoRefs.current[1];
+        if (v1) {
+          if (scroll >= P.flip1Start - 0.02 && scroll <= P.flip2Start) {
+            v1.play().catch(() => {});
+          } else {
+            v1.pause();
+          }
+        }
+        if (v2) {
+          if (scroll >= P.flip2Start - 0.02 && scroll <= P.exitEnd) {
+            v2.play().catch(() => {});
+          } else {
+            v2.pause();
+          }
+        }
+
+        // ── Determine flip states ──
+        // Phase 1: flip from white → video 1 (top-right origin)
+        const flip1Global = scroll >= P.flip1Start && scroll <= P.flip1End
+          ? clamp((scroll - P.flip1Start) / (P.flip1End - P.flip1Start), 0, 1)
+          : scroll > P.flip1End ? 1 : 0;
+
+        // Phase 3: flip from video 1 → video 2 (top-left origin)
+        const flip2Global = scroll >= P.flip2Start && scroll <= P.flip2End
+          ? clamp((scroll - P.flip2Start) / (P.flip2End - P.flip2Start), 0, 1)
+          : scroll > P.flip2End ? 1 : 0;
+
+        // Phase 5: reverse flip from video 2 → white (bottom-left origin)
+        const exitGlobal = scroll >= P.exitStart
+          ? clamp((scroll - P.exitStart) / (P.exitEnd - P.exitStart), 0, 1)
+          : 0;
+
+        // ── Clear canvas ──
+        ctx.fillStyle = BG_COLOR;
+        ctx.fillRect(0, 0, W, H);
+
+        // ── Draw each cell ──
+        for (let i = 0; i < cells.length; i++) {
+          const cell = cells[i];
+          const pixelIdx = (cell.row * cols + cell.col) * 4;
+
+          // Determine what this cell currently shows and its flip state
+          let showColor: string | null = null; // null = white/breathing
+          let scaleX = 1;
+
+          if (exitGlobal > 0) {
+            // Phase 5: video 2 → white (bottom-left propagation)
+            const p = cellFlipProgress(exitGlobal, cell.delayBL);
+            if (p > 0 && p < 1) {
+              // Mid-flip
+              const angle = p * Math.PI;
+              scaleX = Math.abs(Math.cos(angle));
+              if (p < 0.5 && cachedImg2) {
+                // Showing video 2 face (shrinking)
+                const r = cachedImg2.data[pixelIdx];
+                const g = cachedImg2.data[pixelIdx + 1];
+                const b = cachedImg2.data[pixelIdx + 2];
+                showColor = `rgb(${r},${g},${b})`;
+              }
+              // else showing white face (growing) → showColor stays null
+            } else if (p >= 1) {
+              // Fully flipped back to white
+              showColor = null;
+            } else {
+              // Not started yet: still showing video 2
+              if (cachedImg2) {
+                const r = cachedImg2.data[pixelIdx];
+                const g = cachedImg2.data[pixelIdx + 1];
+                const b = cachedImg2.data[pixelIdx + 2];
+                showColor = `rgb(${r},${g},${b})`;
+              }
+            }
+          } else if (flip2Global > 0) {
+            // Phase 3: video 1 → video 2 (top-left propagation)
+            const p = cellFlipProgress(flip2Global, cell.delayTL);
+            if (p > 0 && p < 1) {
+              const angle = p * Math.PI;
+              scaleX = Math.abs(Math.cos(angle));
+              if (p < 0.5 && cachedImg1) {
+                // Showing video 1 face
+                const r = cachedImg1.data[pixelIdx];
+                const g = cachedImg1.data[pixelIdx + 1];
+                const b = cachedImg1.data[pixelIdx + 2];
+                showColor = `rgb(${r},${g},${b})`;
+              } else if (p >= 0.5 && cachedImg2) {
+                // Showing video 2 face
+                const r = cachedImg2.data[pixelIdx];
+                const g = cachedImg2.data[pixelIdx + 1];
+                const b = cachedImg2.data[pixelIdx + 2];
+                showColor = `rgb(${r},${g},${b})`;
+              }
+            } else if (p >= 1) {
+              // Fully flipped to video 2
+              if (cachedImg2) {
+                const r = cachedImg2.data[pixelIdx];
+                const g = cachedImg2.data[pixelIdx + 1];
+                const b = cachedImg2.data[pixelIdx + 2];
+                showColor = `rgb(${r},${g},${b})`;
+              }
+            } else {
+              // Not started: showing video 1
+              if (cachedImg1) {
+                const r = cachedImg1.data[pixelIdx];
+                const g = cachedImg1.data[pixelIdx + 1];
+                const b = cachedImg1.data[pixelIdx + 2];
+                showColor = `rgb(${r},${g},${b})`;
+              }
+            }
+          } else if (flip1Global > 0) {
+            // Phase 1: white → video 1 (top-right propagation)
+            const p = cellFlipProgress(flip1Global, cell.delayTR);
+            if (p > 0 && p < 1) {
+              const angle = p * Math.PI;
+              scaleX = Math.abs(Math.cos(angle));
+              if (p >= 0.5 && cachedImg1) {
+                // Showing video 1 face
+                const r = cachedImg1.data[pixelIdx];
+                const g = cachedImg1.data[pixelIdx + 1];
+                const b = cachedImg1.data[pixelIdx + 2];
+                showColor = `rgb(${r},${g},${b})`;
+              }
+              // else showing white face → showColor null
+            } else if (p >= 1) {
+              // Fully flipped to video 1
+              if (cachedImg1) {
+                const r = cachedImg1.data[pixelIdx];
+                const g = cachedImg1.data[pixelIdx + 1];
+                const b = cachedImg1.data[pixelIdx + 2];
+                showColor = `rgb(${r},${g},${b})`;
+              }
+            }
+            // else p===0: white cell (no flip started)
+          }
+
+          // ── Draw the cell ──
+          const cellW = CELL_SIZE * Math.max(scaleX, 0.02);
+          const drawX = cell.x + (CELL_SIZE - cellW) / 2;
+
+          if (showColor) {
+            // Video pixel
+            ctx.fillStyle = showColor;
+            ctx.fillRect(drawX, cell.y, cellW, CELL_SIZE);
+          } else {
+            // White/breathing cell
+            const bt = t * cell.breathSpeed + cell.breathPhase;
+            const breathScale = 0.97 + Math.sin(bt) * 0.03;
+            const brightness = 240 + Math.sin(bt * 0.5 + cell.breathPhase) * 15;
+            const breathOp = 0.88 + Math.sin(bt * 0.7 + cell.breathPhase * 2) * 0.12;
+
+            const sz = CELL_SIZE * breathScale * Math.max(scaleX, 0.02);
+            const bx = cell.x + (CELL_SIZE - sz) / 2;
+            const by = cell.y + (CELL_SIZE - CELL_SIZE * breathScale) / 2;
+
+            ctx.fillStyle = `rgb(${Math.round(brightness)},${Math.round(brightness)},${Math.round(brightness)})`;
+            ctx.globalAlpha = breathOp;
+            ctx.fillRect(bx, by, sz, CELL_SIZE * breathScale);
+            ctx.globalAlpha = 1;
+          }
+        }
+
+        rafRef.current = requestAnimationFrame(animate);
+      };
+
+      rafRef.current = requestAnimationFrame(animate);
+
+      cleanup = () => {
+        cancelAnimationFrame(rafRef.current);
+        window.removeEventListener('scroll', onScroll);
+        document.body.classList.remove('video-reveal-active');
+      };
+    };
+
+    setup();
+    return () => cleanup?.();
+  }, [initGrid, measureSection]);
+
+  /* ── Resize handler ── */
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        const dpr = window.devicePixelRatio || 1;
+        const W = window.innerWidth + STEP;
+        const H = window.innerHeight + STEP;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = `${W}px`;
+        canvas.style.height = `${H}px`;
+        ctx.scale(dpr, dpr);
+        initGrid(W, H);
+        measureSection();
+      }, 200);
+    };
+    window.addEventListener('resize', onResize);
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [initGrid, measureSection]);
+
+  return (
+    <section ref={sectionRef} id="work" className="relative" style={{ height: '500vh' }}>
+      {/* Snap checkpoints */}
+      <div data-snap-section className="absolute" style={{ top: '42%' }} />
+      <div data-snap-section className="absolute" style={{ top: '86%' }} />
+
+      {/* Fixed canvas */}
+      <div
+        ref={containerRef}
+        className="fixed inset-0 pointer-events-none overflow-hidden"
+        style={{ zIndex: -1, opacity: 0 }}
+      >
+        <canvas ref={canvasRef} className="block" />
+      </div>
+
+      {/* Hidden videos */}
+      <div className="sr-only" aria-hidden="true">
+        {projects.map((p, i) => (
+          <video
+            key={i}
+            ref={el => { videoRefs.current[i] = el; }}
+            loop
+            muted
+            playsInline
+            preload="auto"
+            crossOrigin="anonymous"
+          >
+            <source src={p.webmSrc} type="video/webm" />
+            <source src={p.videoSrc} type="video/mp4" />
+          </video>
+        ))}
+      </div>
+
+      {/* Mockup overlay — Project 1 */}
+      <div className="sticky top-0 h-screen pointer-events-none" style={{ zIndex: 10 }}>
+        <div
+          className="absolute inset-0 flex flex-col transition-opacity duration-300"
+          style={{ opacity: mockup1Opacity }}
+        >
+          <MockupOverlay mockup={projects[0].mockup} href={projects[0].projectHref} />
+        </div>
+      </div>
+
+      {/* Mockup overlay — Project 2 */}
+      <div className="sticky top-0 h-screen pointer-events-none" style={{ zIndex: 10 }}>
+        <div
+          className="absolute inset-0 flex flex-col transition-opacity duration-300"
+          style={{ opacity: mockup2Opacity }}
+        >
+          <MockupOverlay mockup={projects[1].mockup} href={projects[1].projectHref} />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ── Mockup Overlay (reused from VideoRevealSection) ── */
+function MockupOverlay({ mockup, href }: { mockup: ProjectMockup; href: string }) {
+  return (
+    <>
+      {/* Dark vignette */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50" />
+
+      {/* Navigation bar */}
+      <div className="relative z-10 flex items-center justify-between px-[5%] py-[3%]">
+        <div className="hidden sm:flex items-center gap-[2em]">
+          {mockup.navLeft.map((item) => (
+            <span
+              key={item}
+              className="text-white/70 font-light"
+              style={{ fontSize: 'clamp(0.55rem, 0.9vw, 0.8rem)', letterSpacing: '0.08em' }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+        <div className="flex-1 flex flex-col items-center">
+          <span
+            className="text-white font-light tracking-wide"
+            style={{ fontSize: 'clamp(0.8rem, 1.5vw, 1.2rem)', fontFamily: 'serif', letterSpacing: '0.1em' }}
+          >
+            {mockup.brandName}
+          </span>
+          <span
+            className="text-white/40"
+            style={{ fontSize: 'clamp(0.5rem, 0.8vw, 0.7rem)', fontFamily: 'serif', fontStyle: 'italic' }}
+          >
+            {mockup.brandSub}
+          </span>
+        </div>
+        <div className="hidden sm:flex items-center gap-[2em]">
+          {mockup.navRight.map((item) => (
+            <span
+              key={item}
+              className="text-white/70 font-light"
+              style={{ fontSize: 'clamp(0.55rem, 0.9vw, 0.8rem)', letterSpacing: '0.08em' }}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Hero content */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-[10%]">
+        <span
+          className="text-white/50 uppercase font-light mb-6"
+          style={{ fontSize: 'clamp(0.5rem, 0.7vw, 0.65rem)', letterSpacing: '0.3em' }}
+        >
+          {mockup.eyebrow}
+        </span>
+        <h3
+          className="text-white font-light leading-[0.95] mb-6 whitespace-pre-line"
+          style={{ fontSize: 'clamp(1.8rem, 4vw, 4.5rem)', fontFamily: 'serif', letterSpacing: '-0.01em' }}
+        >
+          {mockup.heroTitle}
+        </h3>
+        <div className="w-16 h-[1px] bg-white/30 mb-6" />
+        <p
+          className="text-white/70 font-light italic"
+          style={{ fontSize: 'clamp(0.6rem, 1vw, 0.9rem)', fontFamily: 'serif', letterSpacing: '0.04em' }}
+        >
+          {mockup.heroSub}
+        </p>
+        <div className="mt-8 pointer-events-auto">
+          <Link
+            href={href}
+            className="border border-white/60 text-white px-8 py-3 font-light hover:bg-white/10 transition-colors duration-300"
+            style={{ fontSize: 'clamp(0.55rem, 0.8vw, 0.75rem)', letterSpacing: '0.12em' }}
+          >
+            {mockup.cta}
+          </Link>
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div className="relative z-10 flex flex-col items-center pb-[3%]">
+        <span
+          className="text-white/30 uppercase"
+          style={{ fontSize: 'clamp(0.4rem, 0.5vw, 0.45rem)', letterSpacing: '0.25em' }}
+        >
+          Défiler
+        </span>
+        <div className="w-[1px] h-6 bg-white/20 mt-1 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-white/50 animate-scroll-line" />
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default PixelFlipReveal;

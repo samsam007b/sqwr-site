@@ -3,7 +3,7 @@
 import MagneticButton from '@/components/MagneticButton';
 import PixelGridHero from '@/components/PixelGridHero';
 import ScrollProgress from '@/components/ScrollProgress';
-import VideoRevealSection from '@/components/VideoRevealSection';
+import PixelFlipReveal from '@/components/PixelFlipReveal';
 import { getProjectById } from '@/app/data/projects';
 import { useLanguage } from '@/context/LanguageContext';
 import ScatterText from '@/components/ScatterText';
@@ -77,8 +77,8 @@ function PhilosophySection() {
   });
 
   // Body text: fade in when title assembled, fade out on disperse
-  const bodyOpacity = useTransform(scrollYProgress, [0.32, 0.40, 0.55, 0.63], [0, 1, 1, 0]);
-  const bodyY = useTransform(scrollYProgress, [0.32, 0.40, 0.55, 0.63], [30, 0, 0, -30]);
+  const bodyOpacity = useTransform(scrollYProgress, [0.38, 0.45, 0.55, 0.63], [0, 1, 1, 0]);
+  const bodyY = useTransform(scrollYProgress, [0.38, 0.45, 0.55, 0.63], [30, 0, 0, -30]);
 
   return (
     <section id="philosophy" ref={sectionRef} className="relative" style={{ height: '200vh' }}>
@@ -90,8 +90,8 @@ function PhilosophySection() {
               <ScatterText
                 text={t('home.philosophyLabel')}
                 progress={scrollYProgress}
-                assembleRange={[0.15, 0.32]}
-                disperseRange={[0.60, 0.75]}
+                assembleRange={[0.20, 0.37]}
+                disperseRange={[0.63, 0.78]}
                 className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40"
                 stagger={0.003}
               />
@@ -101,8 +101,8 @@ function PhilosophySection() {
               <ScatterText
                 text={t('home.philosophyTitle')}
                 progress={scrollYProgress}
-                assembleRange={[0.17, 0.35]}
-                disperseRange={[0.58, 0.73]}
+                assembleRange={[0.22, 0.40]}
+                disperseRange={[0.61, 0.76]}
                 className="font-display font-normal text-3xl md:text-4xl lg:text-5xl leading-tight text-foreground"
                 style={{ display: 'block', marginBottom: '2.5rem' }}
                 stagger={0.0015}
@@ -256,19 +256,23 @@ export default function DesktopHomePage() {
 
       {/* Content rises up over the grid as you scroll */}
       <PhilosophySection />
-      <VideoRevealSection
-        videoSrc="/projet-nanou/hero-massage.mp4"
-        webmSrc="/projet-nanou/hero-massage.webm"
-        mockup={getProjectById('nanou')!.mockup!}
-        projectColor={getProjectById('nanou')!.color}
-        projectHref="/portfolio/nanou"
-      />
-      <VideoRevealSection
-        videoSrc="/projet-villa-coladeira/hero-cinemagraph.mp4"
-        webmSrc="/projet-villa-coladeira/hero-cinemagraph.mp4"
-        mockup={getProjectById('villa-coladeira')!.mockup!}
-        projectColor={getProjectById('villa-coladeira')!.color}
-        projectHref="/portfolio/villa-coladeira"
+      <PixelFlipReveal
+        projects={[
+          {
+            videoSrc: '/projet-nanou/hero-massage.mp4',
+            webmSrc: '/projet-nanou/hero-massage.webm',
+            mockup: getProjectById('nanou')!.mockup!,
+            projectColor: getProjectById('nanou')!.color,
+            projectHref: '/portfolio/nanou',
+          },
+          {
+            videoSrc: '/projet-villa-coladeira/hero-cinemagraph.mp4',
+            webmSrc: '/projet-villa-coladeira/hero-cinemagraph.mp4',
+            mockup: getProjectById('villa-coladeira')!.mockup!,
+            projectColor: getProjectById('villa-coladeira')!.color,
+            projectHref: '/portfolio/villa-coladeira',
+          },
+        ]}
       />
       <ClosingSection />
     </>

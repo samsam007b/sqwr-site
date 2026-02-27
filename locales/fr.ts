@@ -7,7 +7,7 @@ export const fr = {
     contact: 'Contact',
   },
   hero: {
-    since: 'DEPUIS 2016 — BRUXELLES',
+    since: 'BRUXELLES',
     title: 'Votre marque mérite\nmieux qu\'un template',
     subtitle: 'Sites web sur-mesure, identités visuelles stratégiques, dashboards personnalisés — livrés par une équipe familiale réactive, à un prix qui fait sens.',
     cta: 'Découvrir nos projets',
@@ -162,7 +162,7 @@ export const fr = {
   about: {
     title: 'À propos',
     subtitle: 'Une agence créative passionnée',
-    description: 'Depuis 2016, nous accompagnons nos clients dans leurs projets de communication visuelle avec créativité et professionnalisme.',
+    description: 'Nous accompagnons nos clients dans leurs projets de communication visuelle avec créativité et professionnalisme.',
     teamTitle: 'Notre équipe',
     teamSubtitle: 'Une équipe familiale passionnée et talentueuse',
     team1Name: 'Samuel Baudon',
@@ -188,7 +188,7 @@ export const fr = {
     error: 'Erreur lors de l\'envoi du message',
   },
   footer: {
-    tagline: 'Depuis 2016, nous créons des identités visuelles\nqui connectent et transforment.',
+    tagline: 'Nous créons des identités visuelles\nqui connectent et transforment.',
     location: 'Bruxelles, Belgique',
     navigationTitle: 'Navigation',
     contactTitle: 'Contactez-nous',
