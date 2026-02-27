@@ -9,6 +9,12 @@ const CELL_SIZE = 10;
 const GAP = 2;
 const STEP = CELL_SIZE + GAP;
 const BG_COLOR = '#FAFAF8';
+const BG_OP = 0.04; // matches PixelGridHero background cell opacity
+const GRID_COL = 'rgba(17,17,17,'; // dark cells on light bg, like PixelGridHero
+
+/* ── HD dissolve: canvas fades out to reveal real video when flip completes ── */
+const DISSOLVE_START = 0.88; // start dissolving canvas at 88% of flip wave
+const DISSOLVE_END = 1.0;    // fully dissolved at 100%
 
 /* ── Scroll-phase boundaries (fraction of section scroll 0-1) ── */
 const P = {
@@ -90,6 +96,9 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
 
   const [mockup1Opacity, setMockup1Opacity] = useState(0);
   const [mockup2Opacity, setMockup2Opacity] = useState(0);
+  const [hdVideo1Opacity, setHdVideo1Opacity] = useState(0);
+  const [hdVideo2Opacity, setHdVideo2Opacity] = useState(0);
+  const [canvasOpacity, setCanvasOpacity] = useState(1);
 
   /* ── Init grid cells ── */
   const initGrid = useCallback((width: number, height: number) => {
@@ -265,6 +274,44 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         setMockup1Opacity(m1);
         setMockup2Opacity(m2);
 
+        // ── HD video dissolve logic ──
+        // When flip1 wave nears completion → dissolve canvas, show HD video 1
+        const flip1Ratio = scroll >= P.flip1Start && scroll <= P.flip1End
+          ? clamp((scroll - P.flip1Start) / (P.flip1End - P.flip1Start), 0, 1)
+          : scroll > P.flip1End && scroll < P.flip2Start ? 1 : 0;
+        const dissolve1 = clamp((flip1Ratio - DISSOLVE_START) / (DISSOLVE_END - DISSOLVE_START), 0, 1);
+
+        // When flip2 wave nears completion → dissolve canvas, show HD video 2
+        const flip2Ratio = scroll >= P.flip2Start && scroll <= P.flip2End
+          ? clamp((scroll - P.flip2Start) / (P.flip2End - P.flip2Start), 0, 1)
+          : scroll > P.flip2End && scroll < P.exitStart ? 1 : 0;
+        const dissolve2 = clamp((flip2Ratio - DISSOLVE_START) / (DISSOLVE_END - DISSOLVE_START), 0, 1);
+
+        // Exit phase: bring canvas back, hide video 2
+        const exitRatio = scroll >= P.exitStart
+          ? clamp((scroll - P.exitStart) / (P.exitEnd - P.exitStart), 0, 1)
+          : 0;
+
+        // Canvas opacity: fade out when a dissolve is active, fade back in during exit or flip2 start
+        let cOpacity = 1;
+        if (dissolve1 > 0 && flip2Ratio === 0 && exitRatio === 0) {
+          cOpacity = 1 - dissolve1;
+        } else if (dissolve2 > 0 && exitRatio === 0) {
+          cOpacity = 1 - dissolve2;
+        } else if (exitRatio > 0) {
+          // During exit, canvas comes back to show the reverse flip
+          cOpacity = exitRatio > 0.1 ? 1 : exitRatio / 0.1;
+        }
+
+        // When flip2 starts, canvas must reappear (to show the flip from v1→v2)
+        if (scroll >= P.flip2Start - 0.02 && scroll <= P.flip2Start + 0.04) {
+          cOpacity = 1;
+        }
+
+        setCanvasOpacity(cOpacity);
+        setHdVideo1Opacity(dissolve1 > 0 && flip2Ratio === 0 ? dissolve1 : (flip2Ratio > 0 ? 1 - clamp(flip2Ratio / 0.1, 0, 1) : 0));
+        setHdVideo2Opacity(dissolve2 > 0 ? dissolve2 : (exitRatio > 0 ? 1 - exitRatio : 0));
+
         // Play/pause videos
         const v1 = videoRefs.current[0];
         const v2 = videoRefs.current[1];
@@ -410,20 +457,17 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
             ctx.fillStyle = showColor;
             ctx.fillRect(drawX, cell.y, cellW, CELL_SIZE);
           } else {
-            // White/breathing cell
+            // Background cell — matches PixelGridHero exactly:
+            // dark dots at low opacity on #FAFAF8 bg
             const bt = t * cell.breathSpeed + cell.breathPhase;
-            const breathScale = 0.97 + Math.sin(bt) * 0.03;
-            const brightness = 240 + Math.sin(bt * 0.5 + cell.breathPhase) * 15;
-            const breathOp = 0.88 + Math.sin(bt * 0.7 + cell.breathPhase * 2) * 0.12;
+            const op = BG_OP + Math.sin(bt) * 0.01; // 0.03–0.05 opacity
+            if (op <= 0.001) continue;
 
-            const sz = CELL_SIZE * breathScale * Math.max(scaleX, 0.02);
+            const sz = CELL_SIZE * Math.max(scaleX, 0.02);
             const bx = cell.x + (CELL_SIZE - sz) / 2;
-            const by = cell.y + (CELL_SIZE - CELL_SIZE * breathScale) / 2;
 
-            ctx.fillStyle = `rgb(${Math.round(brightness)},${Math.round(brightness)},${Math.round(brightness)})`;
-            ctx.globalAlpha = breathOp;
-            ctx.fillRect(bx, by, sz, CELL_SIZE * breathScale);
-            ctx.globalAlpha = 1;
+            ctx.fillStyle = `${GRID_COL}${Math.min(1, op).toFixed(3)})`;
+            ctx.fillRect(bx, cell.y, sz, CELL_SIZE);
           }
         }
 
@@ -478,32 +522,51 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       <div data-snap-section className="absolute" style={{ top: '42%' }} />
       <div data-snap-section className="absolute" style={{ top: '86%' }} />
 
-      {/* Fixed canvas */}
+      {/* HD video layers — positioned behind canvas, revealed on dissolve */}
+      <div
+        className="fixed inset-0 pointer-events-none overflow-hidden"
+        style={{ zIndex: -2, opacity: hdVideo1Opacity }}
+      >
+        <video
+          ref={el => { videoRefs.current[0] = el; }}
+          loop
+          muted
+          playsInline
+          preload="auto"
+          crossOrigin="anonymous"
+          className="w-full h-full object-cover"
+        >
+          <source src={projects[0].webmSrc} type="video/webm" />
+          <source src={projects[0].videoSrc} type="video/mp4" />
+        </video>
+      </div>
+      <div
+        className="fixed inset-0 pointer-events-none overflow-hidden"
+        style={{ zIndex: -2, opacity: hdVideo2Opacity }}
+      >
+        <video
+          ref={el => { videoRefs.current[1] = el; }}
+          loop
+          muted
+          playsInline
+          preload="auto"
+          crossOrigin="anonymous"
+          className="w-full h-full object-cover"
+        >
+          <source src={projects[1].webmSrc} type="video/webm" />
+          <source src={projects[1].videoSrc} type="video/mp4" />
+        </video>
+      </div>
+
+      {/* Fixed canvas — fades out to reveal HD video */}
       <div
         ref={containerRef}
         className="fixed inset-0 pointer-events-none overflow-hidden"
         style={{ zIndex: -1, opacity: 0 }}
       >
-        <canvas ref={canvasRef} className="block" />
+        <canvas ref={canvasRef} className="block" style={{ opacity: canvasOpacity }} />
       </div>
 
-      {/* Hidden videos */}
-      <div className="sr-only" aria-hidden="true">
-        {projects.map((p, i) => (
-          <video
-            key={i}
-            ref={el => { videoRefs.current[i] = el; }}
-            loop
-            muted
-            playsInline
-            preload="auto"
-            crossOrigin="anonymous"
-          >
-            <source src={p.webmSrc} type="video/webm" />
-            <source src={p.videoSrc} type="video/mp4" />
-          </video>
-        ))}
-      </div>
 
       {/* Mockup overlay — Project 1 */}
       <div className="sticky top-0 h-screen pointer-events-none" style={{ zIndex: 10 }}>
