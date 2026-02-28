@@ -20,6 +20,7 @@ export interface Project {
   impact: string;
   services: string[];
   color: string;
+  colors?: string[];   // palette complète du projet (optionnel, révélée au hover)
   image: string;
   video?: string;
   mockup?: ProjectMockup;
@@ -65,6 +66,7 @@ export const projects: Project[] = [
     impact: 'izzico représente l\'aboutissement d\'une démarche créative totale — chaque décision visuelle découle d\'une réflexion stratégique. Du naming au design system en passant par l\'expérience mobile, ce projet pose les fondations d\'une marque appelée à lever des fonds et à s\'imposer sur son marché.',
     services: ['Brand Identity', 'Design System', 'Font & Color System', 'UI/UX Design', 'Web App', 'iOS App'],
     color: '#9c5698',
+    colors: ['#9c5698', '#E87C4E', '#F2C94C', '#4A90D9'],
     image: '/projet-izzico/hero.png',
     featured: true,
   },
@@ -79,6 +81,7 @@ export const projects: Project[] = [
     impact: 'Une présence digitale à la hauteur de l\'expérience : visuels immersifs, vidéo cinemagraph en hero, et parcours de réservation simplifié. Le site positionne la villa dans le segment ultra-luxe et facilite les réservations directes depuis l\'Europe.',
     services: ['Web Design', 'Développement', 'Multilingue (5 langues)', 'Vidéo cinemagraph', 'SEO', 'Déploiement'],
     color: '#1B3A4B',
+    colors: ['#1B3A4B', '#2E86AB', '#C4A882', '#F0E6D3'],
     image: '/projet-villa-coladeira/hero.jpg',
     video: '/projet-villa-coladeira/hero-cinemagraph.mp4',
     mockup: {
