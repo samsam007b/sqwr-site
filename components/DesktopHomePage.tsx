@@ -1,6 +1,6 @@
 'use client';
 
-import MagneticButton from '@/components/MagneticButton';
+import Link from 'next/link';
 import PixelGridHero from '@/components/PixelGridHero';
 import ScrollProgress from '@/components/ScrollProgress';
 import PixelFlipReveal from '@/components/PixelFlipReveal';
@@ -122,119 +122,188 @@ function PhilosophySection() {
   );
 }
 
+// ── Carte 3D flip ─────────────────────────────────────────────────────────────
+function CTACard() {
+  const [flipped, setFlipped] = useState(false);
+
+  return (
+    <div
+      className="relative w-full"
+      style={{ perspective: '1000px', height: '300px' }}
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => setFlipped(false)}
+    >
+      <motion.div
+        className="relative w-full h-full"
+        animate={{ rotateY: flipped ? 180 : 0 }}
+        transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        {/* ── Face avant — rouge ── */}
+        <div
+          className="absolute inset-0 bg-primary p-8 flex flex-col justify-between"
+          style={{ backfaceVisibility: 'hidden' }}
+        >
+          <div className="flex items-start justify-between">
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/40">
+              04 — Démarrer
+            </span>
+            <div className="w-4 h-4 border border-white/25" />
+          </div>
+
+          <div>
+            <p className="font-display font-normal text-[2.1rem] leading-[1] text-white mb-1">
+              Commencer<br />un projet
+            </p>
+            <span className="text-white/40 text-3xl leading-none">→</span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] font-mono text-white/25 uppercase tracking-[0.2em]">
+              Survoler pour pivoter
+            </span>
+            <Link
+              href="/contact"
+              onClick={(e) => e.stopPropagation()}
+              className="px-5 py-2.5 bg-white text-primary text-[10px] font-mono uppercase tracking-[0.15em] hover:bg-white/90 transition-colors duration-200"
+            >
+              Lancer →
+            </Link>
+          </div>
+        </div>
+
+        {/* ── Face arrière — sombre ── */}
+        <div
+          className="absolute inset-0 bg-foreground p-8 flex flex-col justify-between border border-secondary/15"
+          style={{
+            backfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg)',
+          }}
+        >
+          <div className="w-8 h-[2px] bg-primary" />
+
+          <div>
+            <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-paper/25 block mb-5">
+              Contact direct
+            </span>
+            <a
+              href="mailto:studio@sqwr.be"
+              className="font-display font-normal text-[1.6rem] leading-tight text-paper hover:text-primary transition-colors duration-300 block mb-3"
+            >
+              studio@sqwr.be
+            </a>
+            <a
+              href="tel:+32493302752"
+              className="text-sm text-paper/40 font-light hover:text-paper/70 transition-colors duration-300"
+            >
+              +32 493 30 27 52
+            </a>
+          </div>
+
+          <p className="text-[9px] font-mono text-paper/20 uppercase tracking-[0.2em]">
+            Réponse sous 24h ouvrables
+          </p>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ── Section finale ─────────────────────────────────────────────────────────────
 function ClosingSection() {
-  const { t } = useLanguage();
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-15%' });
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: '-12%' });
 
-  // Add cursor-on-dark class when section is in viewport
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-          document.body.classList.add('cursor-on-dark');
-        } else {
-          document.body.classList.remove('cursor-on-dark');
-        }
-      },
-      { threshold: [0, 0.5, 1] }
-    );
-
-    observer.observe(section);
-    return () => {
-      observer.disconnect();
-      document.body.classList.remove('cursor-on-dark');
-    };
-  }, []);
+  const lines = ['Prêts pour', 'votre projet ?'];
 
   return (
     <section
       ref={sectionRef}
       id="closing"
       data-snap-section
-      className="min-h-screen flex flex-col justify-center bg-foreground text-paper relative overflow-hidden"
-      data-dark-bg
+      className="relative min-h-screen flex items-center py-32 lg:py-44 px-6 lg:px-16 overflow-hidden"
     >
-      {/* Red accent line at top */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary/60" />
-
-      <div className="w-full max-w-7xl mx-auto px-6 lg:px-16" ref={ref}>
-        {/* Location label */}
-        <motion.p
-          className="text-xs font-mono uppercase tracking-[0.3em] text-paper/25 mb-12"
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      {/* ── Flèche fantôme en rotation lente ── */}
+      <div className="absolute -top-20 -left-16 select-none pointer-events-none">
+        <motion.span
+          className="font-display font-normal leading-none block"
+          style={{ fontSize: '22rem', color: 'rgba(17,17,17,0.032)' }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 120, ease: 'linear', repeat: Infinity }}
         >
-          Bruxelles, Belgique
-        </motion.p>
+          →
+        </motion.span>
+      </div>
 
-        {/* Main content — asymmetric grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
-          {/* Title — left, large */}
+      <div className="max-w-7xl mx-auto w-full relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
+
+          {/* ── Gauche : headline + sub ── */}
           <div className="lg:col-span-7">
-            <motion.h2
-              className="font-display font-normal text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[0.95] whitespace-pre-line text-paper"
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            >
-              {t('home.ctaTitle')}
-            </motion.h2>
-          </div>
-
-          {/* Right column — subtitle + CTA + email */}
-          <div className="lg:col-span-5 flex flex-col gap-10">
+            {/* Label mono */}
             <motion.p
-              className="text-lg text-paper/40 font-light leading-relaxed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-10"
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.8, delay: 0.05 }}
             >
-              {t('home.ctaSubtitle')}
+              04 — Démarrer
             </motion.p>
 
-            <motion.div
-              className="flex flex-col gap-6"
-              initial={{ opacity: 0, y: 15 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <MagneticButton
-                href="/contact"
-                strength={0.15}
-                className="inline-block w-fit px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300"
-              >
-                {t('home.ctaButton')}
-              </MagneticButton>
+            {/* Rideau de mots */}
+            <h2 className="font-display font-normal text-5xl md:text-6xl lg:text-[5.25rem] leading-[0.92] text-foreground mb-10">
+              {lines.map((line, i) => (
+                <span key={i} className="block overflow-hidden">
+                  <motion.span
+                    className="block"
+                    initial={{ y: '108%' }}
+                    animate={isInView ? { y: 0 } : {}}
+                    transition={{
+                      duration: 1,
+                      delay: 0.15 + i * 0.13,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {line}
+                  </motion.span>
+                </span>
+              ))}
+            </h2>
 
-              <a
-                href="mailto:studio@sqwr.be"
-                className="text-sm text-paper/30 font-light hover:text-paper/60 transition-colors duration-300 w-fit"
-              >
-                studio@sqwr.be
-              </a>
+            {/* Sous-titre */}
+            <motion.p
+              className="text-lg text-secondary/45 font-light max-w-sm leading-relaxed"
+              initial={{ opacity: 0, y: 12 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.9, delay: 0.48, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Un café, une conversation,<br />une vision commune.
+            </motion.p>
+          </div>
+
+          {/* ── Droite : carte 3D ── */}
+          <div className="lg:col-span-4 lg:col-start-9">
+            <motion.div
+              initial={{ opacity: 0, x: 32, rotateY: -12 }}
+              animate={isInView ? { opacity: 1, x: 0, rotateY: 0 } : {}}
+              transition={{ duration: 1.1, delay: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              style={{ perspective: '800px' }}
+            >
+              <CTACard />
             </motion.div>
           </div>
+
         </div>
 
-        {/* Bottom divider + copyright hint */}
+        {/* ── Strip bas ── */}
         <motion.div
-          className="mt-24 lg:mt-32 pt-8 border-t border-paper/10 flex items-center justify-between"
+          className="mt-24 lg:mt-32 pt-8 border-t border-secondary/10 flex items-center justify-between"
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 1, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1, delay: 0.75 }}
         >
-          <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">
-            SQWR Studio
-          </span>
-          <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">
-            &copy; {new Date().getFullYear()}
-          </span>
+          <span className="text-xs font-mono text-secondary/25 uppercase tracking-[0.2em]">SQWR Studio</span>
+          <span className="text-xs font-mono text-secondary/20 uppercase tracking-[0.2em]">Bruxelles · 2024</span>
         </motion.div>
       </div>
     </section>
