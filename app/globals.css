@@ -406,6 +406,16 @@
     animation: scroll-line 2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
   }
 
+  @keyframes marquee-services {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-33.3334%); }
+  }
+
+  .animate-marquee-services {
+    animation: marquee-services 36s linear infinite;
+    will-change: transform;
+  }
+
   @keyframes grain {
     0%, 100% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
     10% { background-position: -5% -10%, 0 0, 0 0, 0 0, 0 0; }
