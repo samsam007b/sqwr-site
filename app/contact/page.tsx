@@ -1,8 +1,28 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from '@/components/ScrollReveal';
-import { motion } from 'framer-motion';
+
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+const SERVICES = [
+  'Site vitrine',
+  'E-commerce',
+  'Identité de marque',
+  'Direction artistique',
+  'Solution sur-mesure',
+  'Autre',
+];
+
+const BUDGETS = [
+  '< 1 000€',
+  '1 000 – 2 500€',
+  '2 500 – 5 000€',
+  '5 000 – 10 000€',
+  '10 000€+',
+  'À discuter',
+];
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -29,7 +49,7 @@ export default function ContactPage() {
       if (res.ok) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', company: '', service: '', budget: '', message: '' });
-        setTimeout(() => setSubmitStatus('idle'), 6000);
+        setTimeout(() => setSubmitStatus('idle'), 7000);
       } else {
         setSubmitStatus('error');
         setTimeout(() => setSubmitStatus('idle'), 6000);
@@ -43,320 +63,337 @@ export default function ContactPage() {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const contactInfo = [
-    { title: 'Email', value: 'studio@sqwr.be', link: 'mailto:studio@sqwr.be' },
-    { title: 'Téléphone', value: '+32 493 30 27 52', link: 'tel:+32493302752' },
-    { title: 'Adresse', value: 'Bruxelles, Belgique', link: null },
-  ];
-
-  const services = [
-    'Communication visuelle',
-    'Design graphique',
-    'Création de logos',
-    'Création de sites web',
-    'Design de flyers',
-    'Design réseaux sociaux',
-    'Autre',
-  ];
-
-  const budgets = [
-    'Moins de 5 000€',
-    '5 000€ - 10 000€',
-    '10 000€ - 25 000€',
-    '25 000€ - 50 000€',
-    'Plus de 50 000€',
-    'À discuter',
-  ];
+  const setPill = (field: 'service' | 'budget', value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: prev[field] === value ? '' : value,
+    }));
+  };
 
   const inputClass =
-    'w-full px-0 py-4 border-b border-secondary/20 focus:border-primary focus:outline-none transition-colors bg-transparent text-foreground font-light placeholder:text-secondary/30';
-
-  const selectClass =
-    'w-full px-0 py-4 border-b border-secondary/20 focus:border-primary focus:outline-none transition-colors bg-transparent text-foreground font-light appearance-none';
+    'w-full px-0 py-3.5 border-b border-secondary/20 focus:border-primary focus:outline-none transition-colors duration-300 bg-transparent text-foreground font-light placeholder:text-secondary/25 text-base';
 
   return (
     <>
-      {/* ─── HERO ────────────────────────────────────────────────────────────── */}
-      <section className="pt-32 pb-24 lg:pt-40 lg:pb-32 px-6 lg:px-16 relative">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12">
-            <div className="lg:col-span-9">
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8"
-              >
-                Contact
-              </motion.p>
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.0, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display font-normal leading-[0.95] text-foreground mb-12"
-              >
-                Parlons de<br />votre projet
-              </motion.h1>
-            </div>
+      {/* ── HERO ─────────────────────────────────────────────────────────────── */}
+      <section className="pt-32 pb-12 lg:pt-44 lg:pb-16 px-6 lg:px-16 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative">
+          {/* Ghost number */}
+          <div className="absolute -top-6 -left-3 lg:-top-14 lg:-left-6 select-none pointer-events-none">
+            <span
+              className="font-display font-normal text-[10rem] lg:text-[16rem] leading-none block"
+              style={{ color: 'rgba(17,17,17,0.04)' }}
+            >
+              →
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12">
-            <motion.div
-              className="lg:col-start-5 lg:col-span-7"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <p className="text-xl text-secondary/60 leading-relaxed font-light">
-                Que vous ayez un projet précis en tête ou simplement envie d'explorer les
-                possibilités, nous sommes là pour vous écouter.
-              </p>
-            </motion.div>
-          </div>
+          <motion.p
+            className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8 relative z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+          >
+            Contact
+          </motion.p>
+
+          <motion.h1
+            className="font-display font-normal text-4xl md:text-5xl lg:text-7xl leading-[0.92] text-foreground relative z-10 max-w-3xl"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.15, ease: EASE }}
+          >
+            Parlons de<br />votre projet.
+          </motion.h1>
+
+          <motion.p
+            className="mt-8 text-lg text-secondary/50 font-light max-w-md relative z-10"
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
+          >
+            Que vous ayez un brief précis ou juste une idée, on est là pour l&apos;écouter.
+          </motion.p>
         </div>
+
         <div className="absolute bottom-0 left-6 right-6 lg:left-16 lg:right-16 h-[1px] bg-secondary/10" />
       </section>
 
-      {/* ─── FORM + INFO ─────────────────────────────────────────────────────── */}
-      <section className="py-32 lg:py-40 px-6 lg:px-16">
+      {/* ── FORM + INFO ──────────────────────────────────────────────────────── */}
+      <section className="py-20 lg:py-32 px-6 lg:px-16">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
 
-            {/* Contact Form */}
+            {/* ── Form ── */}
             <div className="lg:col-span-7 order-last lg:order-first">
-              <ScrollReveal>
-                <form onSubmit={handleSubmit} className="space-y-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10">
-                    <div>
-                      <label htmlFor="name" className="block text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
-                        Nom complet *
+              <AnimatePresence mode="wait">
+                {submitStatus === 'success' ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6, ease: EASE }}
+                    className="py-20 lg:py-28"
+                  >
+                    <div className="w-8 h-[2px] bg-primary mb-8" />
+                    <h2 className="font-display font-normal text-3xl lg:text-4xl text-foreground mb-6 leading-tight">
+                      Message envoyé.<br />On revient vite.
+                    </h2>
+                    <p className="text-secondary/55 font-light text-lg max-w-md">
+                      Merci pour votre message — nous vous répondons généralement
+                      sous 24h ouvrables.
+                    </p>
+                    <p className="mt-6 text-sm font-mono text-secondary/40">
+                      studio@sqwr.be &mdash; +32 493 30 27 52
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    onSubmit={handleSubmit}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                  >
+
+                    {/* Step 01 — Vous */}
+                    <div className="mb-14">
+                      <div className="flex items-center gap-4 mb-8">
+                        <span className="text-xs font-mono text-primary tracking-[0.2em]">01</span>
+                        <div className="flex-1 h-[1px] bg-secondary/10" />
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/35">Vous</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
+                        <div>
+                          <label htmlFor="name" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
+                            Nom complet *
+                          </label>
+                          <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            className={inputClass}
+                            placeholder="Votre nom"
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="email" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
+                            Email *
+                          </label>
+                          <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className={inputClass}
+                            placeholder="votre@email.com"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-10">
+                        <label htmlFor="company" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
+                          Entreprise <span className="text-secondary/25 normal-case tracking-normal">(optionnel)</span>
+                        </label>
+                        <input
+                          type="text"
+                          id="company"
+                          name="company"
+                          value={formData.company}
+                          onChange={handleChange}
+                          className={inputClass}
+                          placeholder="Nom de votre organisation"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Step 02 — Votre projet */}
+                    <div className="mb-14">
+                      <div className="flex items-center gap-4 mb-8">
+                        <span className="text-xs font-mono text-primary tracking-[0.2em]">02</span>
+                        <div className="flex-1 h-[1px] bg-secondary/10" />
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/35">Votre projet</span>
+                      </div>
+
+                      {/* Service pills */}
+                      <div className="mb-10">
+                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-4">
+                          Type de service *
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {SERVICES.map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              onClick={() => setPill('service', s)}
+                              className="px-4 py-2 text-xs font-mono uppercase tracking-[0.1em] border transition-all duration-200"
+                              style={{
+                                borderColor: formData.service === s ? 'var(--primary)' : 'rgba(102,102,102,0.2)',
+                                backgroundColor: formData.service === s ? 'var(--primary)' : 'transparent',
+                                color: formData.service === s ? '#fff' : 'rgba(102,102,102,0.6)',
+                              }}
+                            >
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                        {/* Hidden input to make the form value available */}
+                        <input type="hidden" name="service" value={formData.service} />
+                      </div>
+
+                      {/* Budget pills */}
+                      <div>
+                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-4">
+                          Budget estimé
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {BUDGETS.map((b) => (
+                            <button
+                              key={b}
+                              type="button"
+                              onClick={() => setPill('budget', b)}
+                              className="px-4 py-2 text-xs font-mono tracking-[0.05em] border transition-all duration-200"
+                              style={{
+                                borderColor: formData.budget === b ? 'var(--primary)' : 'rgba(102,102,102,0.2)',
+                                backgroundColor: formData.budget === b ? 'var(--primary)' : 'transparent',
+                                color: formData.budget === b ? '#fff' : 'rgba(102,102,102,0.6)',
+                              }}
+                            >
+                              {b}
+                            </button>
+                          ))}
+                        </div>
+                        <input type="hidden" name="budget" value={formData.budget} />
+                      </div>
+                    </div>
+
+                    {/* Step 03 — Message */}
+                    <div className="mb-12">
+                      <div className="flex items-center gap-4 mb-8">
+                        <span className="text-xs font-mono text-primary tracking-[0.2em]">03</span>
+                        <div className="flex-1 h-[1px] bg-secondary/10" />
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/35">Le message</span>
+                      </div>
+
+                      <label htmlFor="message" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
+                        Votre message *
                       </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
+                      <textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
                         onChange={handleChange}
                         required
-                        className={inputClass}
-                        placeholder="Votre nom"
+                        rows={6}
+                        className={`${inputClass} resize-none`}
+                        placeholder="Décrivez votre projet, votre contexte, vos objectifs..."
                       />
                     </div>
-                    <div className="mt-8 md:mt-0">
-                      <label htmlFor="email" className="block text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
-                        Email *
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className={inputClass}
-                        placeholder="votre@email.com"
-                      />
-                    </div>
-                  </div>
 
-                  <div className="mt-10">
-                    <label htmlFor="company" className="block text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
-                      Entreprise
-                    </label>
-                    <input
-                      type="text"
-                      id="company"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      className={inputClass}
-                      placeholder="Nom de votre entreprise"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 mt-10">
-                    <div>
-                      <label htmlFor="service" className="block text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
-                        Service souhaité *
-                      </label>
-                      <select
-                        id="service"
-                        name="service"
-                        value={formData.service}
-                        onChange={handleChange}
-                        required
-                        className={selectClass}
+                    {/* Submit */}
+                    <div className="flex items-center gap-6 flex-wrap">
+                      <button
+                        type="submit"
+                        disabled={isSubmitting || !formData.service}
+                        className="px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
                       >
-                        <option value="">Sélectionnez un service</option>
-                        {services.map((service) => (
-                          <option key={service} value={service}>
-                            {service}
-                          </option>
-                        ))}
-                      </select>
+                        {isSubmitting ? 'Envoi...' : 'Envoyer →'}
+                      </button>
+                      {!formData.service && (
+                        <span className="text-xs font-mono text-secondary/35">
+                          Sélectionnez un service pour continuer
+                        </span>
+                      )}
                     </div>
-                    <div className="mt-8 md:mt-0">
-                      <label htmlFor="budget" className="block text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
-                        Budget estimé
-                      </label>
-                      <select
-                        id="budget"
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleChange}
-                        className={selectClass}
+
+                    {submitStatus === 'error' && (
+                      <motion.p
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-6 text-sm font-light text-foreground border-l-2 border-primary pl-4"
                       >
-                        <option value="">Sélectionnez un budget</option>
-                        {budgets.map((budget) => (
-                          <option key={budget} value={budget}>
-                            {budget}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="mt-10">
-                    <label htmlFor="message" className="block text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
-                      Message *
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      className={`${inputClass} resize-none`}
-                      placeholder="Parlez-nous de votre projet..."
-                    />
-                  </div>
-
-                  <div className="mt-12">
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full md:w-auto px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
-                    </button>
-                  </div>
-
-                  {submitStatus === 'success' && (
-                    <div className="mt-6 p-6 border border-primary/20 text-sm text-foreground font-light">
-                      Merci ! Votre message a été envoyé avec succès. Nous vous répondrons dans les
-                      plus brefs délais.
-                    </div>
-                  )}
-
-                  {submitStatus === 'error' && (
-                    <div className="mt-6 p-6 border border-primary text-sm text-foreground font-light">
-                      Une erreur s'est produite. Veuillez réessayer ou nous contacter directement
-                      par email.
-                    </div>
-                  )}
-                </form>
-              </ScrollReveal>
+                        Une erreur s&apos;est produite. Réessayez ou écrivez-nous directement à{' '}
+                        <a href="mailto:studio@sqwr.be" className="text-primary">
+                          studio@sqwr.be
+                        </a>
+                      </motion.p>
+                    )}
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
 
-            {/* Contact Info */}
+            {/* ── Info sidebar ── */}
             <div className="lg:col-span-4 lg:col-start-9 order-first lg:order-last">
-              <div className="lg:sticky lg:top-32 space-y-16">
-
-                {/* Mobile quick contact */}
-                <div className="lg:hidden border-t border-secondary/10 pt-8">
-                  <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-6">
-                    Contact rapide
-                  </p>
-                  <a
-                    href="tel:+32493302752"
-                    className="flex items-center justify-between py-4 border-b border-secondary/10 text-foreground active:text-primary transition-colors duration-200"
-                  >
-                    <div>
-                      <span className="text-xs font-mono uppercase tracking-[0.15em] text-secondary/40 block mb-1">
-                        Téléphone
-                      </span>
-                      <span className="text-xl font-light">+32 493 30 27 52</span>
-                    </div>
-                    <span className="text-secondary/30 text-lg flex-shrink-0 ml-4">↗</span>
-                  </a>
-                  <a
-                    href="mailto:studio@sqwr.be"
-                    className="flex items-center justify-between pt-4 text-foreground active:text-primary transition-colors duration-200"
-                  >
-                    <div>
-                      <span className="text-xs font-mono uppercase tracking-[0.15em] text-secondary/40 block mb-1">
-                        Email
-                      </span>
-                      <span className="text-lg font-light">studio@sqwr.be</span>
-                    </div>
-                    <span className="text-secondary/30 text-lg flex-shrink-0 ml-4">↗</span>
-                  </a>
-                </div>
-
+              <div className="lg:sticky lg:top-32 space-y-12">
                 <ScrollReveal delay={0.2}>
-                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-8">
-                    Informations de contact
+                  <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/35 mb-8">
+                    Nous joindre
                   </p>
-                  <div className="space-y-8">
-                    {contactInfo.map((info) => (
-                      <div key={info.title} className="pb-6 border-b border-secondary/10 last:border-0">
-                        <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-2">
-                          {info.title}
-                        </p>
-                        {info.link ? (
-                          <a
-                            href={info.link}
-                            className="text-lg font-light text-foreground hover:text-primary transition-colors duration-300"
-                          >
-                            {info.value}
-                          </a>
-                        ) : (
-                          <p className="text-lg font-light text-foreground">{info.value}</p>
-                        )}
+
+                  <div className="space-y-0 border-t border-secondary/10">
+                    <a
+                      href="mailto:studio@sqwr.be"
+                      className="group flex items-center justify-between py-5 border-b border-secondary/10 hover:text-primary transition-colors duration-300"
+                    >
+                      <div>
+                        <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/35 block mb-1">Email</span>
+                        <span className="font-light text-base text-foreground group-hover:text-primary transition-colors duration-300">
+                          studio@sqwr.be
+                        </span>
                       </div>
-                    ))}
+                      <span className="text-secondary/25 group-hover:text-primary transition-colors duration-300 ml-4">↗</span>
+                    </a>
+
+                    <a
+                      href="tel:+32493302752"
+                      className="group flex items-center justify-between py-5 border-b border-secondary/10 hover:text-primary transition-colors duration-300"
+                    >
+                      <div>
+                        <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/35 block mb-1">T&eacute;l&eacute;phone</span>
+                        <span className="font-light text-base text-foreground group-hover:text-primary transition-colors duration-300">
+                          +32 493 30 27 52
+                        </span>
+                      </div>
+                      <span className="text-secondary/25 group-hover:text-primary transition-colors duration-300 ml-4">↗</span>
+                    </a>
+
+                    <div className="py-5 border-b border-secondary/10">
+                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/35 block mb-1">Localisation</span>
+                      <span className="font-light text-base text-foreground">Bruxelles, Belgique</span>
+                    </div>
+
+                    <div className="py-5">
+                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/35 block mb-1">R&eacute;ponse</span>
+                      <span className="font-light text-base text-foreground">Sous 24h ouvrables</span>
+                    </div>
                   </div>
                 </ScrollReveal>
 
-                <ScrollReveal delay={0.3}>
-                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-6">
-                    Suivez-nous
-                  </p>
-                  <div className="flex gap-4">
-                    {[
-                      { label: 'IG', aria: 'Instagram' },
-                      { label: 'LI', aria: 'LinkedIn' },
-                      { label: 'BE', aria: 'Behance' },
-                    ].map((social) => (
-                      <a
-                        key={social.label}
-                        href="#"
-                        className="w-12 h-12 border border-secondary/20 flex items-center justify-center text-xs font-mono hover:bg-primary hover:text-white hover:border-primary transition-all duration-300"
-                        aria-label={social.aria}
-                      >
-                        {social.label}
-                      </a>
-                    ))}
+                {/* Note */}
+                <ScrollReveal delay={0.35}>
+                  <div className="border-l-2 border-primary/30 pl-5">
+                    <p className="text-sm text-secondary/45 font-light leading-relaxed">
+                      Pas de formulaire standardisé. Chaque projet est discuté directement avec les
+                      créateurs &mdash; sans intermédiaire.
+                    </p>
                   </div>
-                </ScrollReveal>
-
-                <ScrollReveal delay={0.4}>
-                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-4">
-                    Horaires
-                  </p>
-                  <p className="text-secondary/60 text-sm leading-relaxed font-light">
-                    Lundi – Vendredi : 9h00 – 18h00<br />
-                    Samedi – Dimanche : Fermé
-                  </p>
                 </ScrollReveal>
               </div>
             </div>
+
           </div>
         </div>
       </section>
