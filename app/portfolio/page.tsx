@@ -2,13 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import {
-  motion,
-  AnimatePresence,
-  useMotionValue,
-  useSpring,
-  useInView,
-} from 'framer-motion';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import ScrollReveal from '@/components/ScrollReveal';
 import MagneticButton from '@/components/MagneticButton';
 import { projects, getProjectsByCategory } from '@/app/data/projects';
@@ -16,19 +10,162 @@ import type { Project } from '@/app/data/projects';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/* ── Project Row ─────────────────────────────────────────────────────────────── */
-function ProjectRow({
+// ── Constantes pixel (miroir de PixelGridHero / Header) ───────────────────────
+const CELL = 10;
+const GAP  = 2;
+const STEP = CELL + GAP;   // 12 px
+const TRAIL      = 0.18;   // largeur de la vague (fraction)
+const FILL_DUR   = 520;    // ms
+const DRAIN_DUR  = 340;    // ms
+
+function hexToRgba(hex: string, alpha: number): string {
+  const c = hex.startsWith('#') ? hex.slice(1) : hex;
+  const r = parseInt(c.slice(0, 2), 16) || 0;
+  const g = parseInt(c.slice(2, 4), 16) || 0;
+  const b = parseInt(c.slice(4, 6), 16) || 0;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+/* ── PixelRowCanvas ───────────────────────────────────────────────────────────
+   Couvre la moitié droite de la ligne projet.
+   Hover → vague de pixels colorés depuis la droite (+ image du projet en fond).
+   ────────────────────────────────────────────────────────────────────────── */
+function PixelRowCanvas({
   project,
-  index,
-  onHoverStart,
-  onHoverEnd,
+  isHovered,
 }: {
   project: Project;
-  index: number;
-  onHoverStart: (e: React.MouseEvent) => void;
-  onHoverEnd: () => void;
+  isHovered: boolean;
 }) {
-  const ref = useRef(null);
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const imageRef     = useRef<HTMLImageElement | null>(null);
+  const rafRef       = useRef<number>(0);
+  const fillRef      = useRef<number>(0);
+
+  // drawAtLevel stable (dépend uniquement de project.color)
+  const drawAtLevel = useCallback(
+    (level: number) => {
+      const canvas = canvasRef.current;
+      const ctx    = canvas?.getContext('2d');
+      if (!canvas || !ctx) return;
+
+      const W = canvas.width;
+      const H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      if (level <= 0.002) return;
+
+      // Image du projet en fond (opacité proportionnelle)
+      const img = imageRef.current;
+      if (img?.complete && img.naturalWidth > 0) {
+        ctx.globalAlpha = Math.min(0.9, level * 1.25);
+        ctx.drawImage(img, 0, 0, W, H);
+        ctx.globalAlpha = 1;
+      }
+
+      // Grille de pixels colorés — vague depuis bord droit, centre vertical
+      const cols = Math.ceil(W / STEP) + 1;
+      const rows = Math.ceil(H / STEP) + 1;
+      const oCol  = cols - 1;
+      const oRow  = Math.floor(rows / 2);
+      const maxD  = oCol + Math.max(oRow, rows - 1 - oRow);
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const dist     = Math.abs(c - oCol) + Math.abs(r - oRow);
+          const distNorm = maxD > 0 ? dist / maxD : 0;
+          const t        = (level - distNorm * (1 - TRAIL)) / TRAIL;
+          const scale    = Math.max(0, Math.min(1, t));
+          if (scale <= 0.005) continue;
+
+          const sz = STEP * scale;
+          const x  = c * STEP + (STEP - sz) / 2;
+          const y  = r * STEP + (STEP - sz) / 2;
+
+          // Couleur projet semi-transparente → image transparaît
+          ctx.fillStyle = hexToRgba(project.color, 0.44 * scale);
+          ctx.fillRect(x, y, sz, sz);
+        }
+      }
+    },
+    [project.color],
+  );
+
+  // Précharge l'image
+  useEffect(() => {
+    const img = new Image();
+    img.src = project.image;
+    img.onload = () => {
+      if (fillRef.current > 0) drawAtLevel(fillRef.current);
+    };
+    imageRef.current = img;
+    return () => { img.onload = null; };
+  }, [project.image, drawAtLevel]);
+
+  // Dimensions du canvas
+  useEffect(() => {
+    const canvas     = canvasRef.current;
+    const container  = containerRef.current;
+    if (!canvas || !container) return;
+
+    const update = () => {
+      const { width, height } = container.getBoundingClientRect();
+      if (width > 0 && height > 0) {
+        canvas.width  = Math.round(width);
+        canvas.height = Math.round(height);
+      }
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
+
+  // Animation fill ↔ drain
+  useEffect(() => {
+    cancelAnimationFrame(rafRef.current);
+    const from = fillRef.current;
+    const to   = isHovered ? 1 : 0;
+
+    if (Math.abs(to - from) < 0.005) {
+      drawAtLevel(to);
+      fillRef.current = to;
+      return;
+    }
+
+    const dist     = Math.abs(to - from);
+    const duration = (isHovered ? FILL_DUR : DRAIN_DUR) * dist;
+    const t0       = performance.now();
+
+    const frame = (now: number) => {
+      const t     = duration > 0 ? Math.min(1, (now - t0) / duration) : 1;
+      const level = from + (to - from) * t;
+      fillRef.current = level;
+      drawAtLevel(level);
+      if (t < 1) rafRef.current = requestAnimationFrame(frame);
+    };
+
+    rafRef.current = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [isHovered, drawAtLevel]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-y-0 right-0 w-[48%] pointer-events-none"
+      style={{
+        maskImage: 'linear-gradient(to right, transparent 0%, black 24%)',
+        WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 24%)',
+      }}
+    >
+      <canvas ref={canvasRef} className="w-full h-full block" />
+    </div>
+  );
+}
+
+/* ── Project Row ─────────────────────────────────────────────────────────────── */
+function ProjectRow({ project, index }: { project: Project; index: number }) {
+  const ref      = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
   const [isHovered, setIsHovered] = useState(false);
 
@@ -37,14 +174,8 @@ function ProjectRow({
       ref={ref}
       href={`/portfolio/${project.id}`}
       className="group block"
-      onMouseEnter={(e) => {
-        setIsHovered(true);
-        onHoverStart(e);
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        onHoverEnd();
-      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <motion.div
         className="relative border-b border-secondary/10 overflow-hidden"
@@ -52,15 +183,10 @@ function ProjectRow({
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, delay: index * 0.08, ease: EASE }}
       >
-        {/* Hover background tint */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none"
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.4 }}
-          style={{ backgroundColor: `${project.color}08` }}
-        />
+        {/* Canvas pixel en fond — droite */}
+        <PixelRowCanvas project={project} isHovered={isHovered} />
 
-        {/* Hover color bar at bottom */}
+        {/* Barre couleur bas */}
         <motion.div
           className="absolute bottom-0 left-0 h-[2px]"
           style={{ backgroundColor: project.color }}
@@ -69,9 +195,9 @@ function ProjectRow({
           transition={{ duration: 0.5, ease: EASE }}
         />
 
-        {/* Row content */}
-        <div className="relative py-6 lg:py-10 flex items-center gap-4 lg:gap-10">
-          {/* Number */}
+        {/* Contenu — z-index au-dessus du canvas */}
+        <div className="relative z-10 py-6 lg:py-10 flex items-center gap-4 lg:gap-10">
+          {/* Numéro */}
           <span
             className="text-sm lg:text-base font-mono w-8 shrink-0 transition-colors duration-500"
             style={{ color: isHovered ? project.color : 'rgba(102,102,102,0.35)' }}
@@ -79,7 +205,7 @@ function ProjectRow({
             {String(index + 1).padStart(2, '0')}
           </span>
 
-          {/* Title + Client */}
+          {/* Titre + Client */}
           <div className="flex-1 min-w-0">
             <h2 className="font-display font-normal text-xl lg:text-3xl xl:text-4xl text-foreground group-hover:text-primary transition-colors duration-300 truncate">
               {project.title}
@@ -89,45 +215,17 @@ function ProjectRow({
             </span>
           </div>
 
-          {/* Services pills — absolutely positioned so they don't shift layout */}
-          <div className="hidden lg:block relative shrink-0 w-0">
-            <AnimatePresence>
-              {isHovered && (
-                <motion.div
-                  className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  {project.services.slice(0, 2).map((service, i) => (
-                    <motion.span
-                      key={service}
-                      className="text-[10px] font-mono uppercase tracking-wider text-secondary/50 border border-secondary/15 px-2.5 py-1 whitespace-nowrap bg-background/90 backdrop-blur-sm"
-                      initial={{ opacity: 0, x: 10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 10 }}
-                      transition={{ duration: 0.3, delay: i * 0.05 }}
-                    >
-                      {service}
-                    </motion.span>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Category — desktop only */}
+          {/* Catégorie — desktop only */}
           <span className="hidden lg:block text-xs font-mono uppercase tracking-[0.12em] text-secondary/40 w-36 shrink-0 text-right">
             {project.categoryLabel}
           </span>
 
-          {/* Year */}
+          {/* Année */}
           <span className="text-xs font-mono text-secondary/35 w-12 shrink-0 text-right">
             {project.year}
           </span>
 
-          {/* Arrow */}
+          {/* Flèche */}
           <motion.span
             className="text-lg text-secondary/25 group-hover:text-primary transition-colors duration-300 shrink-0"
             animate={{ x: isHovered ? 4 : 0 }}
@@ -144,26 +242,9 @@ function ProjectRow({
 /* ── Page ─────────────────────────────────────────────────────────────────────── */
 export default function PortfolioPage() {
   const [activeFilter, setActiveFilter] = useState('all');
-  const [hoveredProject, setHoveredProject] = useState<Project | null>(null);
   const ctaRef = useRef<HTMLElement>(null);
 
-  // Mouse tracking — start off-screen so first hover doesn't flash from (0,0)
-  const mouseX = useMotionValue(-1000);
-  const mouseY = useMotionValue(-1000);
-  const springX = useSpring(mouseX, { stiffness: 200, damping: 25, mass: 0.5 });
-  const springY = useSpring(mouseY, { stiffness: 200, damping: 25, mass: 0.5 });
-
-  const onMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    },
-    [mouseX, mouseY],
-  );
-
-  // Clear hover on filter change
   const handleFilterChange = useCallback((filterId: string) => {
-    setHoveredProject(null);
     setActiveFilter(filterId);
   }, []);
 
@@ -189,11 +270,11 @@ export default function PortfolioPage() {
   }, []);
 
   const categories = [
-    { id: 'all', label: 'Tout' },
+    { id: 'all',      label: 'Tout' },
     { id: 'branding', label: 'Branding' },
-    { id: 'web', label: 'Web' },
-    { id: 'print', label: 'Print' },
-    { id: 'social', label: 'Social' },
+    { id: 'web',      label: 'Web' },
+    { id: 'print',    label: 'Print' },
+    { id: 'social',   label: 'Social' },
   ];
 
   const filteredProjects = getProjectsByCategory(activeFilter);
@@ -203,7 +284,6 @@ export default function PortfolioPage() {
       {/* ─── HERO ──────────────────────────────────────────────────────────────── */}
       <section className="pt-32 pb-8 lg:pt-44 lg:pb-12 px-6 lg:px-16 relative">
         <div className="max-w-7xl mx-auto relative">
-          {/* Ghost number — animated on filter change */}
           <div className="absolute -top-6 -left-3 lg:-top-14 lg:-left-6 select-none pointer-events-none">
             <AnimatePresence mode="wait">
               <motion.span
@@ -297,7 +377,7 @@ export default function PortfolioPage() {
       </section>
 
       {/* ─── PROJECT INDEX ─────────────────────────────────────────────────────── */}
-      <section className="px-6 lg:px-16 py-16 lg:py-24" onMouseMove={onMouseMove}>
+      <section className="px-6 lg:px-16 py-16 lg:py-24">
         <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div
@@ -309,20 +389,7 @@ export default function PortfolioPage() {
               transition={{ duration: 0.25 }}
             >
               {filteredProjects.map((project, index) => (
-                <ProjectRow
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  onHoverStart={(e) => {
-                    // Snap spring to cursor so preview doesn't fly in from off-screen
-                    mouseX.set(e.clientX);
-                    mouseY.set(e.clientY);
-                    springX.set(e.clientX);
-                    springY.set(e.clientY);
-                    setHoveredProject(project);
-                  }}
-                  onHoverEnd={() => setHoveredProject(null)}
-                />
+                <ProjectRow key={project.id} project={project} index={index} />
               ))}
             </motion.div>
           </AnimatePresence>
@@ -336,66 +403,6 @@ export default function PortfolioPage() {
           )}
         </div>
       </section>
-
-      {/* ─── FLOATING PREVIEW (desktop only) ───────────────────────────────────── */}
-      <AnimatePresence>
-        {hoveredProject && (
-          <motion.div
-            className="fixed pointer-events-none z-50 hidden lg:block"
-            style={{
-              left: springX,
-              top: springY,
-              x: 24,
-              y: '-50%',
-            }}
-            initial={{ opacity: 0, scale: 0.85, rotate: -2 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            exit={{ opacity: 0, scale: 0.85, rotate: 2 }}
-            transition={{ duration: 0.3, ease: EASE }}
-          >
-            <div
-              className="relative w-[360px] h-[240px] overflow-hidden"
-              style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.15)' }}
-            >
-              {hoveredProject.video ? (
-                <video
-                  key={hoveredProject.id}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                >
-                  <source
-                    src={hoveredProject.video.replace('.mp4', '.webm')}
-                    type="video/webm"
-                  />
-                  <source src={hoveredProject.video} type="video/mp4" />
-                </video>
-              ) : (
-                <img
-                  src={hoveredProject.image}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-              )}
-
-              {/* Color border */}
-              <div
-                className="absolute inset-0 border-2"
-                style={{ borderColor: hoveredProject.color }}
-              />
-
-              {/* Year badge */}
-              <div className="absolute bottom-3 right-3">
-                <span className="text-[10px] font-mono text-white/80 tracking-wider bg-black/30 px-2 py-0.5">
-                  {hoveredProject.year}
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* ─── CTA (dark) ────────────────────────────────────────────────────────── */}
       <section
