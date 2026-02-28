@@ -380,17 +380,6 @@ export default function PortfolioPage() {
                 />
               )}
 
-              {/* Pixel grid overlay */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `
-                    repeating-linear-gradient(to right, transparent 0 10px, rgba(250,250,248,0.2) 10px 12px),
-                    repeating-linear-gradient(to bottom, transparent 0 10px, rgba(250,250,248,0.2) 10px 12px)
-                  `,
-                }}
-              />
-
               {/* Color border */}
               <div
                 className="absolute inset-0 border-2"
