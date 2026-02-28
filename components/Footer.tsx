@@ -1,87 +1,94 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 
 const Footer = () => {
   const { t } = useLanguage();
-  const currentYear = new Date().getFullYear();
+  const year = new Date().getFullYear();
+
+  const NAV = [
+    { href: '/services',  label: t('nav.services'),  num: '01' },
+    { href: '/portfolio', label: t('nav.portfolio'), num: '02' },
+    { href: '/about',     label: t('nav.about'),     num: '03' },
+    { href: '/contact',   label: t('nav.contact'),   num: '04' },
+  ];
 
   return (
-    <footer className="bg-foreground text-paper py-20 lg:py-28 relative z-10" data-dark-bg>
-      <div className="max-w-6xl mx-auto px-6 lg:px-16">
-        {/* Top — Large brand statement */}
-        <div className="mb-20 lg:mb-28">
-          <p className="font-display text-3xl md:text-4xl lg:text-5xl font-normal leading-tight text-paper/90 max-w-3xl">
-            {t('footer.tagline')}
-          </p>
-        </div>
+    <footer className="bg-foreground text-paper relative z-10 overflow-hidden" data-dark-bg>
 
-        {/* Middle — Two columns: nav + contact */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 mb-20">
+      {/* ── Red accent — mirrors about dark section ── */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary/60" />
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-16">
+
+        {/* ── Nav + contact sur une ligne ── */}
+        <div className="flex flex-wrap items-center justify-between gap-y-6 gap-x-8 py-12 lg:py-16 border-b border-paper/10">
+
           {/* Navigation */}
-          <div>
-            <p className="text-xs font-mono uppercase tracking-[0.2em] text-paper/30 mb-6">
-              {t('footer.navigationTitle')}
-            </p>
-            <nav className="flex flex-col space-y-3">
-              {[
-                { href: '/services', label: t('nav.services') },
-                { href: '/portfolio', label: t('nav.portfolio') },
-                { href: '/about', label: t('nav.about') },
-                { href: '/contact', label: t('nav.contact') },
-              ].map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-paper/50 hover:text-paper text-sm font-light transition-colors duration-500 w-fit"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+          <nav className="flex flex-wrap items-center gap-x-8 md:gap-x-12 gap-y-4">
+            {NAV.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex items-baseline gap-2 text-paper/40 hover:text-paper transition-colors duration-300"
+              >
+                <span className="text-[10px] font-mono tracking-[0.15em] text-paper/20 group-hover:text-primary transition-colors duration-300">
+                  {item.num}
+                </span>
+                <span className="text-sm font-light">{item.label}</span>
+              </Link>
+            ))}
+          </nav>
 
-          {/* Contact */}
-          <div>
-            <p className="text-xs font-mono uppercase tracking-[0.2em] text-paper/30 mb-6">
-              {t('footer.contactTitle')}
-            </p>
-            <div className="flex flex-col space-y-3">
-              <a
-                href="mailto:studio@sqwr.be"
-                className="text-paper/50 hover:text-paper text-sm font-light transition-colors duration-500 w-fit"
-              >
-                studio@sqwr.be
-              </a>
-              <a
-                href="tel:+32493302752"
-                className="text-paper/50 hover:text-paper text-sm font-light transition-colors duration-500 w-fit"
-              >
-                +32 493 30 27 52
-              </a>
-              <p className="text-paper/30 text-xs font-mono uppercase tracking-[0.15em] mt-4">
-                {t('footer.location')}
-              </p>
-            </div>
+          {/* Contact — desktop inline, mobile en dessous */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-8">
+            <a
+              href="mailto:studio@sqwr.be"
+              className="text-paper/35 hover:text-paper text-sm font-light transition-colors duration-300"
+            >
+              studio@sqwr.be
+            </a>
+            <span className="hidden sm:block text-paper/15 text-xs select-none">&mdash;</span>
+            <a
+              href="tel:+32493302752"
+              className="text-paper/35 hover:text-paper text-sm font-light transition-colors duration-300"
+            >
+              +32 493 30 27 52
+            </a>
           </div>
         </div>
 
-        {/* Bottom — Copyright + Logo */}
-        <div className="pt-10 border-t border-paper/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <p className="text-xs font-mono text-paper/25 tracking-wide">
-            &copy; {currentYear} {t('footer.copyright')}
-          </p>
-          <Image
-            src="/Logo SQWR/sqwr-logo-white.png"
-            alt="sqwr"
-            width={501}
-            height={243}
-            className="h-6 w-auto opacity-20"
-          />
-        </div>
       </div>
+
+      {/* ── Wordmark géant ── */}
+      <div
+        className="w-full select-none pointer-events-none px-4 lg:px-10 pt-6 pb-0 leading-none"
+        aria-hidden="true"
+      >
+        <span
+          className="font-display font-normal text-paper block w-full"
+          style={{
+            fontSize: 'clamp(5rem, 23.5vw, 23rem)',
+            lineHeight: 0.82,
+            letterSpacing: '-0.02em',
+            opacity: 0.055,
+          }}
+        >
+          SQWR
+        </span>
+      </div>
+
+      {/* ── Strip copyright ── */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-16 pb-7 flex items-center justify-between">
+        <span className="text-[11px] font-mono text-paper/20 tracking-[0.08em]">
+          &copy; {year} sqwr.
+        </span>
+        <span className="text-[11px] font-mono text-paper/15 uppercase tracking-[0.2em]">
+          Bruxelles &middot; Belgique
+        </span>
+      </div>
+
     </footer>
   );
 };
