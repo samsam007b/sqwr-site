@@ -12,8 +12,8 @@ const TEAM = [
     number: '01',
     name: 'Samuel Baudon',
     tag: 'Direction',
-    role: 'IHECS · Communication · Strat\u00e9gie · Web',
-    bio: 'Master en communication et relations publiques à l\u2019IHECS (Bruxelles). Auto-entrepreneur chez izzico. Deux ans de production d\u2019\u00e9v\u00e9nements (festivals, vernissages musicaux). \u00c0 ce jour, trois projets web livr\u00e9s\u00a0: Villa Coladeira, Massages\u00a0& Naissances, izzico. Il pilote la strat\u00e9gie, le d\u00e9veloppement commercial et la vision du studio.',
+    role: 'IHECS · Affaires europ\u00e9ennes · Strat\u00e9gie · Web',
+    bio: 'Master en affaires europ\u00e9ennes \u00e0 l\u2019IHECS (Bruxelles) — une formation qui croise communication institutionnelle, analyse strat\u00e9gique et relations publiques. Auto-entrepreneur chez izzico. Deux ans de production d\u2019\u00e9v\u00e9nements (festivals, vernissages musicaux). Trois projets web livr\u00e9s\u00a0: Villa Coladeira, Massages\u00a0& Naissances, izzico. Il pilote la strat\u00e9gie, le d\u00e9veloppement et la vision du studio.',
   },
   {
     number: '02',
