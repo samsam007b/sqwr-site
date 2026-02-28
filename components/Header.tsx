@@ -209,6 +209,16 @@ const Header = () => {
     return () => { document.body.style.overflow = ''; };
   }, [overlayPhase]);
 
+  // ── Curseur blanc sur fond noir quand overlay visible ────────────────────
+  useEffect(() => {
+    if (overlayPhase !== 'closed') {
+      document.body.classList.add('cursor-on-dark');
+    } else {
+      document.body.classList.remove('cursor-on-dark');
+    }
+    return () => { document.body.classList.remove('cursor-on-dark'); };
+  }, [overlayPhase]);
+
   // ── Cleanup RAF ───────────────────────────────────────────────────────────
   useEffect(() => {
     return () => cancelAnimationFrame(rafRef.current);

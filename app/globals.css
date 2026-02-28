@@ -82,14 +82,14 @@
     cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23E01919'/%3E%3C/svg%3E") 8 8, pointer;
   }
 
-  /* Curseur carré blanc sur éléments interactifs - fond noir (priorité absolue) */
+  /* Curseur carré rouge sur éléments interactifs - fond noir aussi */
   body.cursor-on-dark a,
   body.cursor-on-dark button,
   body.cursor-on-dark [role="button"],
   body.cursor-on-dark input[type="button"],
   body.cursor-on-dark input[type="submit"],
   body.cursor-on-dark .cursor-pointer {
-    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23FFFFFF'/%3E%3C/svg%3E") 8 8, pointer !important;
+    cursor: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='16' height='16' fill='%23E01919'/%3E%3C/svg%3E") 8 8, pointer !important;
   }
 
   /* HD Paper texture avec grain fin */
