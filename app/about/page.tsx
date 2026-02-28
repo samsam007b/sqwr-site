@@ -12,22 +12,35 @@ const TEAM = [
     number: '01',
     name: 'Samuel Baudon',
     tag: 'Direction',
-    role: 'Stratégie · Communication · Entrepreneuriat',
-    bio: "Étudiant en communication et relations publiques, Samuel est aussi entrepreneur : fondateur d'Ears\u00a0& Eyes et porteur du projet izzico. Il pilote la stratégie, le développement commercial et la vision du studio.",
+    role: 'Communication · Stratégie · Web',
+    bio: 'Étudiant en master de communication et relations publiques, auto-entrepreneur chez izzico. Deux ans de production d\u2019événements (festivals, vernissages musicaux). À ce jour, trois projets web livrés : Villa Coladeira, Massages & Naissances, izzico. Il pilote la stratégie, le développement commercial et la vision du studio.',
   },
   {
     number: '02',
     name: 'Joakim Baudon',
     tag: 'Création',
-    role: 'Design · Direction Artistique · Innovation',
-    bio: 'Formé deux ans à La Cambre, actuellement étudiant à la Kunstschule de Liechtenstein. Joakim insuffle une approche contemporaine et artistique à chaque projet — à la croisée du design graphique et des outils IA.',
+    role: 'Design · Direction Artistique',
+    bio: 'Formé à La Cambre (Bruxelles), actuellement à la Kunstschule de Liechtenstein. Direction artistique de Lost Garden (événement musical, Bruxelles). Identité de marque complète — logo et affiches — pour La Villa, fondation basée en Suisse. Il insuffle une approche contemporaine et exigeante à chaque projet.',
   },
 ];
 
-const STATS = [
-  { value: '150+', label: 'Marques transformées' },
-  { value: '9 ans', label: "D'expertise créative" },
-  { value: '02', label: 'Designers, une famille' },
+/* Three identity pillars — qualitative, not inflated numbers */
+const PILLARS = [
+  {
+    label: 'Ancrage',
+    value: 'La Cambre\nKunstschule',
+    sub: "Deux des meilleures \u00e9coles d\u2019art d\u2019Europe continentale",
+  },
+  {
+    label: 'Origine',
+    value: 'Bruxelles\nBelgique',
+    sub: 'Studio fondé à Bruxelles, actif depuis 2024',
+  },
+  {
+    label: 'Approche',
+    value: 'AI-driven\nDesign',
+    sub: 'Outils IA intégrés pour livrer plus vite, sans sacrifier la qualité',
+  },
 ];
 
 export default function AboutPage() {
@@ -92,8 +105,8 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
           >
-            Deux disciplines. Une seule vision.<br />
-            Des projets qui laissent une trace.
+            Deux profils. Une exigence commune.<br />
+            Des projets pensés pour durer.
           </motion.p>
         </div>
 
@@ -106,32 +119,37 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             <ScrollReveal className="lg:col-span-4">
               <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-6">
-                01 &mdash; Notre histoire
+                01 &mdash; Qui sommes-nous
               </p>
               <h2 className="font-display font-normal text-3xl lg:text-4xl leading-tight text-foreground">
-                Studio familial.<br />Triple expertise.
+                Jeune studio.<br />Vraie exigence.
               </h2>
             </ScrollReveal>
 
             <ScrollReveal delay={0.15} className="lg:col-span-7 lg:col-start-6">
               <div className="space-y-6 text-base lg:text-lg text-secondary/58 leading-relaxed font-light">
                 <p>
-                  SQWR Studio est une agence créative basée à Bruxelles, portée par deux membres
-                  de la famille Baudon. Notre force réside dans notre complémentarité : stratégie
-                  et communication d&apos;un côté, design et direction artistique de l&apos;autre.
+                  SQWR Studio est né à Bruxelles en 2024. Un studio récent, porté par deux frères
+                  dont les parcours se complètent — communication et stratégie d'un côté,
+                  design et direction artistique de l&apos;autre.
                 </p>
                 <p>
-                  Ce qui nous distingue des agences classiques, c&apos;est notre taille humaine.
-                  Vous travaillez directement avec les créateurs — sans intermédiaires, sans
-                  perte de sens. Chaque brief est traité avec la même rigueur, qu&apos;il s&apos;agisse
-                  d&apos;une identité de marque ou d&apos;une plateforme e-commerce.
+                  Nous ne prétendons pas à vingt ans d&apos;expérience. Ce que nous apportons,
+                  c&apos;est une formation dans deux des meilleures écoles d&apos;art d&apos;Europe,
+                  une maîtrise native des outils IA, et une rigueur créative que l&apos;on retrouve
+                  dans chaque livrable — qu&apos;il s&apos;agisse d&apos;une identité de marque
+                  ou d&apos;une plateforme web.
+                </p>
+                <p>
+                  Notre taille est notre avantage : vous travaillez directement avec les créateurs,
+                  sans intermédaire, sans perte de sens entre le brief et le résultat final.
                 </p>
               </div>
 
               {/* Pull quote */}
               <div className="mt-12 pl-6 border-l-2 border-primary">
                 <p className="font-display font-normal text-xl lg:text-2xl text-foreground leading-snug">
-                  &ldquo;Qualité agence.<br />Réactivité d&apos;une équipe familiale.&rdquo;
+                  &ldquo;Pas une grande agence.<br />Mais la même qualité — sans les frais généraux.&rdquo;
                 </p>
               </div>
             </ScrollReveal>
@@ -139,22 +157,25 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── STATS ────────────────────────────────────────────────────────────── */}
+      {/* ── PILLARS ──────────────────────────────────────────────────────────── */}
       <section className="border-t border-secondary/10 py-20 lg:py-24 px-6 lg:px-16">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-3 gap-4 lg:gap-0 lg:divide-x lg:divide-secondary/10">
-            {STATS.map((stat, i) => (
-              <ScrollReveal key={stat.label} delay={i * 0.1}>
-                <div className="lg:px-16 first:pl-0 last:pr-0 text-center lg:text-left">
-                  <span
-                    className="font-display font-normal block leading-none mb-3"
-                    style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)', color: 'var(--primary)' }}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-secondary/10">
+            {PILLARS.map((pillar, i) => (
+              <ScrollReveal key={pillar.label} delay={i * 0.1}>
+                <div className="bg-background p-8 lg:p-10">
+                  <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/35 mb-5">
+                    {pillar.label}
+                  </p>
+                  <p
+                    className="font-display font-normal leading-tight text-foreground mb-4 whitespace-pre-line"
+                    style={{ fontSize: 'clamp(1.4rem, 2.5vw, 1.9rem)' }}
                   >
-                    {stat.value}
-                  </span>
-                  <span className="text-xs font-mono uppercase tracking-[0.15em] text-secondary/40">
-                    {stat.label}
-                  </span>
+                    {pillar.value}
+                  </p>
+                  <p className="text-sm text-secondary/45 font-light leading-relaxed">
+                    {pillar.sub}
+                  </p>
                 </div>
               </ScrollReveal>
             ))}
@@ -174,11 +195,11 @@ export default function AboutPage() {
             </h2>
           </ScrollReveal>
 
-          <div className="space-y-0">
+          <div>
             {TEAM.map((member, index) => (
               <ScrollReveal key={member.name} delay={index * 0.1}>
                 <div className="border-t border-secondary/10 py-12 lg:py-16 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
-                  {/* Ghost number + tag */}
+                  {/* Ghost number */}
                   <div className="lg:col-span-1">
                     <span
                       className="font-display font-normal leading-none select-none block"
@@ -239,19 +260,20 @@ export default function AboutPage() {
               <div className="space-y-6 text-base lg:text-lg text-paper/50 leading-relaxed font-light">
                 <p>
                   Notre philosophie de travail{' '}
-                  <span className="text-paper/90 font-normal">AI-driven</span> nous permet d&apos;être
-                  compétitifs en démocratisant des travaux autrefois très chronophages.
+                  <span className="text-paper/90 font-normal">AI-driven</span> n&apos;est pas un
+                  argument marketing — c&apos;est notre réalité quotidienne. Les outils IA nous
+                  permettent de compresser les phases chronophages sans sacrifier l&apos;intention
+                  créative.
                 </p>
                 <p>
-                  En automatisant les tâches répétitives que les clients ne voyaient pas mais qui
-                  rendaient le prix des projets élevé, nous libérons du temps pour nous concentrer
-                  sur ce qui compte vraiment :{' '}
-                  <span className="text-paper/90 font-normal">la Création</span>.
+                  Ce que d&apos;autres studios facturent à travers des heures d&apos;exécution
+                  répétitive, nous le résolvons en amont — libérant du temps pour ce qui
+                  compte vraiment :{' '}
+                  <span className="text-paper/90 font-normal">la réflexion, la création, le dialogue avec le client.</span>
                 </p>
                 <p>
-                  Cette approche nous permet d&apos;offrir un service de qualité agence à des prix
-                  accessibles, tout en consacrant notre énergie créative là où elle a le plus
-                  d&apos;impact.
+                  C&apos;est pourquoi nous pouvons proposer une qualité de conception exigeante
+                  à des tarifs qui n&apos;ont rien à voir avec ceux d&apos;une agence traditionnelle.
                 </p>
               </div>
 
@@ -275,7 +297,7 @@ export default function AboutPage() {
 
           <div className="mt-24 lg:mt-32 pt-8 border-t border-paper/10 flex items-center justify-between">
             <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">SQWR Studio</span>
-            <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">Bruxelles, Belgique</span>
+            <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">Bruxelles &middot; 2024</span>
           </div>
         </div>
       </section>
