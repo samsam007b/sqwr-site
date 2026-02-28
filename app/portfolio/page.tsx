@@ -34,16 +34,15 @@ function PixelRowCanvas({
   project,
   isHovered,
 }: {
-  project: Project;
+  project: Pick<Project, 'color'>;
   isHovered: boolean;
 }) {
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const imageRef     = useRef<HTMLImageElement | null>(null);
   const rafRef       = useRef<number>(0);
   const fillRef      = useRef<number>(0);
 
-  // drawAtLevel stable (dépend uniquement de project.color)
+  // drawAtLevel — pur pixel, couleur projet, légère variation de texture
   const drawAtLevel = useCallback(
     (level: number) => {
       const canvas = canvasRef.current;
@@ -55,20 +54,12 @@ function PixelRowCanvas({
       ctx.clearRect(0, 0, W, H);
       if (level <= 0.002) return;
 
-      // Image du projet en fond (opacité proportionnelle)
-      const img = imageRef.current;
-      if (img?.complete && img.naturalWidth > 0) {
-        ctx.globalAlpha = Math.min(0.9, level * 1.25);
-        ctx.drawImage(img, 0, 0, W, H);
-        ctx.globalAlpha = 1;
-      }
-
-      // Grille de pixels colorés — vague depuis bord droit, centre vertical
+      // Grille de pixels — vague depuis bord droit, centre vertical
       const cols = Math.ceil(W / STEP) + 1;
       const rows = Math.ceil(H / STEP) + 1;
-      const oCol  = cols - 1;
-      const oRow  = Math.floor(rows / 2);
-      const maxD  = oCol + Math.max(oRow, rows - 1 - oRow);
+      const oCol = cols - 1;
+      const oRow = Math.floor(rows / 2);
+      const maxD = oCol + Math.max(oRow, rows - 1 - oRow);
 
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
@@ -82,25 +73,16 @@ function PixelRowCanvas({
           const x  = c * STEP + (STEP - sz) / 2;
           const y  = r * STEP + (STEP - sz) / 2;
 
-          // Couleur projet semi-transparente → image transparaît
-          ctx.fillStyle = hexToRgba(project.color, 0.44 * scale);
+          // Variation d'opacité par cellule (texture organique, déterministe)
+          const noise  = (Math.sin(c * 1.7 + r * 2.3) + 1) / 2; // 0–1
+          const alpha  = (0.55 + noise * 0.40) * scale;
+          ctx.fillStyle = hexToRgba(project.color, alpha);
           ctx.fillRect(x, y, sz, sz);
         }
       }
     },
     [project.color],
   );
-
-  // Précharge l'image
-  useEffect(() => {
-    const img = new Image();
-    img.src = project.image;
-    img.onload = () => {
-      if (fillRef.current > 0) drawAtLevel(fillRef.current);
-    };
-    imageRef.current = img;
-    return () => { img.onload = null; };
-  }, [project.image, drawAtLevel]);
 
   // Dimensions du canvas
   useEffect(() => {
