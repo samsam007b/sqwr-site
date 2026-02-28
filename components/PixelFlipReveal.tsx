@@ -38,6 +38,16 @@ const P = {
   exitEnd: 0.89,
 };
 
+/* ── Animation zones — fixed maximum playback duration (seconds) ──
+ * During these zones, scroll can only slow the animation down, never speed it up.
+ * Contemplation zones (between animations) follow scroll directly.
+ */
+const ANIMATION_ZONES = [
+  { start: P.flip1Start, end: P.flip1End, duration: 1.6 },
+  { start: P.flip2Start, end: P.flip2End, duration: 1.6 },
+  { start: P.exitStart,  end: P.exitEnd,  duration: 1.2 },
+];
+
 /* ── Flip animation params ── */
 const FLIP_WINDOW = 0.5; // each cell takes 50% of the wave duration to flip
 const GAP_CLOSE_START = 0.15; // start closing gaps at 15% of flip wave
@@ -274,11 +284,34 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       };
 
       /* ── Render loop ── */
+      let prevTime = performance.now();
+
       const animate = (time: number) => {
+        const dt = Math.min((time - prevTime) / 1000, 0.05); // clamp to 50ms max
+        prevTime = time;
         const t = (time - t0Ref.current) / 1000;
 
-        // Direct scroll tracking — Lenis handles smoothing, no double-interpolation
-        const scroll = scrollRef.current;
+        // Advance displayScroll with velocity cap in animation zones.
+        // Fast scroll → animation is capped at its defined duration.
+        // Slow scroll → animation follows scroll naturally.
+        // Backward scroll → follows directly.
+        const rawScroll = scrollRef.current;
+        let disp = displayScrollRef.current;
+
+        if (rawScroll < disp) {
+          // Scrolling backward — follow directly
+          disp = rawScroll;
+        } else if (rawScroll > disp) {
+          const zone = ANIMATION_ZONES.find(z => disp >= z.start && disp < z.end);
+          if (zone) {
+            const rate = (zone.end - zone.start) / zone.duration;
+            disp = Math.min(disp + rate * dt, rawScroll);
+          } else {
+            disp = rawScroll;
+          }
+        }
+        displayScrollRef.current = disp;
+        const scroll = disp;
 
         const cells = cellsRef.current;
         const cols = colsRef.current;
