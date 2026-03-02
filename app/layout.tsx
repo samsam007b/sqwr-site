@@ -140,14 +140,11 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
-          <Script
-            defer
-            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
-            src="https://plausible.io/js/script.js"
-            strategy="afterInteractive"
-          />
-        )}
+        <Script
+          async
+          src="https://plausible.io/js/pa-R2EajvyZiMg77-kBchQnU.js"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="min-h-screen font-sans relative">
         <LanguageProvider>
