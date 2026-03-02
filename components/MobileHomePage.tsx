@@ -39,39 +39,42 @@ export default function MobileHomePage() {
           }}
         />
 
-        {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="relative z-10"
-        >
-          <Image
-            src="/Logo SQWR/sqwr-logo.svg"
-            alt="SQWR Studio"
-            width={120}
-            height={58}
-            priority
-            className="h-8 w-auto"
-          />
-        </motion.div>
+        {/* Spacer haut */}
+        <div />
 
-        {/* Tagline */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10"
-        >
-          <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/50 mb-5">
-            Studio cr&eacute;atif &middot; Bruxelles
-          </p>
-          <h1 className="font-display font-normal leading-[1.08] tracking-[-0.02em] text-foreground" style={{ fontSize: 'clamp(2rem, 9vw, 3.5rem)' }}>
-            Identit&eacute;s visuelles<br />
-            &amp; sites web<br />
-            <span className="text-primary">sur-mesure.</span>
-          </h1>
-        </motion.div>
+        {/* Logo + Tagline — groupés, logo juste au-dessus du texte */}
+        <div className="relative z-10">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="mb-7"
+          >
+            <Image
+              src="/Logo SQWR/sqwr-logo.svg"
+              alt="SQWR Studio"
+              width={501}
+              height={243}
+              priority
+              className="h-16 w-auto"
+            />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/50 mb-5">
+              Studio cr&eacute;atif &middot; Bruxelles
+            </p>
+            <h1 className="font-display font-normal leading-[1.08] tracking-[-0.02em] text-foreground" style={{ fontSize: 'clamp(2rem, 9vw, 3.5rem)' }}>
+              Identit&eacute;s visuelles<br />
+              &amp; sites web<br />
+              <span className="text-primary">sur-mesure.</span>
+            </h1>
+          </motion.div>
+        </div>
 
         {/* CTAs */}
         <motion.div
