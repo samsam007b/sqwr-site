@@ -82,6 +82,7 @@ export default function AboutPage() {
           </div>
 
           <motion.p
+            aria-hidden="true"
             className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8 relative z-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -118,7 +119,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             <ScrollReveal className="lg:col-span-4">
-              <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-6">
+              <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-6">
                 01 &mdash; Qui sommes-nous
               </p>
               <h2 className="font-display font-normal text-3xl lg:text-4xl leading-tight text-foreground">
@@ -164,7 +165,7 @@ export default function AboutPage() {
             {PILLARS.map((pillar, i) => (
               <ScrollReveal key={pillar.label} delay={i * 0.1}>
                 <div className="bg-background p-8 lg:p-10">
-                  <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/35 mb-5">
+                  <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/60 mb-5">
                     {pillar.label}
                   </p>
                   <p
@@ -187,7 +188,7 @@ export default function AboutPage() {
       <section className="py-24 lg:py-36 px-6 lg:px-16 border-t border-secondary/10">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal className="mb-16 lg:mb-20">
-            <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-6">
+            <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-6">
               02 &mdash; L&apos;&eacute;quipe
             </p>
             <h2 className="font-display font-normal text-3xl lg:text-4xl leading-tight text-foreground">
@@ -218,7 +219,7 @@ export default function AboutPage() {
                     <h3 className="font-display font-normal text-2xl lg:text-3xl text-foreground mb-2 leading-tight">
                       {member.name}
                     </h3>
-                    <p className="text-xs font-mono text-secondary/40 leading-relaxed">
+                    <p className="text-xs font-mono text-secondary/70 leading-relaxed">
                       {member.role}
                     </p>
                   </div>

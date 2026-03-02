@@ -14,9 +14,11 @@ const languages: { code: Locale; label: string }[] = [
 interface LanguageSelectorProps {
   /** When true, uses inverted colors (white square, dark text) for the overlay menu */
   inverted?: boolean;
+  /** When true, dropdown opens downward (use when positioned at the top of the screen) */
+  openDown?: boolean;
 }
 
-const LanguageSelector = ({ inverted = false }: LanguageSelectorProps) => {
+const LanguageSelector = ({ inverted = false, openDown = false }: LanguageSelectorProps) => {
   const { locale, setLocale } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -56,7 +58,7 @@ const LanguageSelector = ({ inverted = false }: LanguageSelectorProps) => {
       {/* Other languages — stacked above */}
       <AnimatePresence>
         {isOpen && (
-          <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+          <div className={`absolute ${openDown ? 'top-full mt-2' : 'bottom-full mb-2'} left-1/2 -translate-x-1/2 flex flex-col items-center gap-2`}>
             {otherLanguages.map((lang, index) => (
               <motion.button
                 key={lang.code}

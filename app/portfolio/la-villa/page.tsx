@@ -165,7 +165,7 @@ export default function LaVillaPage() {
 
                   <div className="space-y-8">
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
                         Client
                       </p>
                       <p className="text-lg font-display font-normal text-foreground">
@@ -174,7 +174,7 @@ export default function LaVillaPage() {
                     </div>
 
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
                         Année
                       </p>
                       <p className="text-lg font-display font-normal text-foreground">
@@ -183,7 +183,7 @@ export default function LaVillaPage() {
                     </div>
 
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
                         Catégorie
                       </p>
                       <p className="text-lg font-display font-normal text-foreground">
@@ -192,7 +192,7 @@ export default function LaVillaPage() {
                     </div>
 
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
                         Lieu
                       </p>
                       <p className="text-lg font-display font-normal text-foreground">
@@ -297,7 +297,7 @@ export default function LaVillaPage() {
                 className="group block"
               >
                 <div className="mb-6">
-                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
                     ← Précédent
                   </p>
                   <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
@@ -317,7 +317,7 @@ export default function LaVillaPage() {
                 className="group block text-right"
               >
                 <div className="mb-6">
-                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                  <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
                     Suivant →
                   </p>
                   <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">

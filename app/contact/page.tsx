@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from '@/components/ScrollReveal';
@@ -37,9 +37,31 @@ export default function ContactPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, boolean>>({});
+
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    // Client-side validation
+    const errors: Record<string, boolean> = {};
+    if (!formData.name.trim()) errors.name = true;
+    if (!formData.email.trim()) errors.email = true;
+    if (!formData.service) errors.service = true;
+    if (!formData.message.trim()) errors.message = true;
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      // Focus first error field
+      if (errors.name) nameRef.current?.focus();
+      else if (errors.email) emailRef.current?.focus();
+      else if (errors.message) messageRef.current?.focus();
+      return;
+    }
+    setFieldErrors({});
     setIsSubmitting(true);
     try {
       const res = await fetch('/api/contact', {
@@ -95,6 +117,7 @@ export default function ContactPage() {
           </div>
 
           <motion.p
+            aria-hidden="true"
             className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8 relative z-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -152,7 +175,7 @@ export default function ContactPage() {
                       Merci pour votre message — nous vous répondons généralement
                       sous 24h ouvrables.
                     </p>
-                    <p className="mt-6 text-sm font-mono text-secondary/40">
+                    <p className="mt-6 text-sm font-mono text-secondary/70">
                       studio@sqwr.be &mdash; +32 493 30 27 52
                     </p>
                   </motion.div>
@@ -179,32 +202,48 @@ export default function ContactPage() {
                             Nom complet *
                           </label>
                           <input
+                            ref={nameRef}
                             type="text"
                             id="name"
                             name="name"
                             value={formData.name}
-                            onChange={handleChange}
+                            onChange={(e) => { handleChange(e); if (fieldErrors.name) setFieldErrors(p => ({ ...p, name: false })); }}
                             required
                             aria-required="true"
+                            aria-invalid={fieldErrors.name ? 'true' : undefined}
+                            aria-describedby={fieldErrors.name ? 'name-error' : undefined}
                             className={inputClass}
                             placeholder="Votre nom"
                           />
+                          {fieldErrors.name && (
+                            <span id="name-error" role="alert" className="text-xs text-primary mt-1 block">
+                              Ce champ est requis
+                            </span>
+                          )}
                         </div>
                         <div>
                           <label htmlFor="email" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
                             Email *
                           </label>
                           <input
+                            ref={emailRef}
                             type="email"
                             id="email"
                             name="email"
                             value={formData.email}
-                            onChange={handleChange}
+                            onChange={(e) => { handleChange(e); if (fieldErrors.email) setFieldErrors(p => ({ ...p, email: false })); }}
                             required
                             aria-required="true"
+                            aria-invalid={fieldErrors.email ? 'true' : undefined}
+                            aria-describedby={fieldErrors.email ? 'email-error' : undefined}
                             className={inputClass}
                             placeholder="votre@email.com"
                           />
+                          {fieldErrors.email && (
+                            <span id="email-error" role="alert" className="text-xs text-primary mt-1 block">
+                              Adresse email invalide
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -298,16 +337,24 @@ export default function ContactPage() {
                         Votre message *
                       </label>
                       <textarea
+                        ref={messageRef}
                         id="message"
                         name="message"
                         value={formData.message}
-                        onChange={handleChange}
+                        onChange={(e) => { handleChange(e); if (fieldErrors.message) setFieldErrors(p => ({ ...p, message: false })); }}
                         required
                         aria-required="true"
+                        aria-invalid={fieldErrors.message ? 'true' : undefined}
+                        aria-describedby={fieldErrors.message ? 'message-error' : undefined}
                         rows={6}
                         className={`${inputClass} resize-none`}
                         placeholder="Décrivez votre projet, votre contexte, vos objectifs..."
                       />
+                      {fieldErrors.message && (
+                        <span id="message-error" role="alert" className="text-xs text-primary mt-1 block">
+                          Ce champ est requis
+                        </span>
+                      )}
                     </div>
 
                     {/* Submit */}
@@ -320,7 +367,7 @@ export default function ContactPage() {
                         {isSubmitting ? 'Envoi...' : 'Envoyer →'}
                       </button>
                       {!formData.service && (
-                        <span className="text-xs font-mono text-secondary/35">
+                        <span className="text-xs font-mono text-secondary/60">
                           Sélectionnez un service pour continuer
                         </span>
                       )}
@@ -342,7 +389,7 @@ export default function ContactPage() {
                     )}
 
                     {/* RGPD notice — A8 */}
-                    <p className="text-[10px] font-mono text-secondary/35 mt-5 leading-relaxed">
+                    <p className="text-[10px] font-mono text-secondary/60 mt-5 leading-relaxed">
                       Données traitées conformément à notre{' '}
                       <Link href="/politique-confidentialite" className="underline hover:text-primary transition-colors">
                         politique de confidentialité
@@ -358,7 +405,7 @@ export default function ContactPage() {
             <div className="lg:col-span-4 lg:col-start-9 order-first lg:order-last">
               <div className="lg:sticky lg:top-32 space-y-12">
                 <ScrollReveal delay={0.2}>
-                  <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/35 mb-8">
+                  <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/60 mb-8">
                     Nous joindre
                   </p>
 
@@ -373,7 +420,7 @@ export default function ContactPage() {
                           studio@sqwr.be
                         </span>
                       </div>
-                      <span className="text-secondary/25 group-hover:text-primary transition-colors duration-300 ml-4">↗</span>
+                      <span aria-hidden="true" className="text-secondary/40 group-hover:text-primary transition-colors duration-300 ml-4">↗</span>
                     </a>
 
                     <a
@@ -386,7 +433,7 @@ export default function ContactPage() {
                           +32 493 30 27 52
                         </span>
                       </div>
-                      <span className="text-secondary/25 group-hover:text-primary transition-colors duration-300 ml-4">↗</span>
+                      <span aria-hidden="true" className="text-secondary/40 group-hover:text-primary transition-colors duration-300 ml-4">↗</span>
                     </a>
 
                     <div className="py-5 border-b border-secondary/10">

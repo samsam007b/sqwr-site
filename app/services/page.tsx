@@ -161,7 +161,8 @@ export default function ServicesPage() {
           </div>
 
           <motion.p
-            className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8 relative z-10"
+            aria-hidden="true"
+            className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/70 mb-8 relative z-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.1 }}
@@ -203,7 +204,7 @@ export default function ServicesPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
             >
-              <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/35 mb-6">
+              <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/60 mb-6">
                 {t('services.subtitle')}
               </p>
 
@@ -222,7 +223,7 @@ export default function ServicesPage() {
               </div>
 
               {/* Small contact nudge */}
-              <p className="mt-8 text-xs font-mono text-secondary/30 leading-relaxed">
+              <p className="mt-8 text-xs font-mono text-secondary/60 leading-relaxed">
                 Besoin d&apos;une solution sur-mesure ?<br />
                 <a
                   href="mailto:studio@sqwr.be"
@@ -260,7 +261,7 @@ export default function ServicesPage() {
                   <div className="flex items-baseline gap-3 mb-8 pb-8 border-b border-secondary/10">
                     {!active.isDevis ? (
                       <>
-                        <span className="text-xs font-mono uppercase tracking-wider text-secondary/40">
+                        <span className="text-xs font-mono uppercase tracking-wider text-secondary/70">
                           {t('services.startingFrom')}
                         </span>
                         <span className="text-4xl font-display font-normal text-primary">
@@ -281,7 +282,7 @@ export default function ServicesPage() {
 
                   {/* Features */}
                   <div className="mb-12">
-                    <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/35 mb-6">
+                    <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/60 mb-6">
                       {active.included}
                     </p>
                     <ul className="space-y-4">
@@ -325,7 +326,7 @@ export default function ServicesPage() {
       </section>
 
       {/* ── DISCIPLINES MARQUEE ──────────────────────────────────────────────── */}
-      <div className="border-y border-secondary/10 overflow-hidden py-5 select-none">
+      <div aria-hidden="true" className="border-y border-secondary/10 overflow-hidden py-5 select-none">
         <div className="flex animate-marquee-services whitespace-nowrap">
           {DISCIPLINES.map((d, i) => (
             <span
@@ -343,7 +344,7 @@ export default function ServicesPage() {
       <section className="py-32 lg:py-48 px-6 lg:px-16">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal className="mb-20 lg:mb-28">
-            <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-6">
+            <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/70 mb-6">
               {t('services.processTitle')}
             </p>
             <h2 className="font-display font-normal text-4xl md:text-5xl lg:text-[3.5rem] leading-[0.95] text-foreground max-w-2xl">

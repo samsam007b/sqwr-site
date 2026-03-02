@@ -4,18 +4,29 @@ import { NextRequest, NextResponse } from 'next/server';
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'studio@sqwr.be';
 
 // ── Rate limiting — Upstash Redis (persistant) ou in-memory (fallback) ────────
-let ratelimit: { limit: (id: string) => Promise<{ success: boolean }> } | null = null;
+type RatelimitInstance = { limit: (id: string) => Promise<{ success: boolean }> };
+let ratelimit: RatelimitInstance | null = null;
+let ratelimitInitialized = false;
 
-if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { Ratelimit } = require('@upstash/ratelimit');
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { Redis } = require('@upstash/redis');
-  ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(3, '60 s'),
-    analytics: false,
-  });
+function getRatelimit(): RatelimitInstance | null {
+  if (ratelimitInitialized) return ratelimit;
+  ratelimitInitialized = true;
+  if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { Ratelimit } = require('@upstash/ratelimit');
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { Redis } = require('@upstash/redis');
+      ratelimit = new Ratelimit({
+        redis: Redis.fromEnv(),
+        limiter: Ratelimit.slidingWindow(3, '60 s'),
+        analytics: false,
+      });
+    } catch {
+      ratelimit = null;
+    }
+  }
+  return ratelimit;
 }
 
 // Fallback in-memory si Upstash non configuré
@@ -24,8 +35,9 @@ const RATE_LIMIT_MAX    = 3;
 const rateMap = new Map<string, { count: number; resetAt: number }>();
 
 async function isRateLimited(ip: string): Promise<boolean> {
-  if (ratelimit) {
-    const { success } = await ratelimit.limit(ip);
+  const rl = getRatelimit();
+  if (rl) {
+    const { success } = await rl.limit(ip);
     return !success;
   }
   const now = Date.now();

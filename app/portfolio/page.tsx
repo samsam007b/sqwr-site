@@ -192,24 +192,25 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
             <h2 className="font-display font-normal text-xl lg:text-3xl xl:text-4xl text-foreground group-hover:text-primary transition-colors duration-300 truncate">
               {project.title}
             </h2>
-            <span className="text-[11px] font-mono text-secondary/40 mt-1 block">
+            <span className="text-[11px] font-mono text-secondary/60 mt-1 block">
               {project.client}
             </span>
           </div>
 
           {/* Catégorie — desktop only */}
-          <span className="hidden lg:block text-xs font-mono uppercase tracking-[0.12em] text-secondary/40 w-36 shrink-0 text-right">
+          <span className="hidden lg:block text-xs font-mono uppercase tracking-[0.12em] text-secondary/60 w-36 shrink-0 text-right">
             {project.categoryLabel}
           </span>
 
           {/* Année */}
-          <span className="text-xs font-mono text-secondary/35 w-12 shrink-0 text-right">
+          <span className="text-xs font-mono text-secondary/60 w-12 shrink-0 text-right">
             {project.year}
           </span>
 
           {/* Flèche */}
           <motion.span
-            className="text-lg text-secondary/25 group-hover:text-primary transition-colors duration-300 shrink-0"
+            aria-hidden="true"
+            className="text-lg text-secondary/40 group-hover:text-primary transition-colors duration-300 shrink-0"
             animate={{ x: isHovered ? 4 : 0 }}
             transition={{ duration: 0.3 }}
           >
@@ -283,6 +284,7 @@ export default function PortfolioPage() {
           </div>
 
           <motion.p
+            aria-hidden="true"
             className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8 relative z-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -333,13 +335,14 @@ export default function PortfolioPage() {
                   className={`relative px-5 py-3 text-xs font-mono uppercase tracking-[0.12em] transition-colors duration-300 whitespace-nowrap ${
                     activeFilter === cat.id
                       ? 'text-foreground'
-                      : 'text-secondary/40 hover:text-secondary/70'
+                      : 'text-secondary/60 hover:text-secondary/80'
                   }`}
                 >
                   {cat.label}
                   <span
+                    aria-hidden="true"
                     className={`ml-1.5 transition-colors duration-300 ${
-                      activeFilter === cat.id ? 'text-primary' : 'text-secondary/25'
+                      activeFilter === cat.id ? 'text-primary' : 'text-secondary/50'
                     }`}
                   >
                     {count}

@@ -77,9 +77,11 @@ const Header = () => {
   const [overlayPhase, setOverlayPhase] = useState<OverlayPhase>('closed');
   const [showContent, setShowContent] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
+  const menuContentRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
   // phaseRef = source of vérité synchrone pour les callbacks
@@ -186,6 +188,14 @@ const Header = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // ── Détection mobile (< lg) ───────────────────────────────────────────────
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   // ── Masquer pendant le video reveal ───────────────────────────────────────
   useEffect(() => {
     const handler = (e: Event) => {
@@ -220,6 +230,42 @@ const Header = () => {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [handleCloseMenu]);
+
+  // ── Focus trap dans le menu ouvert ───────────────────────────────────────
+  useEffect(() => {
+    if (!showContent) return;
+    const container = menuContentRef.current;
+    if (!container) return;
+
+    // Focus le premier élément focusable à l'ouverture
+    const focusable = Array.from(
+      container.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+    if (focusable.length > 0) focusable[0].focus();
+
+    const trapFocus = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    container.addEventListener('keydown', trapFocus);
+    return () => container.removeEventListener('keydown', trapFocus);
+  }, [showContent]);
 
   // ── Curseur blanc sur fond noir quand overlay visible ────────────────────
   useEffect(() => {
@@ -305,7 +351,7 @@ const Header = () => {
       {/* ── Language selector — bas droite ───────────────────────────────── */}
       <motion.div
         ref={controlsRef}
-        className="fixed bottom-6 right-6 lg:right-10 z-[55] flex items-center gap-2"
+        className="fixed top-6 right-14 lg:top-auto lg:bottom-6 lg:right-10 z-[55] flex items-center gap-2"
         initial={{ opacity: 0 }}
         animate={{
           opacity: overlayVisible ? 0 : 1,
@@ -313,7 +359,7 @@ const Header = () => {
         }}
         transition={{ duration: 0.3 }}
       >
-        <LanguageSelector />
+        <LanguageSelector openDown={isMobile} />
       </motion.div>
 
       {/* ── Canvas pixel overlay ──────────────────────────────────────────── */}
@@ -327,6 +373,10 @@ const Header = () => {
       {/* ── Contenu du menu ───────────────────────────────────────────────── */}
       {overlayPhase !== 'closed' && (
         <div
+          ref={menuContentRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation"
           className="fixed inset-0 z-[56] flex items-center"
           style={{
             opacity: showContent ? 1 : 0,
@@ -356,10 +406,10 @@ const Header = () => {
                     onClick={handleCloseMenu}
                     className="group flex items-baseline gap-6 py-6 lg:py-8 transition-colors duration-300"
                   >
-                    <span className="text-xs font-mono text-paper/30 group-hover:text-primary transition-colors duration-300">
+                    <span className="text-xs font-mono text-primary lg:text-paper/30 group-hover:text-primary transition-colors duration-300">
                       {item.num}
                     </span>
-                    <span className="text-4xl md:text-5xl lg:text-6xl font-display font-normal text-paper/80 group-hover:text-paper transition-colors duration-300">
+                    <span className="text-4xl md:text-5xl lg:text-6xl font-display font-normal text-paper lg:text-paper/80 group-hover:text-paper transition-colors duration-300">
                       {item.label}
                     </span>
                   </Link>

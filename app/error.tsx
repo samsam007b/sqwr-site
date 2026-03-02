@@ -17,7 +17,7 @@ export default function Error({
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 text-center">
-      <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-6">
+      <p aria-hidden="true" className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-6">
         500 — Erreur
       </p>
       <h1 className="font-display font-normal text-5xl lg:text-7xl text-foreground mb-6 leading-tight">

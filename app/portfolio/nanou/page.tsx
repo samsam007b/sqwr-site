@@ -232,23 +232,23 @@ export default function NanouPage() {
                   </p>
                   <div className="space-y-8">
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">Client</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Client</p>
                       <p className="text-lg font-display text-foreground">Nanou Mendels</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">Année</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Année</p>
                       <p className="text-lg font-display text-foreground">2025</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">Stack</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Stack</p>
                       <p className="text-lg font-display text-foreground">HTML · Tailwind · Vanilla JS</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">Langues</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Langues</p>
                       <p className="text-lg font-display text-foreground">FR · NL · EN · IT</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
                         Couleur signature
                       </p>
                       <div className="flex items-center gap-3">
@@ -465,7 +465,7 @@ export default function NanouPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
             <ScrollReveal delay={0.1}>
               <Link href={`/portfolio/${prevProject.id}`} className="group block">
-                <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">← Précédent</p>
+                <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">← Précédent</p>
                 <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
                   {prevProject.title}
                 </h3>
@@ -474,7 +474,7 @@ export default function NanouPage() {
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
               <Link href={`/portfolio/${nextProject.id}`} className="group block text-right">
-                <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40 mb-3">Suivant →</p>
+                <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Suivant →</p>
                 <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
                   {nextProject.title}
                 </h3>

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function MentionsLegalesPage() {
   return (
     <main className="max-w-3xl mx-auto px-6 lg:px-8 pt-36 pb-24">
-      <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8">
+      <p aria-hidden="true" className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8">
         Légal
       </p>
       <h1 className="font-display font-normal text-4xl lg:text-5xl text-foreground mb-16 leading-tight">
