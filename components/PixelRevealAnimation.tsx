@@ -82,7 +82,6 @@ export default function PixelRevealAnimation({ onComplete }: PixelRevealAnimatio
       // Sort pixels by appear time for smooth reveal
       pixels.sort((a, b) => a.appearTime - b.appearTime);
 
-      console.log(`Found ${pixels.length} pixels to reveal`);
 
       // Animation parameters
       const startTime = Date.now();

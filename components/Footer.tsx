@@ -80,13 +80,27 @@ const Footer = () => {
       </div>
 
       {/* ── Strip copyright ── */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-16 pb-7 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 lg:px-16 pb-7 flex flex-wrap items-center justify-between gap-4">
         <span className="text-[11px] font-mono text-paper/20 tracking-[0.08em]">
           &copy; {year} sqwr.
         </span>
-        <span className="text-[11px] font-mono text-paper/15 uppercase tracking-[0.2em]">
-          Bruxelles &middot; Belgique
-        </span>
+        <div className="flex items-center gap-6">
+          <Link
+            href="/mentions-legales"
+            className="text-[11px] font-mono text-paper/15 hover:text-paper/35 uppercase tracking-[0.15em] transition-colors duration-300"
+          >
+            Mentions légales
+          </Link>
+          <Link
+            href="/politique-confidentialite"
+            className="text-[11px] font-mono text-paper/15 hover:text-paper/35 uppercase tracking-[0.15em] transition-colors duration-300"
+          >
+            Confidentialité
+          </Link>
+          <span className="text-[11px] font-mono text-paper/15 uppercase tracking-[0.2em]">
+            Bruxelles &middot; Belgique
+          </span>
+        </div>
       </div>
 
     </footer>

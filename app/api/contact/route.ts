@@ -3,7 +3,33 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'studio@sqwr.be';
 
+// ── Rate limiting — in-memory (réinitialisé par cold start) ───────────────────
+const RATE_LIMIT_WINDOW = 60_000; // 1 min
+const RATE_LIMIT_MAX    = 3;      // 3 envois/min par IP
+
+const rateMap = new Map<string, { count: number; resetAt: number }>();
+
+function isRateLimited(ip: string): boolean {
+  const now  = Date.now();
+  const entry = rateMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+    return false;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return true;
+  entry.count++;
+  return false;
+}
+
 export async function POST(req: NextRequest) {
+  // Rate limiting
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: 'Trop de requêtes. Veuillez patienter avant de réessayer.' },
+      { status: 429 }
+    );
+  }
   const resend = new Resend(process.env.RESEND_API_KEY);
   try {
     const body = await req.json();

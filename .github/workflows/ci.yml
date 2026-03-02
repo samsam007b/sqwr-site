@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Lint, Type-check & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # --- Gate 1 : TypeScript ---
+      - name: TypeScript type-check
+        run: npm run type-check
+
+      # --- Gate 2 : ESLint ---
+      - name: ESLint
+        run: npm run lint
+
+      # --- Gate 3 : Build Next.js ---
+      - name: Build Next.js
+        run: npm run build
+        env:
+          NEXT_PUBLIC_CI: "true"

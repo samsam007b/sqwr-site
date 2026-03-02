@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/_next/'],
       },
     ],
-    sitemap: 'https://sqwr.com/sitemap.xml',
+    sitemap: 'https://sqwr.be/sitemap.xml',
   };
 }

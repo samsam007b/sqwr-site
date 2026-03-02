@@ -86,7 +86,6 @@ export default function PixelLogoAnimation({ onComplete }: PixelLogoAnimationPro
         }
       }
 
-      console.log(`Found ${pixels.length} pixels to animate`);
 
       // Animation parameters
       let startTime = Date.now();
