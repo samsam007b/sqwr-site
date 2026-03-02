@@ -80,13 +80,6 @@ export default function MobileHomePage() {
           transition={{ duration: 0.8, delay: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10 flex flex-col gap-3"
         >
-          <Link
-            href="/contact"
-            className="flex items-center justify-between px-6 py-4 bg-foreground text-paper text-sm font-mono uppercase tracking-[0.12em] active:bg-foreground/85 transition-colors duration-200"
-          >
-            <span>Nous contacter</span>
-            <span className="text-base leading-none">→</span>
-          </Link>
           <a
             href="#projets"
             className="flex items-center justify-between px-6 py-4 border border-foreground/20 text-foreground text-sm font-mono uppercase tracking-[0.12em] active:bg-foreground/5 transition-colors duration-200"
@@ -244,25 +237,8 @@ export default function MobileHomePage() {
           </a>
         </motion.div>
 
-        {/* Bouton formulaire */}
-        <motion.div
-          custom={3}
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-8%' }}
-        >
-          <Link
-            href="/contact"
-            className="flex items-center justify-between w-full px-6 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.12em] active:bg-primary/85 transition-colors duration-200"
-          >
-            <span>Formulaire de contact</span>
-            <span className="text-base leading-none">→</span>
-          </Link>
-        </motion.div>
-
         {/* Padding bas pour le floating CTA */}
-        <div className="h-20" />
+        <div className="h-6" />
       </section>
 
     </div>
