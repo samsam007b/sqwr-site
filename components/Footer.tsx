@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '@/context/LanguageContext';
 
 const Footer = () => {
@@ -61,22 +62,24 @@ const Footer = () => {
 
       </div>
 
-      {/* ── Wordmark géant ── */}
+      {/* ── Logo géant — décoratif ── */}
       <div
-        className="w-full select-none pointer-events-none px-4 lg:px-10 pt-6 pb-0 leading-none"
+        className="w-full select-none pointer-events-none px-4 lg:px-10 pt-6 pb-0"
         aria-hidden="true"
+        style={{ opacity: 0.055 }}
       >
-        <span
-          className="font-display font-normal text-paper block w-full"
-          style={{
-            fontSize: 'clamp(5rem, 23.5vw, 23rem)',
-            lineHeight: 0.82,
-            letterSpacing: '-0.02em',
-            opacity: 0.055,
-          }}
+        <div
+          className="relative w-full"
+          style={{ height: 'clamp(4rem, 23.5vw, 22rem)' }}
         >
-          SQWR
-        </span>
+          <Image
+            src="/Logo SQWR/sqwr-logo-white.png"
+            alt=""
+            fill
+            className="object-contain object-left"
+            sizes="100vw"
+          />
+        </div>
       </div>
 
       {/* ── Strip copyright ── */}
