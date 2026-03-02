@@ -104,7 +104,7 @@ export default function ContactPage() {
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="pt-32 pb-12 lg:pt-44 lg:pb-16 px-6 lg:px-16 relative overflow-hidden">
+      <section className="pt-24 pb-8 lg:pt-44 lg:pb-16 px-6 lg:px-16 relative overflow-hidden">
         <div className="max-w-7xl mx-auto relative">
           {/* Ghost number */}
           <div className="absolute -top-6 -left-3 lg:-top-14 lg:-left-6 select-none pointer-events-none">
@@ -149,12 +149,37 @@ export default function ContactPage() {
       </section>
 
       {/* ── FORM + INFO ──────────────────────────────────────────────────────── */}
-      <section className="py-20 lg:py-32 px-6 lg:px-16">
+      <section className="py-10 lg:py-32 px-6 lg:px-16">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+
+          {/* ── Contacts rapides — mobile uniquement ─────────────────────── */}
+          <div className="lg:hidden mb-8 border-t border-secondary/10">
+            <a
+              href="tel:+32493302752"
+              className="flex items-center justify-between py-4 border-b border-secondary/10 active:bg-foreground/5 transition-colors duration-200"
+            >
+              <div>
+                <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/60 block mb-0.5">Téléphone</span>
+                <span className="font-light text-base">+32 493 30 27 52</span>
+              </div>
+              <span className="text-secondary/40">↗</span>
+            </a>
+            <a
+              href="mailto:studio@sqwr.be"
+              className="flex items-center justify-between py-4 border-b border-secondary/10 active:bg-foreground/5 transition-colors duration-200"
+            >
+              <div>
+                <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/60 block mb-0.5">Email</span>
+                <span className="font-light text-base">studio@sqwr.be</span>
+              </div>
+              <span className="text-secondary/40">↗</span>
+            </a>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-24">
 
             {/* ── Form ── */}
-            <div className="lg:col-span-7 order-last lg:order-first">
+            <div className="lg:col-span-7">
               <AnimatePresence mode="wait">
                 {submitStatus === 'success' ? (
                   <motion.div
@@ -189,8 +214,8 @@ export default function ContactPage() {
                   >
 
                     {/* Step 01 — Vous */}
-                    <div className="mb-14">
-                      <div className="flex items-center gap-4 mb-8">
+                    <div className="mb-8 lg:mb-14">
+                      <div className="flex items-center gap-4 mb-6 lg:mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">01</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
                         <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Vous</span>
@@ -264,26 +289,26 @@ export default function ContactPage() {
                     </div>
 
                     {/* Step 02 — Votre projet */}
-                    <div className="mb-14">
-                      <div className="flex items-center gap-4 mb-8">
+                    <div className="mb-8 lg:mb-14">
+                      <div className="flex items-center gap-4 mb-6 lg:mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">02</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
                         <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Votre projet</span>
                       </div>
 
                       {/* Service pills */}
-                      <div className="mb-10">
-                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-4">
+                      <div className="mb-8 lg:mb-10">
+                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-3 lg:mb-4">
                           Type de service *
                         </p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2.5">
                           {SERVICES.map((s) => (
                             <button
                               key={s}
                               type="button"
                               onClick={() => setPill('service', s)}
                               aria-pressed={formData.service === s}
-                              className="px-4 py-2 text-xs font-mono uppercase tracking-[0.1em] border transition-all duration-200"
+                              className="px-4 py-3 min-h-[44px] text-xs font-mono uppercase tracking-[0.1em] border transition-all duration-200"
                               style={{
                                 borderColor: formData.service === s ? 'var(--primary)' : 'rgba(102,102,102,0.2)',
                                 backgroundColor: formData.service === s ? 'var(--primary)' : 'transparent',
@@ -300,17 +325,17 @@ export default function ContactPage() {
 
                       {/* Budget pills */}
                       <div>
-                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-4">
+                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-3 lg:mb-4">
                           Budget estimé
                         </p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2.5">
                           {BUDGETS.map((b) => (
                             <button
                               key={b}
                               type="button"
                               onClick={() => setPill('budget', b)}
                               aria-pressed={formData.budget === b}
-                              className="px-4 py-2 text-xs font-mono tracking-[0.05em] border transition-all duration-200"
+                              className="px-4 py-3 min-h-[44px] text-xs font-mono tracking-[0.05em] border transition-all duration-200"
                               style={{
                                 borderColor: formData.budget === b ? 'var(--primary)' : 'rgba(102,102,102,0.2)',
                                 backgroundColor: formData.budget === b ? 'var(--primary)' : 'transparent',
@@ -326,8 +351,8 @@ export default function ContactPage() {
                     </div>
 
                     {/* Step 03 — Message */}
-                    <div className="mb-12">
-                      <div className="flex items-center gap-4 mb-8">
+                    <div className="mb-8 lg:mb-12">
+                      <div className="flex items-center gap-4 mb-6 lg:mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">03</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
                         <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Le message</span>
@@ -358,11 +383,11 @@ export default function ContactPage() {
                     </div>
 
                     {/* Submit */}
-                    <div className="flex items-center gap-6 flex-wrap">
+                    <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-6">
                       <button
                         type="submit"
                         disabled={isSubmitting || !formData.service}
-                        className="px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="w-full md:w-auto px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? 'Envoi...' : 'Envoyer →'}
                       </button>
@@ -402,7 +427,7 @@ export default function ContactPage() {
             </div>
 
             {/* ── Info sidebar ── */}
-            <div className="lg:col-span-4 lg:col-start-9 order-first lg:order-last">
+            <div className="hidden lg:block lg:col-span-4 lg:col-start-9">
               <div className="lg:sticky lg:top-32 space-y-12">
                 <ScrollReveal delay={0.2}>
                   <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/60 mb-8">
