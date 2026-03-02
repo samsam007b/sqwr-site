@@ -354,12 +354,12 @@ const Header = () => {
         className="fixed top-6 right-14 lg:top-auto lg:bottom-6 lg:right-10 z-[55] flex items-center gap-2"
         initial={{ opacity: 0 }}
         animate={{
-          opacity: overlayVisible ? 0 : 1,
-          pointerEvents: overlayVisible ? 'none' : 'auto',
+          opacity: !isMobile && overlayVisible ? 0 : 1,
+          pointerEvents: !isMobile && overlayVisible ? 'none' : 'auto',
         }}
         transition={{ duration: 0.3 }}
       >
-        <LanguageSelector openDown={isMobile} />
+        <LanguageSelector openDown={isMobile} inverted={overlayVisible} />
       </motion.div>
 
       {/* ── Canvas pixel overlay ──────────────────────────────────────────── */}
@@ -377,14 +377,14 @@ const Header = () => {
           role="dialog"
           aria-modal="true"
           aria-label="Navigation"
-          className="fixed inset-0 z-[56] flex items-center"
+          className="fixed inset-0 z-[56] flex items-start lg:items-center"
           style={{
             opacity: showContent ? 1 : 0,
             transition: 'opacity 0.3s ease',
             pointerEvents: showContent ? 'auto' : 'none',
           }}
         >
-          <div className="w-full max-w-6xl mx-auto px-6 lg:px-16">
+          <div className="w-full max-w-6xl mx-auto px-6 lg:px-16 pt-20 lg:pt-0">
             <nav className="flex flex-col">
               {menuItems.map((item, index) => (
                 <motion.div
@@ -439,7 +439,7 @@ const Header = () => {
                   Bruxelles, Belgique
                 </p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="hidden md:flex items-center gap-3">
                 <LanguageSelector inverted />
               </div>
             </motion.div>
