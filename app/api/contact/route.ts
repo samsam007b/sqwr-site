@@ -3,14 +3,32 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? 'studio@sqwr.be';
 
-// ── Rate limiting — in-memory (réinitialisé par cold start) ───────────────────
-const RATE_LIMIT_WINDOW = 60_000; // 1 min
-const RATE_LIMIT_MAX    = 3;      // 3 envois/min par IP
+// ── Rate limiting — Upstash Redis (persistant) ou in-memory (fallback) ────────
+let ratelimit: { limit: (id: string) => Promise<{ success: boolean }> } | null = null;
 
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { Ratelimit } = require('@upstash/ratelimit');
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { Redis } = require('@upstash/redis');
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(3, '60 s'),
+    analytics: false,
+  });
+}
+
+// Fallback in-memory si Upstash non configuré
+const RATE_LIMIT_WINDOW = 60_000;
+const RATE_LIMIT_MAX    = 3;
 const rateMap = new Map<string, { count: number; resetAt: number }>();
 
-function isRateLimited(ip: string): boolean {
-  const now  = Date.now();
+async function isRateLimited(ip: string): Promise<boolean> {
+  if (ratelimit) {
+    const { success } = await ratelimit.limit(ip);
+    return !success;
+  }
+  const now = Date.now();
   const entry = rateMap.get(ip);
   if (!entry || now > entry.resetAt) {
     rateMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
@@ -24,7 +42,7 @@ function isRateLimited(ip: string): boolean {
 export async function POST(req: NextRequest) {
   // Rate limiting
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
-  if (isRateLimited(ip)) {
+  if (await isRateLimited(ip)) {
     return NextResponse.json(
       { error: 'Trop de requêtes. Veuillez patienter avant de réessayer.' },
       { status: 429 }

@@ -209,6 +209,18 @@ const Header = () => {
     return () => { document.body.style.overflow = ''; };
   }, [overlayPhase]);
 
+  // ── Escape key ferme le menu ─────────────────────────────────────────────
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && phaseRef.current !== 'closed') {
+        handleCloseMenu();
+        menuBtnRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [handleCloseMenu]);
+
   // ── Curseur blanc sur fond noir quand overlay visible ────────────────────
   useEffect(() => {
     if (overlayPhase !== 'closed') {

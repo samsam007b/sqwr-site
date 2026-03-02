@@ -45,7 +45,7 @@ export default function PolitiqueConfidentialitePage() {
             <li>Message libre</li>
           </ul>
           <p className="mt-4">
-            Ce site n&apos;utilise <strong className="font-medium text-foreground">aucun cookie de suivi</strong> ni analytics tiers. Aucune donnée de navigation n&apos;est collectée.
+            Ce site utilise <strong className="font-medium text-foreground">Plausible Analytics</strong>, un outil d&apos;analyse d&apos;audience respectueux de votre vie privée, sans cookies. Les données collectées (page visitée, référent, navigateur, OS, pays) sont anonymisées et ne permettent pas de vous identifier personnellement. Aucun cookie de suivi n&apos;est déposé. Pour en savoir plus ou exercer votre droit d&apos;opposition : <a href="https://plausible.io/data-policy" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">plausible.io/data-policy</a>.
           </p>
         </section>
 

@@ -170,12 +170,12 @@ export default function ContactPage() {
                       <div className="flex items-center gap-4 mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">01</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
-                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/35">Vous</span>
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Vous</span>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
                         <div>
-                          <label htmlFor="name" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
+                          <label htmlFor="name" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
                             Nom complet *
                           </label>
                           <input
@@ -185,12 +185,13 @@ export default function ContactPage() {
                             value={formData.name}
                             onChange={handleChange}
                             required
+                            aria-required="true"
                             className={inputClass}
                             placeholder="Votre nom"
                           />
                         </div>
                         <div>
-                          <label htmlFor="email" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
+                          <label htmlFor="email" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
                             Email *
                           </label>
                           <input
@@ -200,6 +201,7 @@ export default function ContactPage() {
                             value={formData.email}
                             onChange={handleChange}
                             required
+                            aria-required="true"
                             className={inputClass}
                             placeholder="votre@email.com"
                           />
@@ -207,8 +209,8 @@ export default function ContactPage() {
                       </div>
 
                       <div className="mt-10">
-                        <label htmlFor="company" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
-                          Entreprise <span className="text-secondary/25 normal-case tracking-normal">(optionnel)</span>
+                        <label htmlFor="company" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
+                          Entreprise <span className="text-secondary/60 normal-case tracking-normal">(optionnel)</span>
                         </label>
                         <input
                           type="text"
@@ -227,12 +229,12 @@ export default function ContactPage() {
                       <div className="flex items-center gap-4 mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">02</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
-                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/35">Votre projet</span>
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Votre projet</span>
                       </div>
 
                       {/* Service pills */}
                       <div className="mb-10">
-                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-4">
+                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-4">
                           Type de service *
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -259,7 +261,7 @@ export default function ContactPage() {
 
                       {/* Budget pills */}
                       <div>
-                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-4">
+                        <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-4">
                           Budget estimé
                         </p>
                         <div className="flex flex-wrap gap-2">
@@ -289,10 +291,10 @@ export default function ContactPage() {
                       <div className="flex items-center gap-4 mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">03</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
-                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/35">Le message</span>
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Le message</span>
                       </div>
 
-                      <label htmlFor="message" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary/40 mb-1">
+                      <label htmlFor="message" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
                         Votre message *
                       </label>
                       <textarea
@@ -301,6 +303,7 @@ export default function ContactPage() {
                         value={formData.message}
                         onChange={handleChange}
                         required
+                        aria-required="true"
                         rows={6}
                         className={`${inputClass} resize-none`}
                         placeholder="Décrivez votre projet, votre contexte, vos objectifs..."
@@ -365,7 +368,7 @@ export default function ContactPage() {
                       className="group flex items-center justify-between py-5 border-b border-secondary/10 hover:text-primary transition-colors duration-300"
                     >
                       <div>
-                        <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/35 block mb-1">Email</span>
+                        <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">Email</span>
                         <span className="font-light text-base text-foreground group-hover:text-primary transition-colors duration-300">
                           studio@sqwr.be
                         </span>
@@ -378,7 +381,7 @@ export default function ContactPage() {
                       className="group flex items-center justify-between py-5 border-b border-secondary/10 hover:text-primary transition-colors duration-300"
                     >
                       <div>
-                        <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/35 block mb-1">T&eacute;l&eacute;phone</span>
+                        <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">T&eacute;l&eacute;phone</span>
                         <span className="font-light text-base text-foreground group-hover:text-primary transition-colors duration-300">
                           +32 493 30 27 52
                         </span>
@@ -387,12 +390,12 @@ export default function ContactPage() {
                     </a>
 
                     <div className="py-5 border-b border-secondary/10">
-                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/35 block mb-1">Localisation</span>
+                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">Localisation</span>
                       <span className="font-light text-base text-foreground">Bruxelles, Belgique</span>
                     </div>
 
                     <div className="py-5">
-                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/35 block mb-1">R&eacute;ponse</span>
+                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">R&eacute;ponse</span>
                       <span className="font-light text-base text-foreground">Sous 24h ouvrables</span>
                     </div>
                   </div>

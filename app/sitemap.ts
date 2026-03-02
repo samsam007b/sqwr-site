@@ -46,5 +46,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...projectPages];
+  const legalPages = [
+    {
+      url: `${baseUrl}/mentions-legales`,
+      lastModified: new Date('2026-03-01'),
+      changeFrequency: 'yearly' as const,
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/politique-confidentialite`,
+      lastModified: new Date('2026-03-01'),
+      changeFrequency: 'yearly' as const,
+      priority: 0.3,
+    },
+  ];
+
+  return [...staticPages, ...projectPages, ...legalPages];
 }
