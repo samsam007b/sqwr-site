@@ -41,12 +41,32 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.title,
+    description: project.description,
+    creator: {
+      '@type': 'Organization',
+      name: 'SQWR Studio',
+      url: 'https://sqwr.be',
+    },
+    dateCreated: project.year,
+    image: `https://sqwr.be${project.image}`,
+    ...(project.url && { url: project.url }),
+  };
+
   const projectIndex = projects.findIndex((p) => p.id === id);
   const nextProject = projects[(projectIndex + 1) % projects.length];
   const prevProject = projects[(projectIndex - 1 + projects.length) % projects.length];
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Hero Section with Image */}
       <section className="pt-24 pb-16 lg:pt-32 lg:pb-24">
         <div className="max-w-7xl mx-auto px-6 lg:px-16">

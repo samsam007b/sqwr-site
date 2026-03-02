@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import Script from 'next/script';
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -6,6 +8,24 @@ import DesktopOnlyProviders from "@/components/DesktopOnlyProviders";
 import PixelWipeTransition from "@/components/PixelWipeTransition";
 import MobileFloatingCTA from "@/components/MobileFloatingCTA";
 import { LanguageProvider } from "@/context/LanguageContext";
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -27,6 +47,13 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://sqwr.be'),
   alternates: {
     canonical: '/',
+    languages: {
+      'fr': 'https://sqwr.be',
+      'en': 'https://sqwr.be',
+      'nl': 'https://sqwr.be',
+      'de': 'https://sqwr.be',
+      'x-default': 'https://sqwr.be',
+    },
   },
   openGraph: {
     title: "SQWR Studio — Agence créative Bruxelles | Branding & Web sur-mesure",
@@ -107,12 +134,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
+          <Script
+            defer
+            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+            src="https://plausible.io/js/script.js"
+            strategy="afterInteractive"
+          />
+        )}
       </head>
       <body className="min-h-screen font-sans relative">
         <LanguageProvider>

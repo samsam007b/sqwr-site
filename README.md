@@ -1,192 +1,153 @@
-# Créative Design - Site Web Minimaliste
+# SQWR Studio — Site web
 
-Site web architectural et minimaliste pour l'agence Créative Design, spécialisée en communication visuelle et design graphique.
+Site vitrine de **SQWR Studio**, agence créative bruxelloise spécialisée en branding, web sur-mesure et social media.
 
-## 🎨 Caractéristiques
-
-- **Design Minimaliste** : Inspiré de sites comme Stoempstudio, avec espaces blancs généreux et typographie épurée
-- **Animations Subtiles** : Transitions fluides et micro-interactions avec Framer Motion
-- **100% Responsive** : Optimisé pour tous les appareils (mobile, tablette, desktop)
-- **Performance Optimisée** : Code optimisé pour des performances maximales
-- **SEO-Friendly** : Métadonnées et structure optimisées pour le référencement
-- **Accessibilité** : Conforme aux standards WCAG AA
-
-## 🛠️ Technologies
-
-- **Next.js 15** - Framework React avec App Router
-- **TypeScript** - Typage statique pour un code plus robuste
-- **Tailwind CSS** - Framework CSS utility-first
-- **Framer Motion** - Animations fluides et performantes
-- **Google Fonts** - Inter & Playfair Display
-
-## 📁 Structure du Projet
-
-```
-skwr-agency/
-├── app/                      # Pages Next.js (App Router)
-│   ├── page.tsx             # Page d'accueil
-│   ├── services/            # Page Services
-│   ├── portfolio/           # Page Portfolio
-│   ├── about/               # Page À propos
-│   ├── contact/             # Page Contact
-│   ├── layout.tsx           # Layout principal
-│   └── globals.css          # Styles globaux
-├── components/              # Composants réutilisables
-│   ├── Header.tsx          # En-tête avec navigation
-│   ├── Footer.tsx          # Pied de page
-│   ├── ScrollReveal.tsx    # Animations au scroll
-│   └── ProjectCard.tsx     # Carte de projet
-├── public/                 # Assets statiques
-└── README.md              # Documentation
-```
-
-## 🚀 Installation et Démarrage
-
-### Prérequis
-
-- Node.js 18+
-- npm ou yarn
-
-### Installation
-
-1. Cloner le repository :
-```bash
-git clone <repository-url>
-cd skwr-agency
-```
-
-2. Installer les dépendances :
-```bash
-npm install
-```
-
-3. Lancer le serveur de développement :
-```bash
-npm run dev
-```
-
-4. Ouvrir [http://localhost:3000](http://localhost:3000) dans votre navigateur.
-
-## 📝 Scripts Disponibles
-
-- `npm run dev` - Lance le serveur de développement
-- `npm run build` - Construit l'application pour la production
-- `npm start` - Lance l'application en mode production
-- `npm run lint` - Vérifie le code avec ESLint
-
-## 🎨 Personnalisation
-
-### Couleurs
-
-Les couleurs sont définies dans `tailwind.config.ts` :
-
-```typescript
-colors: {
-  primary: "#000000",    // Noir
-  secondary: "#FFFFFF",  // Blanc
-  accent: "#2563eb",     // Bleu (personnalisable)
-}
-```
-
-### Typographie
-
-Les polices sont configurées dans `app/layout.tsx` :
-- **Inter** : Police sans-serif pour le corps du texte
-- **Playfair Display** : Police serif pour les titres
-
-Pour changer les polices, modifiez les imports dans `layout.tsx`.
-
-### Contenu
-
-Pour modifier le contenu :
-- **Page d'accueil** : `app/page.tsx`
-- **Services** : `app/services/page.tsx`
-- **Portfolio** : `app/portfolio/page.tsx`
-- **À propos** : `app/about/page.tsx`
-- **Contact** : `app/contact/page.tsx`
-
-## 📱 Pages
-
-### 1. Accueil (`/`)
-- Hero section avec baseline forte
-- Présentation de l'agence
-- Grille de services
-- Showcase de projets phares
-- CTA vers contact
-
-### 2. Services (`/services`)
-- Liste détaillée des 6 services principaux
-- Méthodologie en 4 étapes
-- CTA pour obtenir un devis
-
-### 3. Portfolio (`/portfolio`)
-- Grille de projets avec filtres par catégorie
-- Système de filtrage interactif
-- Cartes de projets avec animations hover
-
-### 4. À propos (`/about`)
-- Histoire de l'agence
-- Statistiques clés
-- Valeurs et philosophie
-- Présentation de l'équipe
-
-### 5. Contact (`/contact`)
-- Formulaire de contact complet
-- Informations de contact
-- Liens réseaux sociaux
-- Section carte (placeholder)
-
-## 🚀 Déploiement
-
-### Vercel (Recommandé)
-
-Le moyen le plus simple de déployer une application Next.js :
-
-1. Push le code sur GitHub
-2. Connecter le repository à [Vercel](https://vercel.com)
-3. Vercel détectera automatiquement Next.js et configurera le build
-
-### Netlify
-
-```bash
-npm run build
-```
-
-Puis déployer le dossier `.next` sur Netlify.
-
-### Autres plateformes
-
-Consulter la [documentation Next.js](https://nextjs.org/docs/deployment) pour d'autres options.
-
-## 📊 Performance
-
-Le site est optimisé pour atteindre d'excellents scores Lighthouse :
-- Performance : 90+
-- Accessibility : 95+
-- Best Practices : 100
-- SEO : 100
-
-## 🔧 Améliorations Futures
-
-- [ ] Ajouter un système de gestion de contenu (CMS)
-- [ ] Intégrer de vraies images pour les projets
-- [ ] Ajouter des pages de détail pour chaque projet
-- [ ] Intégrer l'API de formulaire de contact
-- [ ] Ajouter Google Analytics
-- [ ] Ajouter des tests unitaires et e2e
-- [ ] Implémenter l'internationalisation (i18n)
-- [ ] Ajouter un blog
-
-## 📄 Licence
-
-Tous droits réservés - Créative Design © 2024
-
-## 🤝 Support
-
-Pour toute question ou support, contactez :
-- Email : contact@creative-design.com
-- Téléphone : +33 1 23 45 67 89
+**URL de production :** [sqwr.be](https://sqwr.be)
 
 ---
 
-Développé avec ❤️ pour Créative Design
+## Stack technique
+
+| Couche | Technologie |
+|--------|-------------|
+| Framework | [Next.js 16](https://nextjs.org) (App Router) |
+| Language | TypeScript 5.9 |
+| Styles | Tailwind CSS 3 |
+| Animations | Framer Motion 11 + GSAP 3 |
+| Smooth scroll | Lenis 1 |
+| Polices | Space Grotesk (display) · Inter (corps) · JetBrains Mono (mono) — via `next/font` |
+| Email | Resend API |
+| Déploiement | Vercel |
+| Tests | Vitest |
+
+---
+
+## Architecture des dossiers
+
+```
+sqwr-site/
+├── app/
+│   ├── layout.tsx          # Root layout — next/font, JSON-LD, hreflang
+│   ├── page.tsx            # Homepage
+│   ├── portfolio/
+│   │   ├── page.tsx        # Liste des projets (PixelRowCanvas)
+│   │   ├── loading.tsx     # Skeleton portfolio
+│   │   └── [id]/page.tsx   # Page projet dynamique + JSON-LD CreativeWork
+│   ├── services/
+│   │   ├── page.tsx
+│   │   └── loading.tsx
+│   ├── about/
+│   │   ├── page.tsx
+│   │   └── loading.tsx
+│   ├── contact/page.tsx    # Formulaire (accessibilité ARIA, mention RGPD)
+│   ├── api/contact/        # API route Resend + rate limiting
+│   ├── data/projects.ts    # Source de vérité des projets
+│   ├── opengraph-image.tsx # OG image 1200×630 via next/og (edge)
+│   ├── sitemap.ts
+│   ├── robots.ts
+│   ├── mentions-legales/
+│   └── politique-confidentialite/
+├── components/
+│   ├── Header.tsx
+│   ├── Footer.tsx          # Liens légaux
+│   ├── PixelWipeTransition.tsx
+│   ├── PixelRevealAnimation.tsx
+│   └── ScrollReveal.tsx
+├── context/
+│   └── LanguageContext.tsx # i18n client-side (fr/en/nl/de)
+├── locales/
+│   └── translations.ts
+├── tests/
+│   └── utils.test.ts       # Vitest — hexToRgba, projects utils
+└── public/
+    └── Logo SQWR/
+```
+
+---
+
+## Variables d'environnement
+
+Créer un fichier `.env.local` à la racine :
+
+```env
+# Obligatoire — envoi du formulaire de contact
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxx
+
+# Optionnel — analytics RGPD-compliant (sans cookies)
+NEXT_PUBLIC_PLAUSIBLE_DOMAIN=sqwr.be
+
+# Optionnel — error monitoring
+NEXT_PUBLIC_SENTRY_DSN=https://xxx@xxx.ingest.sentry.io/xxx
+```
+
+---
+
+## Commandes
+
+```bash
+# Développement
+npm run dev
+
+# Build production
+npm run build
+
+# Lancement en production
+npm start
+
+# Vérification TypeScript
+npm run type-check
+
+# Linting
+npm run lint
+
+# Tests unitaires
+npm run test
+
+# Tests en watch mode
+npm run test:watch
+```
+
+---
+
+## Internationalisation
+
+L'i18n est géré côté client via `LanguageContext` (4 langues : fr, en, nl, de).
+Les traductions sont centralisées dans `locales/translations.ts`.
+Pas de routes séparées `/fr/` `/en/` — la langue est persistée dans `localStorage` et détectée via `navigator.language`.
+
+---
+
+## API Contact
+
+`POST /api/contact` — Rate limited (3 req/min par IP, in-memory).
+
+**Body :**
+```json
+{
+  "name": "string",
+  "email": "string",
+  "company": "string (optionnel)",
+  "service": "string",
+  "budget": "string (optionnel)",
+  "message": "string"
+}
+```
+
+L'email est envoyé via **Resend** à `studio@sqwr.be`.
+
+---
+
+## Déploiement
+
+Le site est déployé sur **Vercel** via CI/CD automatique depuis la branche `main`.
+
+Pour activer Plausible Analytics ou Sentry, ajouter les variables d'environnement correspondantes dans les paramètres du projet Vercel.
+
+---
+
+## Sécurité
+
+- En-têtes HTTP : HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+- CSP restrictive : `font-src 'self'` (polices self-hostées via next/font, zéro requête Google Fonts)
+- Rate limiting sur l'API contact
+- `robots: noindex` sur les pages légales

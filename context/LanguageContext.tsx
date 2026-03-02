@@ -38,13 +38,18 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // Translation function
   const t = (key: string): string => {
     const keys = key.split('.');
-    let value: any = translations[locale];
+    let value: Record<string, unknown> | string | undefined = translations[locale] as Record<string, unknown>;
 
     for (const k of keys) {
-      value = value?.[k];
+      if (typeof value === 'object' && value !== null) {
+        value = (value as Record<string, unknown>)[k] as Record<string, unknown> | string | undefined;
+      } else {
+        value = undefined;
+        break;
+      }
     }
 
-    return value || key;
+    return typeof value === 'string' ? value : key;
   };
 
   return (

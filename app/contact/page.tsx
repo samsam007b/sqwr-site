@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from '@/components/ScrollReveal';
 
@@ -135,6 +136,8 @@ export default function ContactPage() {
                 {submitStatus === 'success' ? (
                   <motion.div
                     key="success"
+                    role="alert"
+                    aria-live="polite"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
@@ -238,6 +241,7 @@ export default function ContactPage() {
                               key={s}
                               type="button"
                               onClick={() => setPill('service', s)}
+                              aria-pressed={formData.service === s}
                               className="px-4 py-2 text-xs font-mono uppercase tracking-[0.1em] border transition-all duration-200"
                               style={{
                                 borderColor: formData.service === s ? 'var(--primary)' : 'rgba(102,102,102,0.2)',
@@ -264,6 +268,7 @@ export default function ContactPage() {
                               key={b}
                               type="button"
                               onClick={() => setPill('budget', b)}
+                              aria-pressed={formData.budget === b}
                               className="px-4 py-2 text-xs font-mono tracking-[0.05em] border transition-all duration-200"
                               style={{
                                 borderColor: formData.budget === b ? 'var(--primary)' : 'rgba(102,102,102,0.2)',
@@ -320,6 +325,8 @@ export default function ContactPage() {
 
                     {submitStatus === 'error' && (
                       <motion.p
+                        role="alert"
+                        aria-live="polite"
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-6 text-sm font-light text-foreground border-l-2 border-primary pl-4"
@@ -330,6 +337,15 @@ export default function ContactPage() {
                         </a>
                       </motion.p>
                     )}
+
+                    {/* RGPD notice — A8 */}
+                    <p className="text-[10px] font-mono text-secondary/35 mt-5 leading-relaxed">
+                      Données traitées conformément à notre{' '}
+                      <Link href="/politique-confidentialite" className="underline hover:text-primary transition-colors">
+                        politique de confidentialité
+                      </Link>
+                      . Aucun cookie de suivi.
+                    </p>
                   </motion.form>
                 )}
               </AnimatePresence>
