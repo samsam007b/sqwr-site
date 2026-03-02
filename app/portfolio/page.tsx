@@ -34,7 +34,7 @@ function PixelRowCanvas({
   project,
   isHovered,
 }: {
-  project: Pick<Project, 'color' | 'colors'>;
+  project: Pick<Project, 'color'>;
   isHovered: boolean;
 }) {
   const canvasRef    = useRef<HTMLCanvasElement>(null);
@@ -76,19 +76,12 @@ function PixelRowCanvas({
           // Variation d'opacité par cellule (texture organique, déterministe)
           const noise  = (Math.sin(c * 1.7 + r * 2.3) + 1) / 2; // 0–1
           const alpha  = (0.55 + noise * 0.40) * scale;
-
-          // Palette multi-couleurs : chaque anneau de la vague révèle une couleur
-          const palette = project.colors ?? [project.color];
-          const colorIdx = Math.min(
-            Math.floor(distNorm * palette.length),
-            palette.length - 1,
-          );
-          ctx.fillStyle = hexToRgba(palette[colorIdx], alpha);
+          ctx.fillStyle = hexToRgba(project.color, alpha);
           ctx.fillRect(x, y, sz, sz);
         }
       }
     },
-    [project.color, project.colors],
+    [project.color],
   );
 
   // Dimensions du canvas
