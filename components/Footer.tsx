@@ -83,7 +83,7 @@ const Footer = () => {
       </div>
 
       {/* ── Strip copyright ── */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-16 pb-7 flex flex-wrap items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-6 lg:px-16 pb-24 md:pb-7 flex flex-wrap items-center justify-between gap-4">
         <span className="text-[11px] font-mono text-paper/20 tracking-[0.08em]">
           &copy; {year} sqwr.
         </span>
