@@ -78,6 +78,7 @@ const Header = () => {
   const [showContent, setShowContent] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [bgIsDark, setBgIsDark] = useState(true); // détection fond sous le header
 
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
@@ -88,6 +89,8 @@ const Header = () => {
   const phaseRef = useRef<OverlayPhase>('closed');
 
   const overlayVisible = overlayPhase !== 'closed';
+  // Carré blanc si fond sombre OU si overlay ouvert (fond noir du canvas)
+  const squareIsLight = bgIsDark || overlayVisible;
 
   // ── Initialise le canvas au mount ─────────────────────────────────────────
   useEffect(() => {
@@ -194,6 +197,61 @@ const Header = () => {
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // ── Détection dynamique du fond sous le header ───────────────────────────
+  useEffect(() => {
+    const HEADER_Y = 24;
+
+    const detect = () => {
+      // elementsFromPoint pénètre les éléments fixed et retourne tout ce qui est dessous
+      const candidates = document.elementsFromPoint(window.innerWidth / 2, HEADER_Y);
+
+      for (const el of candidates) {
+        const style = getComputedStyle(el);
+        // Ignorer les éléments fixed/sticky (le header lui-même, les canvas)
+        if (style.position === 'fixed' || style.position === 'sticky') continue;
+        if (el.tagName === 'HTML') break;
+
+        // Remonter l'arbre DOM pour trouver un fond non transparent
+        let cur: Element | null = el;
+        while (cur && cur.tagName !== 'HTML') {
+          const bg = getComputedStyle(cur).backgroundColor;
+          if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+            const rgb = bg.match(/[\d.]+/g);
+            if (rgb && rgb.length >= 3) {
+              const lum = (0.299 * +rgb[0] + 0.587 * +rgb[1] + 0.114 * +rgb[2]) / 255;
+              setBgIsDark(lum < 0.5);
+              return;
+            }
+          }
+          cur = cur.parentElement;
+        }
+      }
+
+      // Fallback : fond du body
+      const bodyBg = getComputedStyle(document.body).backgroundColor;
+      const rgb = bodyBg.match(/[\d.]+/g);
+      if (rgb && rgb.length >= 3) {
+        const lum = (0.299 * +rgb[0] + 0.587 * +rgb[1] + 0.114 * +rgb[2]) / 255;
+        setBgIsDark(lum < 0.5);
+      }
+    };
+
+    let rafId: number;
+    const onUpdate = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(detect);
+    };
+
+    detect(); // vérification initiale
+    window.addEventListener('scroll', onUpdate, { passive: true });
+    window.addEventListener('resize', onUpdate, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onUpdate);
+      window.removeEventListener('resize', onUpdate);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // ── Masquer pendant le video reveal ───────────────────────────────────────
@@ -313,7 +371,9 @@ const Header = () => {
           }}
         >
           <motion.div
-            className="w-6 h-6 transition-colors duration-500 bg-paper group-hover:bg-primary"
+            className={`w-6 h-6 transition-colors duration-500 ${
+              squareIsLight ? 'bg-paper group-hover:bg-primary' : 'bg-foreground group-hover:bg-primary'
+            }`}
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 400, damping: 15 }}
@@ -333,7 +393,9 @@ const Header = () => {
         aria-expanded={overlayVisible}
       >
         <motion.div
-          className="w-6 h-6 transition-colors duration-500 bg-paper hover:bg-primary"
+          className={`w-6 h-6 transition-colors duration-500 ${
+            squareIsLight ? 'bg-paper hover:bg-primary' : 'bg-foreground hover:bg-primary'
+          }`}
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: 'spring', stiffness: 400, damping: 15 }}
@@ -351,7 +413,7 @@ const Header = () => {
         }}
         transition={{ duration: 0.3 }}
       >
-        <LanguageSelector openDown={isMobile} inverted={true} />
+        <LanguageSelector openDown={isMobile} inverted={squareIsLight} />
       </motion.div>
 
       {/* ── Canvas pixel overlay ──────────────────────────────────────────── */}
