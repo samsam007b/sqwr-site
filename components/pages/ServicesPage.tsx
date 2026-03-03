@@ -254,7 +254,14 @@ function ServiceItem({
 export default function ServicesPage() {
   const { t } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [activeTier, setActiveTier] = useState<'signature' | 'flagship'>('signature');
   const ctaRef = useRef<HTMLElement>(null);
+
+  /* Reset tier when switching service */
+  const handleSelectService = (i: number) => {
+    setActiveIndex(i);
+    setActiveTier('signature');
+  };
 
   /* CTA dark cursor */
   useEffect(() => {
@@ -381,7 +388,7 @@ export default function ServicesPage() {
                     labelSignature={service.labelSignature}
                     labelFlagship={service.labelFlagship}
                     isActive={activeIndex === i}
-                    onSelect={() => setActiveIndex(i)}
+                    onSelect={() => handleSelectService(i)}
                   />
                 ))}
               </div>
@@ -425,64 +432,109 @@ export default function ServicesPage() {
                     {active.description}
                   </p>
 
-                  {/* Dual pricing cards */}
+                  {/* Dual pricing cards — clickable */}
                   <div className="grid grid-cols-2 gap-4 mb-10 pb-10 border-b border-secondary/10">
-                    {/* Signature */}
-                    <div className="border border-secondary/12 p-5 relative">
-                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-secondary/45 mb-3">
+                    {/* Signature card */}
+                    <motion.button
+                      onClick={() => setActiveTier('signature')}
+                      className="text-left p-5 relative cursor-pointer transition-all duration-300 focus:outline-none"
+                      animate={{
+                        borderColor: activeTier === 'signature' ? 'rgba(17,17,17,0.35)' : 'rgba(17,17,17,0.08)',
+                        backgroundColor: activeTier === 'signature' ? 'rgba(17,17,17,0.04)' : 'transparent',
+                      }}
+                      style={{ border: '1px solid' }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <p
+                        className="text-[10px] font-mono uppercase tracking-[0.2em] mb-3 transition-colors duration-300"
+                        style={{ color: activeTier === 'signature' ? 'var(--foreground)' : 'rgba(102,102,102,0.45)' }}
+                      >
                         {active.labelSignature}
                       </p>
-                      <p className="text-2xl lg:text-3xl font-display font-normal text-foreground mb-4">
+                      <p
+                        className="text-2xl lg:text-3xl font-display font-normal mb-4 transition-colors duration-300"
+                        style={{ color: activeTier === 'signature' ? 'var(--foreground)' : 'rgba(17,17,17,0.35)' }}
+                      >
                         {active.priceSignature}
                       </p>
-                      <Link
-                        href="/contact"
-                        className="inline-flex items-center gap-2 text-xs font-mono text-secondary/50 hover:text-primary transition-colors"
+                      <span
+                        className="inline-flex items-center gap-2 text-xs font-mono transition-colors duration-300"
+                        style={{ color: activeTier === 'signature' ? 'var(--foreground)' : 'rgba(102,102,102,0.4)' }}
                       >
-                        Démarrer →
-                      </Link>
-                    </div>
-                    {/* Flagship */}
-                    <div className="border border-primary/25 p-5 relative" style={{ background: 'rgba(224,25,25,0.015)' }}>
-                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />
-                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary/60 mb-3">
+                        Sélectionner →
+                      </span>
+                    </motion.button>
+
+                    {/* Flagship card */}
+                    <motion.button
+                      onClick={() => setActiveTier('flagship')}
+                      className="text-left p-5 relative cursor-pointer focus:outline-none"
+                      animate={{
+                        borderColor: activeTier === 'flagship' ? 'var(--primary)' : 'rgba(224,25,25,0.2)',
+                        backgroundColor: activeTier === 'flagship' ? 'rgba(224,25,25,0.06)' : 'rgba(224,25,25,0.015)',
+                      }}
+                      style={{ border: '1px solid' }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <motion.div
+                        className="absolute top-0 left-0 right-0 h-[2px]"
+                        animate={{ backgroundColor: activeTier === 'flagship' ? 'var(--primary)' : 'rgba(224,25,25,0.3)' }}
+                        transition={{ duration: 0.25 }}
+                      />
+                      <p
+                        className="text-[10px] font-mono uppercase tracking-[0.2em] mb-3 transition-colors duration-300"
+                        style={{ color: activeTier === 'flagship' ? 'var(--primary)' : 'rgba(224,25,25,0.45)' }}
+                      >
                         {active.labelFlagship}
                       </p>
-                      <p className="text-2xl lg:text-3xl font-display font-normal text-primary mb-4">
+                      <p
+                        className="text-2xl lg:text-3xl font-display font-normal mb-4 transition-colors duration-300"
+                        style={{ color: 'var(--primary)', opacity: activeTier === 'flagship' ? 1 : 0.45 }}
+                      >
                         {active.priceFlagship}
                       </p>
-                      <Link
-                        href="/contact"
-                        className="inline-flex items-center gap-2 text-xs font-mono text-primary/60 hover:text-primary transition-colors"
+                      <span
+                        className="inline-flex items-center gap-2 text-xs font-mono transition-colors duration-300"
+                        style={{ color: activeTier === 'flagship' ? 'var(--primary)' : 'rgba(224,25,25,0.4)' }}
                       >
-                        Démarrer →
-                      </Link>
-                    </div>
+                        Sélectionner →
+                      </span>
+                    </motion.button>
                   </div>
 
-                  {/* Features — two columns */}
-                  <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
-                    {/* Signature features */}
-                    <div>
-                      <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-secondary/45 mb-5">
-                        {active.labelSignature}
-                      </p>
-                      <ul className="space-y-3">
-                        {active.featuresSignature.map((feature, idx) => (
+                  {/* Features — filtered by active tier */}
+                  <div className="mb-12">
+                    <p
+                      className="text-[10px] font-mono uppercase tracking-[0.25em] mb-5 transition-colors duration-300"
+                      style={{ color: activeTier === 'flagship' ? 'var(--primary)' : 'rgba(102,102,102,0.45)' }}
+                    >
+                      {activeTier === 'signature' ? active.labelSignature : active.labelFlagship}
+                    </p>
+                    <AnimatePresence mode="wait">
+                      <motion.ul
+                        key={`${activeIndex}-${activeTier}`}
+                        className="space-y-3"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.3, ease: EASE }}
+                      >
+                        {(activeTier === 'signature' ? active.featuresSignature : active.featuresFlagship).map((feature, idx) => (
                           <motion.li
                             key={idx}
-                            className="flex items-start gap-3 text-secondary/60 font-light text-sm"
+                            className="flex items-start gap-3 font-light text-sm"
+                            style={{ color: activeTier === 'flagship' ? 'rgba(102,102,102,0.75)' : 'rgba(102,102,102,0.65)' }}
                             initial={{ opacity: 0, x: -8 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.4, delay: 0.1 + idx * 0.04, ease: EASE }}
+                            transition={{ duration: 0.35, delay: idx * 0.04, ease: EASE }}
                           >
                             <span
                               style={{
                                 display: 'block',
                                 width: '16px',
                                 height: '1px',
-                                backgroundColor: 'var(--secondary)',
-                                opacity: 0.3,
+                                backgroundColor: activeTier === 'flagship' ? 'var(--primary)' : 'var(--secondary)',
+                                opacity: activeTier === 'flagship' ? 0.55 : 0.3,
                                 marginTop: '9px',
                                 flexShrink: 0,
                               }}
@@ -490,39 +542,8 @@ export default function ServicesPage() {
                             {feature}
                           </motion.li>
                         ))}
-                      </ul>
-                    </div>
-
-                    {/* Flagship features */}
-                    <div>
-                      <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-primary/55 mb-5">
-                        {active.labelFlagship}
-                      </p>
-                      <ul className="space-y-3">
-                        {active.featuresFlagship.map((feature, idx) => (
-                          <motion.li
-                            key={idx}
-                            className="flex items-start gap-3 text-secondary/65 font-light text-sm"
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.4, delay: 0.2 + idx * 0.04, ease: EASE }}
-                          >
-                            <span
-                              style={{
-                                display: 'block',
-                                width: '16px',
-                                height: '1px',
-                                backgroundColor: 'var(--primary)',
-                                opacity: 0.45,
-                                marginTop: '9px',
-                                flexShrink: 0,
-                              }}
-                            />
-                            {feature}
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </div>
+                      </motion.ul>
+                    </AnimatePresence>
                   </div>
 
                   {/* CTA */}
