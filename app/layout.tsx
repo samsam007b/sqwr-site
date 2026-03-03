@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import DesktopOnlyProviders from "@/components/DesktopOnlyProviders";
 import PixelWipeTransition from "@/components/PixelWipeTransition";
 import MobileFloatingCTA from "@/components/MobileFloatingCTA";
+import CookieConsent from "@/components/CookieConsent";
 import { LanguageProvider } from "@/context/LanguageContext";
 
 const inter = Inter({
@@ -207,19 +208,6 @@ export default function RootLayout({
           src="https://plausible.io/js/pa-R2EajvyZiMg77-kBchQnU.js"
           strategy="afterInteractive"
         />
-        {/* Google Analytics GA4 */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-LXTJCPRN9D"
-          strategy="afterInteractive"
-        />
-        <Script id="ga4-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-LXTJCPRN9D');
-          `}
-        </Script>
       </head>
       <body className="min-h-screen font-sans relative">
         <a
@@ -238,6 +226,7 @@ export default function RootLayout({
             <Footer />
           </DesktopOnlyProviders>
           <MobileFloatingCTA />
+          <CookieConsent />
         </LanguageProvider>
       </body>
     </html>
