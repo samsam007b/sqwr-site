@@ -313,11 +313,7 @@ const Header = () => {
           }}
         >
           <motion.div
-            className={`w-6 h-6 transition-colors duration-500 ${
-              overlayVisible
-                ? 'bg-paper group-hover:bg-primary'
-                : 'bg-foreground group-hover:bg-primary'
-            }`}
+            className="w-6 h-6 transition-colors duration-500 bg-paper group-hover:bg-primary"
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 400, damping: 15 }}
@@ -337,11 +333,7 @@ const Header = () => {
         aria-expanded={overlayVisible}
       >
         <motion.div
-          className={`w-6 h-6 transition-colors duration-500 ${
-            overlayVisible
-              ? 'bg-paper hover:bg-primary'
-              : 'bg-foreground hover:bg-primary'
-          }`}
+          className="w-6 h-6 transition-colors duration-500 bg-paper hover:bg-primary"
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: 'spring', stiffness: 400, damping: 15 }}
@@ -359,7 +351,7 @@ const Header = () => {
         }}
         transition={{ duration: 0.3 }}
       >
-        <LanguageSelector openDown={isMobile} inverted={overlayVisible} />
+        <LanguageSelector openDown={isMobile} inverted={true} />
       </motion.div>
 
       {/* ── Canvas pixel overlay ──────────────────────────────────────────── */}
