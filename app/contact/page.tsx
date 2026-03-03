@@ -17,6 +17,49 @@ export const metadata: Metadata = {
   },
 };
 
+const contactSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://sqwr.be' },
+        { '@type': 'ListItem', position: 2, name: 'Contact', item: 'https://sqwr.be/contact' },
+      ],
+    },
+    {
+      '@type': 'ContactPage',
+      '@id': 'https://sqwr.be/contact',
+      name: 'Contact SQWR Studio',
+      url: 'https://sqwr.be/contact',
+      description: 'Démarrez votre projet de branding ou site web. Réponse sous 24h.',
+      publisher: { '@id': 'https://sqwr.be/#organization' },
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer service',
+        email: 'studio@sqwr.be',
+        telephone: '+32-493-30-27-52',
+        areaServed: 'BE',
+        availableLanguage: ['fr', 'en', 'nl'],
+        hoursAvailable: {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          opens: '09:00',
+          closes: '18:00',
+        },
+      },
+    },
+  ],
+};
+
 export default function Page() {
-  return <ContactPage />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactSchema) }}
+      />
+      <ContactPage />
+    </>
+  );
 }

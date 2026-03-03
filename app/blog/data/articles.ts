@@ -552,6 +552,539 @@ export const articles: Article[] = [
     readingTime: 10,
     featured: false,
   },
+  {
+    slug: 'creation-logo-bruxelles-guide',
+    title: 'Création de logo à Bruxelles : guide complet 2026',
+    description:
+      'Tout ce que vous devez savoir avant de faire créer votre logo à Bruxelles. Processus, tarifs, erreurs à éviter et critères pour choisir le bon prestataire.',
+    excerpt:
+      'Faire créer un logo à Bruxelles, c\'est naviguer entre freelances, agences et plateformes en ligne. Ce guide vous aide à faire le bon choix.',
+    content: `
+<h2>Pourquoi le logo est-il si important pour votre entreprise ?</h2>
+<p>
+  Le logo est souvent le premier élément visuel que vos clients perçoivent. En une fraction de seconde,
+  il transmet votre positionnement, vos valeurs et votre professionnalisme. À Bruxelles, où le tissu
+  entrepreneurial est dense et compétitif, un logo fort est un avantage concurrentiel réel.
+</p>
+<p>
+  Mais attention : un logo ne se résume pas à un symbole graphique. C'est la fondation de toute votre
+  identité visuelle. De lui découlent vos couleurs, vos typographies, vos supports de communication.
+  Mal conçu au départ, tout le reste en souffre.
+</p>
+
+<h2>Les différents types de logos</h2>
+<p>Avant de contacter un prestataire, il est utile de comprendre les grandes familles de logos :</p>
+<ul>
+  <li><strong>Logotype (wordmark)</strong> : le nom de la marque stylisé en typographie (Google, Coca-Cola). Idéal quand le nom est court et mémorable.</li>
+  <li><strong>Pictogramme (icon)</strong> : un symbole abstrait ou figuratif sans texte (Apple, Nike). Nécessite une forte notoriété préalable.</li>
+  <li><strong>Logo combiné</strong> : symbole + texte (BMW, Adidas). Le plus polyvalent, recommandé pour les entreprises en démarrage.</li>
+  <li><strong>Monogramme</strong> : initiales stylisées (LV, IBM). Efficace pour les marques de prestige ou les cabinets professionnels.</li>
+  <li><strong>Emblème</strong> : texte intégré dans un badge ou un sceau (Starbucks, Harley-Davidson). Convient aux institutions ou aux marques artisanales.</li>
+</ul>
+<p>
+  Pour la plupart des entreprises bruxelloises, le logo combiné offre le meilleur équilibre entre
+  reconnaissance immédiate et flexibilité d'usage.
+</p>
+
+<h2>Combien coûte un logo professionnel à Bruxelles ?</h2>
+<p>
+  Le marché bruxellois présente une grande disparité de tarifs. Voici une fourchette réaliste en 2026 :
+</p>
+<ul>
+  <li><strong>Plateformes type Fiverr/99designs</strong> : 50€ à 300€. Résultat générique, peu de personnalisation réelle, droits parfois flous.</li>
+  <li><strong>Étudiant ou jeune freelance</strong> : 200€ à 600€. Variable selon le talent. Peu d'expérience en stratégie de marque.</li>
+  <li><strong>Freelance expérimenté</strong> : 600€ à 2000€. Bon rapport qualité-prix, approche plus stratégique.</li>
+  <li><strong>Studio créatif comme SQWR</strong> : à partir de 800€. Processus structuré, livrables complets, accompagnement.</li>
+  <li><strong>Grande agence de communication</strong> : 5000€ à 30 000€+. Équipes larges, marques nationales ou internationales.</li>
+</ul>
+<p>
+  Le prix juste dépend de vos besoins réels : une startup en préamorçage n'a pas les mêmes contraintes
+  qu'une PME qui se repositionne après 10 ans d'activité.
+</p>
+
+<h2>Le processus de création chez un studio professionnel</h2>
+<p>
+  Chez <a href="/services">SQWR Studio</a>, notre processus de création de logo suit 5 étapes claires :
+</p>
+<ul>
+  <li><strong>Briefing stratégique</strong> : nous analysons votre secteur, vos concurrents et votre positionnement voulu. Un logo sans stratégie est un dessin.</li>
+  <li><strong>Exploration créative</strong> : plusieurs pistes visuelles distinctes, basées sur la recherche et non sur l'intuition.</li>
+  <li><strong>Présentation et feedback</strong> : vous choisissez une direction et nous affinons ensemble.</li>
+  <li><strong>Finalisation et déclinaisons</strong> : version principale, variantes (horizontale, verticale, monochrome, négatif), formats vectoriels.</li>
+  <li><strong>Livraison des fichiers</strong> : SVG, PNG, PDF en haute résolution. Guide d'utilisation inclus.</li>
+</ul>
+<p>
+  Ce processus prend généralement 3 à 5 semaines. Il garantit un résultat cohérent avec vos objectifs,
+  pas seulement avec les tendances du moment.
+</p>
+
+<h2>Les erreurs classiques à éviter</h2>
+<p>
+  Après des dizaines de projets de branding à Bruxelles, voici les erreurs que nous voyons revenir
+  systématiquement :
+</p>
+<ul>
+  <li><strong>Choisir un logo parce qu'il vous plaît</strong> : votre logo ne vous est pas destiné, il est destiné à vos clients. L'approche doit être stratégique, pas affective.</li>
+  <li><strong>Utiliser des tendances éphémères</strong> : les logos dégradés ou ultra-minimalistes à la mode aujourd'hui peuvent sembler datés dans 3 ans.</li>
+  <li><strong>Ignorer les déclinaisons</strong> : votre logo doit fonctionner en noir et blanc, en petit format (favicon), et en grande taille (panneau, stand).</li>
+  <li><strong>Ne pas obtenir les fichiers sources</strong> : exigez toujours les fichiers vectoriels (AI, EPS, SVG). Sans eux, vous ne possédez pas vraiment votre logo.</li>
+  <li><strong>Manquer de cohérence après</strong> : le logo seul ne fait pas l'identité visuelle. Sans charte graphique associée, il sera utilisé de manière incohérente.</li>
+</ul>
+
+<h2>Logo seul ou identité visuelle complète ?</h2>
+<p>
+  La question se pose souvent : investir dans un logo seul ou d'emblée dans une identité visuelle complète ?
+</p>
+<p>
+  Notre recommandation : si vous lancez une nouvelle activité, visez au minimum un système de base comprenant
+  le logo, la palette de couleurs et les typographies. Ce triptyque vous permettra de créer des supports
+  cohérents sans devoir improviser à chaque fois.
+</p>
+<p>
+  L'identité visuelle complète — avec charte graphique, déclinaisons sur supports physiques et numériques —
+  représente un investissement plus conséquent, mais il se rentabilise rapidement en termes de cohérence
+  et de professionnalisme perçu.
+</p>
+<p>
+  Découvrez nos <a href="/services">formules de branding</a> ou consultez notre
+  <a href="/portfolio">portfolio</a> pour voir des exemples concrets de logos et d'identités visuelles
+  réalisés à Bruxelles.
+</p>
+
+<h2>Comment choisir le bon prestataire à Bruxelles ?</h2>
+<p>
+  Quelques critères concrets pour évaluer un studio ou un freelance avant de vous engager :
+</p>
+<ul>
+  <li><strong>La qualité et la cohérence du portfolio</strong> : regardez les projets complets, pas seulement les logos. La charte est-elle cohérente ? Les déclinaisons sont-elles maîtrisées ?</li>
+  <li><strong>La clarté du processus</strong> : un bon prestataire peut expliquer comment il travaille, étape par étape. Méfiez-vous de ceux qui "livrent en 48h" sans processus clair.</li>
+  <li><strong>La communication</strong> : un premier échange vous donne des informations précieuses. Pose-t-il des questions sur votre entreprise ? S'intéresse-t-il à votre secteur ?</li>
+  <li><strong>Les livrables inclus</strong> : vérifiez ce qui est fourni : formats, nombre de révisions, droits d'auteur, guide d'utilisation.</li>
+</ul>
+<p>
+  Vous souhaitez discuter de votre projet de logo ou d'identité visuelle à Bruxelles ?
+  <a href="/contact">Contactez SQWR Studio</a> pour un premier échange sans engagement.
+</p>
+`,
+    publishedAt: '2026-03-03T10:00:00+01:00',
+    updatedAt: '2026-03-03T10:00:00+01:00',
+    category: 'branding',
+    categoryLabel: 'Branding',
+    author: 'Joakim Baudon',
+    authorTitle: 'Directeur Créatif, SQWR Studio',
+    readingTime: 9,
+    featured: false,
+  },
+  {
+    slug: 'refonte-site-web-belgique',
+    title: 'Refonte de site web en Belgique : quand et comment le faire ?',
+    description:
+      'Votre site web est daté, lent ou ne convertit plus ? Guide complet pour réussir votre refonte de site web en Belgique : signes d\'alerte, processus, budget et choix du prestataire.',
+    excerpt:
+      'Un site web a une durée de vie. Savoir quand et comment le refondre peut faire toute la différence pour votre business en Belgique.',
+    content: `
+<h2>Votre site a-t-il besoin d'une refonte ?</h2>
+<p>
+  La question revient régulièrement chez nos clients à Bruxelles : "Est-ce qu'il vaut mieux améliorer
+  notre site actuel ou tout refaire ?" Il n'y a pas de réponse universelle, mais certains signaux
+  d'alerte sont sans ambiguïté.
+</p>
+<p>
+  Voici les indicateurs qui suggèrent qu'une refonte s'impose plutôt qu'un simple rafraîchissement :
+</p>
+<ul>
+  <li><strong>Votre site n'est pas responsive</strong> : en 2026, plus de 60% du trafic web est mobile. Un site non adapté perd des visiteurs et est pénalisé par Google.</li>
+  <li><strong>Le temps de chargement dépasse 3 secondes</strong> : au-delà, 53% des visiteurs quittent la page avant qu'elle soit chargée (source : Google).</li>
+  <li><strong>Le taux de conversion est faible</strong> : si les visiteurs arrivent sur votre site mais ne contactent pas, ne commandent pas, ne s'abonnent pas — le problème est souvent structural.</li>
+  <li><strong>Le back-office est impossible à gérer</strong> : si mettre à jour une actualité ou changer un prix demande un développeur, c'est un frein à votre autonomie.</li>
+  <li><strong>Le design date de plus de 5 ans</strong> : les attentes visuelles évoluent. Un site qui semblait moderne en 2019 peut sembler obsolète aujourd'hui.</li>
+  <li><strong>Votre identité de marque a évolué</strong> : si vous avez changé de logo, de positionnement ou de gamme, votre site doit refléter cette nouvelle réalité.</li>
+</ul>
+
+<h2>Les différentes options de refonte</h2>
+<p>
+  Tous les projets de refonte ne se ressemblent pas. Voici les principales approches selon votre situation :
+</p>
+
+<h3>Option 1 : Le redesign visuel</h3>
+<p>
+  Vous conservez la structure et le contenu de votre site actuel, mais vous modernisez entièrement
+  l'aspect visuel. C'est l'option la plus rapide et la moins coûteuse. Elle convient quand le site
+  fonctionne bien techniquement mais paraît daté.
+</p>
+
+<h3>Option 2 : La migration de plateforme</h3>
+<p>
+  Vous passez d'un CMS à un autre (de WordPress à Next.js, par exemple) ou d'un site sur-mesure vieillissant
+  vers une solution plus moderne. Cette approche est pertinente quand les problèmes sont principalement
+  techniques (lenteur, sécurité, évolutivité).
+</p>
+
+<h3>Option 3 : La refonte complète</h3>
+<p>
+  Vous repensez entièrement le site : architecture de l'information, design, contenus, technologie.
+  C'est le choix le plus ambitieux, mais aussi celui qui offre les meilleurs résultats quand le site
+  existant souffre de problèmes à la fois visuels, techniques et stratégiques.
+</p>
+
+<h2>Le processus d'une refonte réussie</h2>
+<p>
+  Chez <a href="/services">SQWR Studio</a>, une refonte de site web suit une méthodologie en 6 phases :
+</p>
+<ul>
+  <li><strong>Audit de l'existant</strong> : analyse des données analytics, des performances techniques, du SEO actuel et des retours utilisateurs.</li>
+  <li><strong>Définition des objectifs</strong> : quels résultats attendez-vous ? Plus de leads, meilleure visibilité locale, reflet d'un nouveau positionnement ?</li>
+  <li><strong>Architecture de l'information</strong> : structure des pages, arborescence, parcours utilisateur. C'est ici que se jouent les conversions.</li>
+  <li><strong>Design UI/UX</strong> : maquettes et prototypes validés avant tout développement.</li>
+  <li><strong>Développement</strong> : en React/Next.js pour les performances et le SEO. Chaque page est optimisée pour les moteurs de recherche.</li>
+  <li><strong>Migration et lancement</strong> : redirection 301 des anciennes URLs, vérification du SEO, tests multi-dispositifs.</li>
+</ul>
+
+<h2>Combien coûte une refonte en Belgique ?</h2>
+<p>Les tarifs varient selon l'envergure du projet :</p>
+<ul>
+  <li><strong>Site vitrine simple (5-10 pages)</strong> : 1500€ à 4000€ selon les fonctionnalités.</li>
+  <li><strong>Site avec blog et formulaires</strong> : 2500€ à 6000€.</li>
+  <li><strong>Site e-commerce</strong> : 4000€ à 15 000€+ selon le catalogue et les intégrations.</li>
+  <li><strong>Application web sur-mesure</strong> : devis sur mesure, souvent au-delà de 10 000€.</li>
+</ul>
+<p>
+  Ces tarifs incluent généralement le design, le développement, l'optimisation SEO de base et la
+  formation à la gestion du contenu. Méfiez-vous des offres très basses : elles cachent souvent des
+  coûts cachés (hébergement, maintenance, modifications futures facturées à l'heure).
+</p>
+<p>
+  Pour comparer les approches, lisez aussi notre article
+  <a href="/blog/site-web-sur-mesure-vs-wordpress-wix-belgique">Site web sur-mesure vs WordPress vs Wix en Belgique</a>.
+</p>
+
+<h2>Les erreurs fréquentes lors d'une refonte</h2>
+<ul>
+  <li><strong>Négliger le SEO lors de la migration</strong> : changer les URLs sans mettre en place les redirections 301 fait perdre tout le référencement accumulé.</li>
+  <li><strong>Partir du design avant la stratégie</strong> : un beau site qui ne convertit pas est un échec. La stratégie précède l'esthétique.</li>
+  <li><strong>Ignorer les utilisateurs existants</strong> : si vous avez des clients réguliers, leur expérience sur le nouveau site doit être au moins aussi fluide que sur l'ancien.</li>
+  <li><strong>Sous-estimer le contenu</strong> : le design représente 30% du travail. Préparer les textes, photos et vidéos pour chaque page prend autant de temps que le développement.</li>
+  <li><strong>Lancer sans test mobile</strong> : testez sur de vrais appareils, pas seulement dans le navigateur. Les comportements différent.</li>
+</ul>
+
+<h2>Quand éviter une refonte complète ?</h2>
+<p>
+  Une refonte n'est pas toujours la bonne réponse. Si votre site est récent (moins de 3 ans),
+  qu'il performe bien techniquement et que vos conversions sont satisfaisantes, un travail
+  de contenu ou d'optimisation SEO sera souvent plus rentable.
+</p>
+<p>
+  Si votre problème est principalement le référencement, commencez par un audit SEO.
+  Si c'est le design, un redesign partiel peut suffire.
+</p>
+<p>
+  Vous souhaitez évaluer si votre site nécessite une refonte ?
+  <a href="/contact">Contactez SQWR Studio</a> pour un audit gratuit de votre site actuel.
+  Nous vous donnons un avis honnête, même si la conclusion est de ne pas refondre.
+</p>
+`,
+    publishedAt: '2026-03-03T11:00:00+01:00',
+    updatedAt: '2026-03-03T11:00:00+01:00',
+    category: 'web',
+    categoryLabel: 'Web',
+    author: 'Samuel Baudon',
+    authorTitle: 'Directeur Stratégie, SQWR Studio',
+    readingTime: 9,
+    featured: false,
+  },
+  {
+    slug: 'identite-visuelle-startup-bruxelles',
+    title: 'Identité visuelle pour startup à Bruxelles : par où commencer ?',
+    description:
+      'Guide pratique pour les startups bruxelloises : comment construire une identité visuelle solide avec un budget limité. Priorités, étapes et erreurs à éviter.',
+    excerpt:
+      'En tant que startup à Bruxelles, comment investir intelligemment dans votre identité visuelle ? Voici les vraies priorités.',
+    content: `
+<h2>Pourquoi l'identité visuelle est stratégique pour une startup</h2>
+<p>
+  Quand on lance une startup à Bruxelles, le branding passe souvent après le produit, le pitch deck
+  et la levée de fonds. C'est compréhensible — mais c'est une erreur. Votre identité visuelle n'est
+  pas un luxe esthétique. C'est un outil de communication qui influence la perception des investisseurs,
+  des premiers clients et des recrues potentielles.
+</p>
+<p>
+  Une startup avec une identité visuelle cohérente inspire davantage confiance et semble plus mature,
+  même si elle n'a que quelques mois d'existence. Dans un écosystème aussi compétitif que Bruxelles,
+  cet avantage compte.
+</p>
+
+<h2>Les vrais besoins d'une startup en phase d'amorçage</h2>
+<p>
+  Toutes les startups n'ont pas les mêmes besoins. En phase d'amorçage (pre-seed, seed), voici ce
+  dont vous avez réellement besoin — et ce qui peut attendre :
+</p>
+
+<h3>Ce qui est essentiel</h3>
+<ul>
+  <li><strong>Un logo fonctionnel et scalable</strong> : il doit fonctionner en petit (favicon, icône d'app) et en grand (pitch deck, banner LinkedIn). Optez pour la simplicité.</li>
+  <li><strong>Une palette de couleurs définie</strong> : 2 à 3 couleurs suffisent. Elles donnent de la cohérence à tous vos supports sans effort.</li>
+  <li><strong>Une ou deux typographies</strong> : une pour les titres, une pour le corps de texte. Ça suffit pour 90% des usages.</li>
+  <li><strong>Un ton de voix</strong> : comment parle votre marque ? Expert et rassurant ? Disruptif et direct ? Ce choix guide tous vos contenus.</li>
+</ul>
+
+<h3>Ce qui peut attendre</h3>
+<ul>
+  <li>La charte graphique complète (100 pages)</li>
+  <li>Les déclinaisons packaging</li>
+  <li>Les illustrations sur-mesure</li>
+  <li>Les animations de marque</li>
+</ul>
+<p>
+  Construisez l'essentiel d'abord. Le reste viendra quand votre modèle sera validé.
+</p>
+
+<h2>Le budget réaliste pour une startup</h2>
+<p>
+  La question du budget est souvent délicate. Voici une réalité du marché bruxellois en 2026 :
+</p>
+<ul>
+  <li><strong>Sous 500€</strong> : vous obtiendrez un logo générique. Acceptable pour des tests, pas pour une présentation investisseur.</li>
+  <li><strong>Entre 800€ et 2000€</strong> : c'est la fourchette où vous pouvez obtenir un travail sérieux avec un studio comme <a href="/services">SQWR</a> ou un freelance expérimenté. Logo + palette + typo + guide de base.</li>
+  <li><strong>Entre 2000€ et 5000€</strong> : identité visuelle complète avec charte, déclinaisons, système iconographique. Le niveau série A.</li>
+</ul>
+<p>
+  Notre conseil : investissez 10 à 15% de votre budget communication initial dans le branding.
+  C'est un investissement qui se rentabilise à chaque présentation, chaque campagne, chaque recrutement.
+</p>
+
+<h2>Cas concret : izzico, startup co-living bruxelloise</h2>
+<p>
+  Izzico est une application de co-living développée à Bruxelles. Quand nous avons travaillé sur son
+  identité visuelle, les contraintes étaient claires : budget limité, délais courts, besoin d'une
+  identité qui fonctionne aussi bien sur l'app que sur les réseaux sociaux et dans les pitchs investisseurs.
+</p>
+<p>
+  Le résultat : un logo modulaire, une palette de 3 couleurs, une typographie distinctive et un système
+  visuel qui s'adapte à tous les formats. En moins d'un mois, izzico avait une identité professionnelle
+  prête pour son lancement.
+</p>
+<p>
+  Découvrez le projet dans notre <a href="/portfolio/izzico">portfolio</a>.
+</p>
+
+<h2>Comment choisir le bon partenaire branding pour votre startup ?</h2>
+<p>
+  Quelques critères spécifiques aux startups :
+</p>
+<ul>
+  <li><strong>Expérience avec les startups tech</strong> : les contraintes sont différentes d'une PME classique. Votre prestataire doit comprendre les enjeux d'une app, d'un MVP, d'un pitch deck.</li>
+  <li><strong>Rapidité d'exécution</strong> : les startups n'ont pas 3 mois à attendre. Demandez des délais réalistes et garantis.</li>
+  <li><strong>Livrables numériques optimisés</strong> : SVG scalable, formats pour les réseaux sociaux, assets pour les développeurs. Pas seulement un PDF imprimable.</li>
+  <li><strong>Vision long terme</strong> : votre identité doit être conçue pour évoluer. Méfiez-vous des logos trop complexes qui seront impossibles à décliner demain.</li>
+</ul>
+<p>
+  Vous lancez une startup à Bruxelles et cherchez à construire votre identité visuelle ?
+  <a href="/contact">Parlez-nous de votre projet</a> — nous proposons des formules adaptées aux
+  contraintes budget et délais des startups.
+</p>
+`,
+    publishedAt: '2026-03-03T12:00:00+01:00',
+    updatedAt: '2026-03-03T12:00:00+01:00',
+    category: 'branding',
+    categoryLabel: 'Branding',
+    author: 'Samuel Baudon',
+    authorTitle: 'Directeur Stratégie, SQWR Studio',
+    readingTime: 8,
+    featured: false,
+  },
+  {
+    slug: 'charte-graphique-prix-belgique',
+    title: 'Charte graphique : ce qu\'elle inclut et combien ça coûte en Belgique',
+    description:
+      'Qu\'est-ce qu\'une charte graphique, que doit-elle contenir et quel budget prévoir en Belgique ? Guide complet pour comprendre cet outil fondamental du branding.',
+    excerpt:
+      'La charte graphique est souvent mentionnée sans vraiment être expliquée. Voici ce qu\'elle contient vraiment et pourquoi elle est indispensable.',
+    content: `
+<h2>Qu'est-ce qu'une charte graphique exactement ?</h2>
+<p>
+  La charte graphique — aussi appelée guide de style ou brand guidelines — est le document de référence
+  qui définit les règles visuelles de votre marque. Elle garantit que votre communication reste cohérente,
+  quelle que soit la personne qui l'utilise : vous, votre équipe, un prestataire externe, une imprimerie.
+</p>
+<p>
+  Sans charte graphique, votre logo apparaît dans 4 nuances de rouge différentes selon les supports.
+  Vos textes alternent entre 3 typographies incompatibles. Vos visuels en ligne ne ressemblent pas à
+  vos supports imprimés. Résultat : une marque qui semble amateur, même si le logo de base est bien conçu.
+</p>
+
+<h2>Que contient une charte graphique professionnelle ?</h2>
+
+<h3>Les éléments fondamentaux (toute charte)</h3>
+<ul>
+  <li><strong>Le logo et ses déclinaisons</strong> : version principale, versions horizontale et verticale, version monochrome, version négative (sur fond sombre). Avec zone de protection et taille minimale.</li>
+  <li><strong>La palette de couleurs</strong> : couleurs primaires et secondaires avec leurs codes exacts (HEX pour le web, CMJN pour l'imprimé, Pantone pour la cohérence multi-supports).</li>
+  <li><strong>Les typographies</strong> : polices de titres et de corps de texte, avec hiérarchie typographique et exemples d'usage.</li>
+  <li><strong>Les règles d'usage du logo</strong> : ce qu'il ne faut jamais faire (déformer, changer les couleurs, ajouter un contour, placer sur un fond incompatible).</li>
+</ul>
+
+<h3>Les éléments avancés (charte complète)</h3>
+<ul>
+  <li><strong>L'univers iconographique</strong> : style des icônes, illustrations, pictogrammes.</li>
+  <li><strong>La direction artistique photo</strong> : quel type de photos correspond à votre marque ? Quel style de composition, d'éclairage, de sujet ?</li>
+  <li><strong>Les templates de supports</strong> : modèles de cartes de visite, signature email, présentation PowerPoint, posts réseaux sociaux.</li>
+  <li><strong>Le ton de voix</strong> : comment écrit la marque ? Exemples de formulations correctes et incorrectes.</li>
+  <li><strong>Les applications concrètes</strong> : exemples du logo en situation réelle (façade, packaging, vêtements, app mobile).</li>
+</ul>
+
+<h2>Combien coûte une charte graphique en Belgique ?</h2>
+<p>Le tarif dépend directement du périmètre couvert :</p>
+<ul>
+  <li><strong>Charte de base</strong> : 400€ à 1200€. Logo + couleurs + typos + règles d'usage essentielles. Suffisant pour une startup ou une petite entreprise.</li>
+  <li><strong>Charte intermédiaire</strong> : 1200€ à 3000€. Avec déclinaisons supports, direction artistique photo, quelques templates. Le standard pour une PME.</li>
+  <li><strong>Charte complète</strong> : 3000€ à 8000€+. Tous les éléments, tous les supports, guide de 40-100 pages. Pour les entreprises avec des besoins de communication variés.</li>
+</ul>
+<p>
+  Chez <a href="/services">SQWR Studio</a>, la charte graphique est systématiquement intégrée à nos
+  projets d'identité visuelle. Elle n'est pas une option : c'est la garantie que le travail créatif
+  reste cohérent dans le temps.
+</p>
+
+<h2>Charte graphique digitale vs print : quelles différences ?</h2>
+<p>
+  Une erreur courante est de ne prévoir que les usages print (cartes de visite, flyers, affiches)
+  en oubliant les usages numériques. Or, en 2026, la majorité de votre communication passe par
+  le digital : site web, réseaux sociaux, newsletters, présentations.
+</p>
+<p>
+  Voici ce que doit spécifier une charte adaptée au digital :
+</p>
+<ul>
+  <li>Les couleurs en HEX et RGB (pas seulement CMJN)</li>
+  <li>Les polices web (Google Fonts, Adobe Fonts) et leurs équivalents système</li>
+  <li>Les formats d'images recommandés (PNG, SVG, WebP)</li>
+  <li>Les tailles de logo pour chaque réseau social (profil, bannière, favicon)</li>
+  <li>Les ratios de contenu pour Instagram, LinkedIn, etc.</li>
+</ul>
+
+<h2>Qui peut créer votre charte graphique ?</h2>
+<p>Trois options selon votre situation :</p>
+<ul>
+  <li><strong>Un studio spécialisé en branding</strong> (recommandé) : garantit la cohérence entre le logo, la charte et la stratégie de marque. C'est notre approche chez <a href="/">SQWR Studio</a>.</li>
+  <li><strong>Un graphiste freelance</strong> : option valable si le freelance a de l'expérience en systèmes de marque, pas seulement en création graphique.</li>
+  <li><strong>Un outil en ligne (Canva, Looka)</strong> : acceptable pour des besoins très basiques, mais limité en personnalisation et en expertise stratégique.</li>
+</ul>
+<p>
+  Vous souhaitez créer ou mettre à jour votre charte graphique en Belgique ?
+  <a href="/contact">Contactez-nous</a> pour en discuter. Premier échange gratuit et sans engagement.
+</p>
+`,
+    publishedAt: '2026-03-03T13:00:00+01:00',
+    updatedAt: '2026-03-03T13:00:00+01:00',
+    category: 'branding',
+    categoryLabel: 'Branding',
+    author: 'Joakim Baudon',
+    authorTitle: 'Directeur Créatif, SQWR Studio',
+    readingTime: 8,
+    featured: false,
+  },
+  {
+    slug: 'agence-web-bruxelles-freelance',
+    title: 'Agence web vs freelance à Bruxelles : quelle option pour votre projet ?',
+    description:
+      'Agence web ou freelance pour votre site internet à Bruxelles ? Comparaison honnête des deux options : tarifs, délais, qualité, suivi. Guide pour faire le bon choix.',
+    excerpt:
+      'Agence web ou freelance ? C\'est la question que posent tous nos prospects à Bruxelles. Voici une réponse honnête, sans langue de bois.',
+    content: `
+<h2>Le vrai débat : agence ou freelance ?</h2>
+<p>
+  À Bruxelles, le choix entre une agence web et un freelance revient dans presque tous nos échanges
+  avec de nouveaux clients. La réponse honnête : ça dépend de votre projet, de votre budget et de
+  ce que vous valorisez le plus.
+</p>
+<p>
+  Voici une comparaison factuelle pour vous aider à décider — sans le biais commercial que vous trouveriez
+  sur les sites d'agences qui vantent évidemment leurs propres services.
+</p>
+
+<h2>Le freelance : forces et limites</h2>
+
+<h3>Les avantages</h3>
+<ul>
+  <li><strong>Tarifs généralement plus bas</strong> : pas de charges de structure, de locaux ou d'équipe administrative. Un bon freelance bruxellois facture entre 350€ et 600€ par jour.</li>
+  <li><strong>Interlocuteur unique</strong> : vous travaillez directement avec la personne qui réalise le projet. Pas d'account manager entre vous et le développeur.</li>
+  <li><strong>Flexibilité</strong> : plus facile de s'adapter en cours de projet, de modifier une priorité ou de négocier le scope.</li>
+  <li><strong>Spécialisation pointue</strong> : les meilleurs freelances sont souvent très forts dans un domaine précis (React, Webflow, e-commerce Shopify).</li>
+</ul>
+
+<h3>Les limites</h3>
+<ul>
+  <li><strong>Disponibilité variable</strong> : un freelance peut être pris sur d'autres projets, tomber malade, ou ne plus être disponible après la livraison.</li>
+  <li><strong>Profil unique</strong> : il est rare qu'un seul freelance excelle en design UI, développement front-end, back-end et SEO simultanément.</li>
+  <li><strong>Risque de discontinuité</strong> : si votre freelance change d'orientation ou disparaît, qui maintient votre site ?</li>
+  <li><strong>Moins de processus formalisés</strong> : selon le niveau d'expérience, les livrables, les tests et les validations peuvent être moins structurés.</li>
+</ul>
+
+<h2>L'agence web : forces et limites</h2>
+
+<h3>Les avantages</h3>
+<ul>
+  <li><strong>Équipe pluridisciplinaire</strong> : design, développement, stratégie, copywriting — chaque compétence est couverte par un spécialiste.</li>
+  <li><strong>Processus éprouvés</strong> : briefings structurés, jalons de validation, tests qualité, livrables documentés.</li>
+  <li><strong>Continuité et support</strong> : l'agence existe indépendamment des individus. Si un développeur part, le projet continue.</li>
+  <li><strong>Vision stratégique</strong> : les agences expérimentées apportent un regard extérieur sur votre positionnement, pas seulement sur le code.</li>
+</ul>
+
+<h3>Les limites</h3>
+<ul>
+  <li><strong>Tarifs plus élevés</strong> : les coûts de structure se répercutent sur les devis. Un site simple peut coûter 2x plus qu'avec un freelance.</li>
+  <li><strong>Moins de flexibilité</strong> : les agences ont des processus établis qui ne s'adaptent pas toujours aux projets atypiques.</li>
+  <li><strong>Risque d'account manager</strong> : vous parlez à un commercial, pas au créatif. Ce filtre peut générer des malentendus.</li>
+</ul>
+
+<h2>SQWR Studio : un modèle hybride</h2>
+<p>
+  Chez <a href="/">SQWR Studio</a>, nous avons voulu combiner le meilleur des deux modèles. Samuel et
+  Joakim Baudon sont les deux interlocuteurs directs sur chaque projet — stratégie et créatif. Pas
+  d'account manager, pas de livraison anonyme.
+</p>
+<p>
+  En même temps, nous travaillons avec les processus et les standards de qualité d'une agence :
+  briefing structuré, jalons de validation, livrables documentés, guide d'utilisation.
+</p>
+<p>
+  Résultat : la proximité du freelance avec la rigueur de l'agence. C'est ce que nos clients comme
+  <a href="/portfolio/villa-coladeira">Villa Coladeira</a> et
+  <a href="/portfolio/nanou">Nanou Mendels</a> apprécient.
+</p>
+
+<h2>Comment choisir selon votre projet ?</h2>
+<p>Voici un guide rapide pour orienter votre décision :</p>
+<ul>
+  <li><strong>Petit projet (site vitrine simple, budget &lt;1500€)</strong> → Freelance ou studio junior</li>
+  <li><strong>Projet moyen (site avec fonctionnalités, budget 1500€-5000€)</strong> → Studio comme SQWR ou freelance senior</li>
+  <li><strong>Projet ambitieux (e-commerce, app web, budget &gt;5000€)</strong> → Agence spécialisée ou équipe de freelances coordinée</li>
+  <li><strong>Projet urgent (délai &lt;4 semaines)</strong> → Freelance disponible ou agence avec ressources libres</li>
+  <li><strong>Projet stratégique (refonte complète, nouveau marché)</strong> → Studio ou agence avec expertise stratégique</li>
+</ul>
+
+<h2>Les questions à poser avant de choisir</h2>
+<p>Que ce soit une agence ou un freelance, posez ces questions avant de signer :</p>
+<ul>
+  <li>Qui va travailler sur mon projet au quotidien ?</li>
+  <li>Avez-vous des références dans mon secteur ?</li>
+  <li>Que se passe-t-il si vous n'êtes plus disponible pendant le projet ?</li>
+  <li>Quels livrables sont inclus exactement ? (fichiers sources, documentation, formation)</li>
+  <li>Comment se passe la maintenance après la livraison ?</li>
+</ul>
+<p>
+  Vous hésitez encore ? <a href="/contact">Parlez-nous de votre projet</a>. Nous vous donnerons
+  un avis honnête sur la meilleure approche pour vous — même si ce n'est pas de travailler avec nous.
+</p>
+`,
+    publishedAt: '2026-03-03T14:00:00+01:00',
+    updatedAt: '2026-03-03T14:00:00+01:00',
+    category: 'web',
+    categoryLabel: 'Web',
+    author: 'Samuel Baudon',
+    authorTitle: 'Directeur Stratégie, SQWR Studio',
+    readingTime: 8,
+    featured: false,
+  },
 ];
 
 export function getArticleBySlug(slug: string): Article | undefined {

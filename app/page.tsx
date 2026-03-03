@@ -16,5 +16,21 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
-  return <HomePageWrapper />;
+  return (
+    <>
+      {/* Contenu sémantique serveur-rendu pour Google (homepage = canvas GSAP, ssr:false) */}
+      <section className="sr-only">
+        <h1>SQWR Studio — Agence créative à Bruxelles</h1>
+        <p>Studio créatif familial à Bruxelles. Identités visuelles dès 800€, sites web React/Next.js dès 1000€. Samuel &amp; Joakim Baudon.</p>
+        <ul>
+          <li>Branding &amp; identité visuelle</li>
+          <li>Développement web sur-mesure</li>
+          <li>Studio basé à Bruxelles, Belgique</li>
+        </ul>
+        <p>Découvrez nos <a href="/services">services</a>, notre <a href="/portfolio">portfolio</a> et notre <a href="/blog">blog branding &amp; web</a>.</p>
+        <p>Contactez-nous : studio@sqwr.be · +32 493 30 27 52</p>
+      </section>
+      <HomePageWrapper />
+    </>
+  );
 }

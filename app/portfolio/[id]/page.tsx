@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
       title: `${project.title} — ${project.client} | SQWR Studio`,
       description: project.description,
       url: `https://sqwr.be/portfolio/${project.id}`,
-      type: 'article',
+      type: 'website',
       images: [
         {
           url: `https://sqwr.be${project.image}`,
