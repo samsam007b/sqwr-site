@@ -46,8 +46,8 @@ export default function MobileFloatingCTA() {
 
   return (
     <div
-      className="md:hidden fixed bottom-0 left-0 right-0 z-[70] px-4"
-      style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
+      className="md:hidden fixed bottom-0 left-0 right-0 z-[70]"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <AnimatePresence>
         {visible && (
@@ -59,7 +59,8 @@ export default function MobileFloatingCTA() {
           >
             <Link
               href={config.href}
-              className="flex items-center justify-between w-full bg-primary text-white px-6 py-4 text-sm font-mono uppercase tracking-[0.15em] active:bg-primary/85 transition-colors duration-200"
+              className="flex items-center justify-between w-full bg-primary text-white px-6 text-sm font-mono uppercase tracking-[0.15em] active:bg-primary/85 transition-colors duration-200"
+              style={{ paddingTop: '1rem', paddingBottom: 'max(1rem, env(safe-area-inset-bottom))' }}
             >
               <span>{config.label}</span>
               <span className="text-lg leading-none">→</span>

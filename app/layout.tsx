@@ -46,14 +46,7 @@ export const metadata: Metadata = {
   creator: "SQWR Studio",
   metadataBase: new URL('https://sqwr.be'),
   alternates: {
-    canonical: '/',
-    languages: {
-      'fr': 'https://sqwr.be',
-      'en': 'https://sqwr.be',
-      'nl': 'https://sqwr.be',
-      'de': 'https://sqwr.be',
-      'x-default': 'https://sqwr.be',
-    },
+    canonical: 'https://sqwr.be',
   },
   openGraph: {
     title: "SQWR Studio — Agence créative Bruxelles | Branding & Web sur-mesure",
@@ -89,28 +82,56 @@ const jsonLd = {
       '@id': 'https://sqwr.be/#organization',
       name: 'SQWR Studio',
       url: 'https://sqwr.be',
-      logo: 'https://sqwr.be/Logo%20SQWR/sqwr-logo.svg',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://sqwr.be/Logo%20SQWR/sqwr-logo.png',
+        width: 200,
+        height: 60,
+      },
       email: 'studio@sqwr.be',
       telephone: '+32493302752',
+      foundingDate: '2024',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Bruxelles',
+        addressRegion: 'Bruxelles-Capitale',
+        postalCode: '1000',
         addressCountry: 'BE',
       },
+      founders: [
+        {
+          '@type': 'Person',
+          name: 'Samuel Baudon',
+          jobTitle: 'Directeur Stratégie',
+        },
+        {
+          '@type': 'Person',
+          name: 'Joakim Baudon',
+          jobTitle: 'Directeur Créatif',
+        },
+      ],
+      knowsAbout: ['Branding', 'Identité Visuelle', 'Web Design', 'React', 'Next.js', 'Direction Artistique'],
+      areaServed: ['Bruxelles', 'Belgique'],
+      // sameAs: ajouter quand les comptes sociaux sont actifs
+      // 'https://www.instagram.com/sqwr.studio/',
+      // 'https://www.linkedin.com/company/sqwr-studio/',
       sameAs: [],
     },
     {
-      '@type': 'LocalBusiness',
+      '@type': ['LocalBusiness', 'ProfessionalService'],
       '@id': 'https://sqwr.be/#localbusiness',
       name: 'SQWR Studio',
-      image: 'https://sqwr.be/Logo%20SQWR/sqwr-logo.svg',
+      image: 'https://sqwr.be/Logo%20SQWR/sqwr-logo.png',
       url: 'https://sqwr.be',
       email: 'studio@sqwr.be',
       telephone: '+32493302752',
-      priceRange: '€€–€€€',
+      priceRange: '€€',
+      currenciesAccepted: 'EUR',
       address: {
         '@type': 'PostalAddress',
         addressLocality: 'Bruxelles',
+        addressRegion: 'Bruxelles-Capitale',
+        postalCode: '1000',
         addressCountry: 'BE',
       },
       geo: {
@@ -124,6 +145,47 @@ const jsonLd = {
         opens: '09:00',
         closes: '18:00',
       },
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Services créatifs SQWR Studio',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Identité visuelle & Branding',
+              description: 'Conception complète de votre identité de marque : logo, charte graphique, guidelines.',
+            },
+            priceSpecification: {
+              '@type': 'PriceSpecification',
+              minPrice: 800,
+              priceCurrency: 'EUR',
+            },
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Site web React/Next.js sur-mesure',
+              description: "Développement de sites web performants et modernes avec React et Next.js.",
+            },
+            priceSpecification: {
+              '@type': 'PriceSpecification',
+              minPrice: 1000,
+              priceCurrency: 'EUR',
+            },
+          },
+        ],
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://sqwr.be/#website',
+      url: 'https://sqwr.be',
+      name: 'SQWR Studio',
+      description: 'Agence créative bruxelloise — Branding & Web sur-mesure',
+      publisher: { '@id': 'https://sqwr.be/#organization' },
+      inLanguage: 'fr-BE',
     },
   ],
 };
@@ -145,6 +207,19 @@ export default function RootLayout({
           src="https://plausible.io/js/pa-R2EajvyZiMg77-kBchQnU.js"
           strategy="afterInteractive"
         />
+        {/* Google Analytics GA4 */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-LXTJCPRN9D"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-LXTJCPRN9D');
+          `}
+        </Script>
       </head>
       <body className="min-h-screen font-sans relative">
         <a

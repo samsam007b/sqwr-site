@@ -23,13 +23,30 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
   if (!project) {
     return {
-      title: 'Projet non trouvé - sqwr.',
+      title: 'Projet non trouvé',
     };
   }
 
   return {
-    title: `${project.title} - ${project.client} | sqwr.`,
-    description: project.description,
+    title: `${project.title} — ${project.categoryLabel} ${project.year}`,
+    description: `${project.description} Réalisé par SQWR Studio à Bruxelles.`,
+    alternates: {
+      canonical: `https://sqwr.be/portfolio/${project.id}`,
+    },
+    openGraph: {
+      title: `${project.title} — ${project.client} | SQWR Studio`,
+      description: project.description,
+      url: `https://sqwr.be/portfolio/${project.id}`,
+      type: 'article',
+      images: [
+        {
+          url: `https://sqwr.be${project.image}`,
+          width: 1200,
+          height: 630,
+          alt: `${project.title} — ${project.client}`,
+        },
+      ],
+    },
   };
 }
 
@@ -41,7 +58,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  const jsonLd = {
+  const creativeWorkSchema = {
     '@context': 'https://schema.org',
     '@type': 'CreativeWork',
     name: project.title,
@@ -50,10 +67,38 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
       '@type': 'Organization',
       name: 'SQWR Studio',
       url: 'https://sqwr.be',
+      '@id': 'https://sqwr.be/#organization',
     },
     dateCreated: project.year,
     image: `https://sqwr.be${project.image}`,
-    ...(project.url && { url: project.url }),
+    genre: project.categoryLabel,
+    url: `https://sqwr.be/portfolio/${project.id}`,
+    ...(project.url && { sameAs: project.url }),
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Accueil',
+        item: 'https://sqwr.be',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Portfolio',
+        item: 'https://sqwr.be/portfolio',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: project.title,
+        item: `https://sqwr.be/portfolio/${project.id}`,
+      },
+    ],
   };
 
   const projectIndex = projects.findIndex((p) => p.id === id);
@@ -64,7 +109,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(creativeWorkSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       {/* Hero Section with Image */}
