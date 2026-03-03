@@ -136,13 +136,9 @@ const Header = () => {
   const [showContent, setShowContent] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  // Détection fond indépendante par élément
-  const [homeBgIsDark, setHomeBgIsDark] = useState(true);
-  const [menuBgIsDark, setMenuBgIsDark] = useState(true);
-  const [langBgIsDark, setLangBgIsDark] = useState(true);
+  const [isOverFooter, setIsOverFooter] = useState(false);
 
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
-  const homeWrapRef = useRef<HTMLDivElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
   const menuContentRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<HTMLDivElement>(null);
@@ -151,6 +147,8 @@ const Header = () => {
   const phaseRef = useRef<OverlayPhase>('closed');
 
   const overlayVisible = overlayPhase !== 'closed';
+  // Blanc uniquement quand overlay ouvert ou footer visible derrière le header
+  const squareIsLight = overlayVisible || isOverFooter;
 
   // ── Initialise le canvas au mount ─────────────────────────────────────────
   useEffect(() => {
@@ -259,64 +257,17 @@ const Header = () => {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // ── Détection fond indépendante par élément ──────────────────────────────
+  // ── Détection footer derrière le header ──────────────────────────────────
   useEffect(() => {
-    // Échantillonne le fond sous un élément donné et appelle le setter
-    const sampleAt = (ref: React.RefObject<HTMLElement | null>, setter: (v: boolean) => void) => {
-      const el = ref.current;
-      if (!el) return;
-      const r = el.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-
-      const candidates = document.elementsFromPoint(cx, cy);
-      for (const candidate of candidates) {
-        const style = getComputedStyle(candidate);
-        if (style.position === 'fixed' || style.position === 'sticky') continue;
-        if (candidate.tagName === 'HTML') break;
-
-        let cur: Element | null = candidate;
-        while (cur && cur.tagName !== 'HTML') {
-          const bg = getComputedStyle(cur).backgroundColor;
-          if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
-            const rgb = bg.match(/[\d.]+/g);
-            if (rgb && rgb.length >= 3) {
-              const lum = (0.299 * +rgb[0] + 0.587 * +rgb[1] + 0.114 * +rgb[2]) / 255;
-              setter(lum < 0.5);
-              return;
-            }
-          }
-          cur = cur.parentElement;
-        }
-      }
-      // Fallback : fond du body
-      const bodyBg = getComputedStyle(document.body).backgroundColor;
-      const rgb = bodyBg.match(/[\d.]+/g);
-      if (rgb && rgb.length >= 3) {
-        setter((0.299 * +rgb[0] + 0.587 * +rgb[1] + 0.114 * +rgb[2]) / 255 < 0.5);
-      }
+    const check = () => {
+      const footer = document.querySelector('footer');
+      if (!footer) return;
+      // Le footer remonte dans la zone du header (top < hauteur header ~80px)
+      setIsOverFooter(footer.getBoundingClientRect().top < 80);
     };
-
-    const detect = () => {
-      sampleAt(homeWrapRef, setHomeBgIsDark);
-      sampleAt(menuBtnRef, setMenuBgIsDark);
-      sampleAt(controlsRef, setLangBgIsDark);
-    };
-
-    let rafId: number;
-    const onUpdate = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(detect);
-    };
-
-    detect();
-    window.addEventListener('scroll', onUpdate, { passive: true });
-    window.addEventListener('resize', onUpdate, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', onUpdate);
-      window.removeEventListener('resize', onUpdate);
-      cancelAnimationFrame(rafId);
-    };
+    window.addEventListener('scroll', check, { passive: true });
+    check();
+    return () => window.removeEventListener('scroll', check);
   }, []);
 
   // ── Masquer pendant le video reveal ───────────────────────────────────────
@@ -417,7 +368,6 @@ const Header = () => {
     <>
       {/* ── Logo carré — haut gauche ───────────────────────────────────────── */}
       <motion.div
-        ref={homeWrapRef}
         className="fixed top-6 left-6 lg:left-10 z-[60]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -438,7 +388,7 @@ const Header = () => {
         >
           <motion.div
             className={`w-6 h-6 transition-colors duration-500 ${
-              (homeBgIsDark || overlayVisible) ? 'bg-paper group-hover:bg-primary' : 'bg-foreground group-hover:bg-primary'
+              squareIsLight ? 'bg-paper group-hover:bg-primary' : 'bg-foreground group-hover:bg-primary'
             }`}
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
@@ -460,7 +410,7 @@ const Header = () => {
       >
         <motion.div
           className={`w-6 h-6 transition-colors duration-500 ${
-            (menuBgIsDark || overlayVisible) ? 'bg-paper hover:bg-primary' : 'bg-foreground hover:bg-primary'
+            squareIsLight ? 'bg-paper hover:bg-primary' : 'bg-foreground hover:bg-primary'
           }`}
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.9 }}
@@ -479,7 +429,7 @@ const Header = () => {
         }}
         transition={{ duration: 0.3 }}
       >
-        <LanguageSelector openDown={isMobile} inverted={langBgIsDark || overlayVisible} />
+        <LanguageSelector openDown={isMobile} inverted={squareIsLight} />
       </motion.div>
 
       {/* ── Canvas pixel overlay ──────────────────────────────────────────── */}
