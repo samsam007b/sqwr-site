@@ -136,7 +136,7 @@ const Header = () => {
   const [showContent, setShowContent] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [isOverFooter, setIsOverFooter] = useState(false);
+  const [isLangOverFooter, setIsLangOverFooter] = useState(false);
 
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
@@ -147,8 +147,10 @@ const Header = () => {
   const phaseRef = useRef<OverlayPhase>('closed');
 
   const overlayVisible = overlayPhase !== 'closed';
-  // Blanc uniquement quand overlay ouvert ou footer visible derrière le header
-  const squareIsLight = overlayVisible || isOverFooter;
+  // Haut (home + menu) : blanc uniquement quand overlay ouvert
+  const topSquareIsLight = overlayVisible;
+  // Bas (langue) : blanc quand overlay ouvert OU quand le footer remonte sous lui
+  const langSquareIsLight = overlayVisible || isLangOverFooter;
 
   // ── Initialise le canvas au mount ─────────────────────────────────────────
   useEffect(() => {
@@ -257,13 +259,14 @@ const Header = () => {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // ── Détection footer derrière le header ──────────────────────────────────
+  // ── Détection footer sous le carré langue (bas de l'écran) ──────────────
   useEffect(() => {
     const check = () => {
       const footer = document.querySelector('footer');
       if (!footer) return;
-      // Le footer remonte dans la zone du header (top < hauteur header ~80px)
-      setIsOverFooter(footer.getBoundingClientRect().top < 80);
+      // Le carré langue est positionné en bas à ~32px du bas du viewport (lg:bottom-6)
+      const langY = window.innerHeight - 32;
+      setIsLangOverFooter(footer.getBoundingClientRect().top < langY);
     };
     window.addEventListener('scroll', check, { passive: true });
     check();
@@ -388,7 +391,7 @@ const Header = () => {
         >
           <motion.div
             className={`w-6 h-6 transition-colors duration-500 ${
-              squareIsLight ? 'bg-paper group-hover:bg-primary' : 'bg-foreground group-hover:bg-primary'
+              topSquareIsLight ? 'bg-paper group-hover:bg-primary' : 'bg-foreground group-hover:bg-primary'
             }`}
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
@@ -410,7 +413,7 @@ const Header = () => {
       >
         <motion.div
           className={`w-6 h-6 transition-colors duration-500 ${
-            squareIsLight ? 'bg-paper hover:bg-primary' : 'bg-foreground hover:bg-primary'
+            topSquareIsLight ? 'bg-paper hover:bg-primary' : 'bg-foreground hover:bg-primary'
           }`}
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.9 }}
@@ -429,7 +432,7 @@ const Header = () => {
         }}
         transition={{ duration: 0.3 }}
       >
-        <LanguageSelector openDown={isMobile} inverted={squareIsLight} />
+        <LanguageSelector openDown={isMobile} inverted={langSquareIsLight} />
       </motion.div>
 
       {/* ── Canvas pixel overlay ──────────────────────────────────────────── */}
