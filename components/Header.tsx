@@ -78,9 +78,13 @@ const Header = () => {
   const [showContent, setShowContent] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [bgIsDark, setBgIsDark] = useState(true); // détection fond sous le header
+  // Détection fond indépendante par élément
+  const [homeBgIsDark, setHomeBgIsDark] = useState(true);
+  const [menuBgIsDark, setMenuBgIsDark] = useState(true);
+  const [langBgIsDark, setLangBgIsDark] = useState(true);
 
   const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
+  const homeWrapRef = useRef<HTMLDivElement>(null);
   const menuBtnRef = useRef<HTMLButtonElement>(null);
   const menuContentRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<HTMLDivElement>(null);
@@ -89,8 +93,6 @@ const Header = () => {
   const phaseRef = useRef<OverlayPhase>('closed');
 
   const overlayVisible = overlayPhase !== 'closed';
-  // Carré blanc si fond sombre OU si overlay ouvert (fond noir du canvas)
-  const squareIsLight = bgIsDark || overlayVisible;
 
   // ── Initialise le canvas au mount ─────────────────────────────────────────
   useEffect(() => {
@@ -199,43 +201,48 @@ const Header = () => {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // ── Détection dynamique du fond sous le header ───────────────────────────
+  // ── Détection fond indépendante par élément ──────────────────────────────
   useEffect(() => {
-    const HEADER_Y = 24;
+    // Échantillonne le fond sous un élément donné et appelle le setter
+    const sampleAt = (ref: React.RefObject<HTMLElement | null>, setter: (v: boolean) => void) => {
+      const el = ref.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
 
-    const detect = () => {
-      // elementsFromPoint pénètre les éléments fixed et retourne tout ce qui est dessous
-      const candidates = document.elementsFromPoint(window.innerWidth / 2, HEADER_Y);
-
-      for (const el of candidates) {
-        const style = getComputedStyle(el);
-        // Ignorer les éléments fixed/sticky (le header lui-même, les canvas)
+      const candidates = document.elementsFromPoint(cx, cy);
+      for (const candidate of candidates) {
+        const style = getComputedStyle(candidate);
         if (style.position === 'fixed' || style.position === 'sticky') continue;
-        if (el.tagName === 'HTML') break;
+        if (candidate.tagName === 'HTML') break;
 
-        // Remonter l'arbre DOM pour trouver un fond non transparent
-        let cur: Element | null = el;
+        let cur: Element | null = candidate;
         while (cur && cur.tagName !== 'HTML') {
           const bg = getComputedStyle(cur).backgroundColor;
           if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
             const rgb = bg.match(/[\d.]+/g);
             if (rgb && rgb.length >= 3) {
               const lum = (0.299 * +rgb[0] + 0.587 * +rgb[1] + 0.114 * +rgb[2]) / 255;
-              setBgIsDark(lum < 0.5);
+              setter(lum < 0.5);
               return;
             }
           }
           cur = cur.parentElement;
         }
       }
-
       // Fallback : fond du body
       const bodyBg = getComputedStyle(document.body).backgroundColor;
       const rgb = bodyBg.match(/[\d.]+/g);
       if (rgb && rgb.length >= 3) {
-        const lum = (0.299 * +rgb[0] + 0.587 * +rgb[1] + 0.114 * +rgb[2]) / 255;
-        setBgIsDark(lum < 0.5);
+        setter((0.299 * +rgb[0] + 0.587 * +rgb[1] + 0.114 * +rgb[2]) / 255 < 0.5);
       }
+    };
+
+    const detect = () => {
+      sampleAt(homeWrapRef, setHomeBgIsDark);
+      sampleAt(menuBtnRef, setMenuBgIsDark);
+      sampleAt(controlsRef, setLangBgIsDark);
     };
 
     let rafId: number;
@@ -244,7 +251,7 @@ const Header = () => {
       rafId = requestAnimationFrame(detect);
     };
 
-    detect(); // vérification initiale
+    detect();
     window.addEventListener('scroll', onUpdate, { passive: true });
     window.addEventListener('resize', onUpdate, { passive: true });
     return () => {
@@ -352,6 +359,7 @@ const Header = () => {
     <>
       {/* ── Logo carré — haut gauche ───────────────────────────────────────── */}
       <motion.div
+        ref={homeWrapRef}
         className="fixed top-6 left-6 lg:left-10 z-[60]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -372,7 +380,7 @@ const Header = () => {
         >
           <motion.div
             className={`w-6 h-6 transition-colors duration-500 ${
-              squareIsLight ? 'bg-paper group-hover:bg-primary' : 'bg-foreground group-hover:bg-primary'
+              (homeBgIsDark || overlayVisible) ? 'bg-paper group-hover:bg-primary' : 'bg-foreground group-hover:bg-primary'
             }`}
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
@@ -394,7 +402,7 @@ const Header = () => {
       >
         <motion.div
           className={`w-6 h-6 transition-colors duration-500 ${
-            squareIsLight ? 'bg-paper hover:bg-primary' : 'bg-foreground hover:bg-primary'
+            (menuBgIsDark || overlayVisible) ? 'bg-paper hover:bg-primary' : 'bg-foreground hover:bg-primary'
           }`}
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 0.9 }}
@@ -413,7 +421,7 @@ const Header = () => {
         }}
         transition={{ duration: 0.3 }}
       >
-        <LanguageSelector openDown={isMobile} inverted={squareIsLight} />
+        <LanguageSelector openDown={isMobile} inverted={langBgIsDark || overlayVisible} />
       </motion.div>
 
       {/* ── Canvas pixel overlay ──────────────────────────────────────────── */}
