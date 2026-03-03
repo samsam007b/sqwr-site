@@ -6,6 +6,64 @@ import { motion } from 'framer-motion';
 import LanguageSelector from './LanguageSelector';
 import { useLanguage } from '@/context/LanguageContext';
 
+/* ── Menu item avec overlay wipe ──────────────────────────────────────────── */
+function MenuItem({
+  item,
+  showContent,
+  index,
+  onClose,
+}: {
+  item: { href: string; label: string; num: string };
+  showContent: boolean;
+  index: number;
+  onClose: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <motion.div
+      animate={showContent ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
+      transition={{
+        delay: showContent ? 0.05 + index * 0.06 : 0,
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="border-b border-paper/10 first:border-t"
+    >
+      <Link
+        href={item.href}
+        onClick={onClose}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className="flex items-baseline gap-6 py-6 lg:py-8 transition-colors duration-300"
+      >
+        {/* Number */}
+        <motion.span
+          className="text-xs font-mono shrink-0"
+          animate={{ color: hovered ? 'var(--primary)' : 'rgba(255,255,255,0.3)' }}
+          transition={{ duration: 0.35 }}
+        >
+          {item.num}
+        </motion.span>
+
+        {/* Text + overlay */}
+        <span className="relative overflow-hidden block leading-none pb-[0.12em]">
+          <span className="text-4xl md:text-5xl lg:text-6xl font-display font-normal text-paper block">
+            {item.label}
+          </span>
+          {/* Overlay desktop uniquement — se rétracte vers la droite au hover */}
+          <motion.span
+            className="hidden lg:block absolute inset-0 bg-foreground pointer-events-none"
+            style={{ originX: 1 }}
+            animate={{ scaleX: hovered ? 0 : 1 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </span>
+      </Link>
+    </motion.div>
+  );
+}
+
 // Exact same dimensions as PixelGridHero background
 const CELL_SIZE = 10;
 const GAP = 2;
@@ -449,33 +507,13 @@ const Header = () => {
           <div className="w-full max-w-6xl mx-auto px-6 lg:px-16 pt-20 lg:pt-0">
             <nav className="flex flex-col">
               {menuItems.map((item, index) => (
-                <motion.div
+                <MenuItem
                   key={item.href}
-                  animate={
-                    showContent
-                      ? { opacity: 1, x: 0 }
-                      : { opacity: 0, x: -40 }
-                  }
-                  transition={{
-                    delay: showContent ? 0.05 + index * 0.06 : 0,
-                    duration: 0.6,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="border-b border-paper/10 first:border-t"
-                >
-                  <Link
-                    href={item.href}
-                    onClick={handleCloseMenu}
-                    className="group flex items-baseline gap-6 py-6 lg:py-8 transition-colors duration-300"
-                  >
-                    <span className="text-xs font-mono text-primary lg:text-paper/30 group-hover:text-primary transition-colors duration-300">
-                      {item.num}
-                    </span>
-                    <span className="text-4xl md:text-5xl lg:text-6xl font-display font-normal text-paper lg:text-paper/0 lg:group-hover:text-paper transition-colors duration-300">
-                      {item.label}
-                    </span>
-                  </Link>
-                </motion.div>
+                  item={item}
+                  showContent={showContent}
+                  index={index}
+                  onClose={handleCloseMenu}
+                />
               ))}
             </nav>
 
