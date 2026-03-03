@@ -2,16 +2,16 @@ import type { Metadata } from 'next';
 import ServicesPage from '@/components/pages/ServicesPage';
 
 export const metadata: Metadata = {
-  title: 'Services — Branding, Web React/Next.js & Social Media',
+  title: 'Services — Branding & Web React/Next.js sur-mesure | SQWR Studio',
   description:
-    'Identité visuelle dès €800, sites web sur-mesure React/Next.js dès €1000, stratégie social media. Studio créatif bruxellois. Samuel & Joakim Baudon.',
+    'Branding dès €1 500, sites web React/Next.js dès €1 500, apps web dès €3 500. Code propriétaire, prix transparents. Studio familial bruxellois.',
   alternates: {
     canonical: 'https://sqwr.be/services',
   },
   openGraph: {
-    title: 'Services — Branding, Web & Social Media | SQWR Studio',
+    title: 'Services — Votre marque. Votre code. | SQWR Studio Bruxelles',
     description:
-      'Identité visuelle dès €800, sites web sur-mesure dès €1000. Studio familial bruxellois, qualité agence, tarifs accessibles.',
+      'Branding dès €1 500, sites web React/Next.js dès €1 500, apps web dès €3 500. Code propriétaire, prix transparents. Studio familial bruxellois.',
     url: 'https://sqwr.be/services',
     type: 'website',
   },
@@ -23,42 +23,42 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Combien coûte une identité visuelle chez SQWR Studio ?',
+      name: 'Combien coûte un branding chez SQWR Studio ?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Nos packages identité visuelle démarrent à €800. Ce tarif inclut le logo principal, déclinaisons couleur et noir-blanc, charte graphique de base et fichiers sources livrables.',
+        text: 'Nos projets branding démarrent à €1 500 (Signature) et vont jusqu\'à €2 800 (Flagship). Le Signature inclut logo principal + 2 déclinaisons, palette couleurs, typographies, charte graphique PDF et fichiers sources. Le Flagship ajoute le système de design complet, motion logo, direction éditoriale et assets sociaux.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Combien coûte un site web sur-mesure chez SQWR Studio ?',
+      name: 'Combien coûte un site web React/Next.js sur-mesure chez SQWR Studio ?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Nos sites web React/Next.js sur-mesure démarrent à €1000. Le tarif final dépend de la complexité, du nombre de pages et des fonctionnalités requises.',
+        text: 'Nos sites web React/Next.js sur-mesure démarrent à €1 500 (Signature, 4–6 pages) et vont jusqu\'à €3 000 (Flagship). Vous possédez le code pour toujours — pas d\'abonnement Shopify ou Wix. Nos sites atteignent 90+ en Core Web Vitals.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Quel est le délai de livraison pour un projet de branding ?',
+      name: 'Pourquoi choisir un site sur-mesure plutôt que Shopify ou Wix ?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Un projet d'identité visuelle est généralement livré en 2 à 4 semaines selon la complexité. Nous travaillons en 3 étapes : brief & exploration, proposition & révisions, livraison finale.",
+        text: 'Shopify facture €100+/mois pour toujours. Avec SQWR, vous payez une fois et possédez votre code. Nos sites React/Next.js atteignent 90+ en Core Web Vitals, contre 40–60 pour les builders standard. Et votre design est unique — pas partagé avec 50 000 autres boutiques.',
       },
     },
     {
       '@type': 'Question',
-      name: 'Travaillez-vous uniquement avec des clients à Bruxelles ?',
+      name: "Qu'est-ce que l'audit stratégique à €500 ?",
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Non. Bien que basé à Bruxelles, SQWR Studio travaille avec des clients partout en Belgique et à l'international. Tous nos projets peuvent être gérés à distance.",
+        text: "L'audit stratégique à €500 comprend une analyse de votre positionnement de marque, un audit SEO technique avec score et recommandations, une revue UI/UX de votre site actuel, un benchmark de 3 concurrents directs, une roadmap créative sur 6 mois et une session Zoom 1h avec Samuel. Ce montant est intégralement crédité si vous lancez un projet avec nous.",
       },
     },
     {
       '@type': 'Question',
-      name: "Qu'est-ce qui différencie SQWR Studio d'une grande agence ?",
+      name: 'Développez-vous des applications web et mobiles ?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: "Vous travaillez directement avec les créateurs — Samuel (stratégie, web) et Joakim (design, direction artistique) — sans intermédiaire. Notre approche AI-driven nous permet d'offrir une qualité d'agence à des tarifs accessibles.",
+        text: 'Oui. Nos applications web démarrent à €3 500 (MVP) et incluent auth complète, base de données Supabase/PostgreSQL, interface React/Next.js sur-mesure et API REST. Le tier Produit à €6 500 ajoute multi-rôles, dashboard analytics et intégrations API (Stripe, Slack, etc.). Le déploiement iOS via TestFlight est disponible sur devis.',
       },
     },
   ],

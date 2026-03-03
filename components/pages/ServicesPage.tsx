@@ -9,30 +9,156 @@ import { useLanguage } from '@/context/LanguageContext';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+const SERVICE_KEYS = ['service1', 'service2', 'service3', 'service4'] as const;
+
 const DISCIPLINES = [
-  'Branding', 'Web Design', 'E-commerce', 'Identité Visuelle',
-  'Motion Design', 'CRM', 'Analytics', 'UX\u202fUI', 'Print', 'Typographie',
-  'Branding', 'Web Design', 'E-commerce', 'Identité Visuelle',
-  'Motion Design', 'CRM', 'Analytics', 'UX\u202fUI', 'Print', 'Typographie',
-  'Branding', 'Web Design', 'E-commerce', 'Identité Visuelle',
-  'Motion Design', 'CRM', 'Analytics', 'UX\u202fUI', 'Print', 'Typographie',
+  'Branding', 'Web Design', 'Application Web', 'Identité Visuelle',
+  'Motion Design', 'Supabase', 'Next.js', 'UX\u202fUI', 'React', 'Typographie',
+  'Branding', 'Web Design', 'Application Web', 'Identité Visuelle',
+  'Motion Design', 'Supabase', 'Next.js', 'UX\u202fUI', 'React', 'Typographie',
+  'Branding', 'Web Design', 'Application Web', 'Identité Visuelle',
+  'Motion Design', 'Supabase', 'Next.js', 'UX\u202fUI', 'React', 'Typographie',
 ];
 
-const SERVICE_KEYS = ['service1', 'service2', 'service3', 'service4', 'service5'] as const;
+/* ── Trust Bar ──────────────────────────────────────────────────────────────── */
+function TrustBar({ signals }: { signals: Array<{ label: string; sub: string }> }) {
+  return (
+    <div className="border-y border-secondary/10 px-6 lg:px-16 py-6">
+      <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10">
+        {signals.map((signal, i) => (
+          <motion.div
+            key={i}
+            className="flex flex-col gap-1"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 + i * 0.08, ease: EASE }}
+          >
+            <span className="font-display font-normal text-base lg:text-lg text-foreground leading-tight">
+              {signal.label}
+            </span>
+            <span className="text-[10px] font-mono text-secondary/40 uppercase tracking-[0.18em]">
+              {signal.sub}
+            </span>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── Custom vs Template ─────────────────────────────────────────────────────── */
+function CustomVsTemplate({ t }: { t: (key: string) => string }) {
+  const points = [
+    { title: t('services.cvtPoint1Title'), text: t('services.cvtPoint1Text') },
+    { title: t('services.cvtPoint2Title'), text: t('services.cvtPoint2Text') },
+    { title: t('services.cvtPoint3Title'), text: t('services.cvtPoint3Text') },
+  ];
+  return (
+    <section className="py-20 lg:py-28 px-6 lg:px-16 border-t border-secondary/10">
+      <div className="max-w-7xl mx-auto">
+        <ScrollReveal className="mb-14">
+          <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/50 mb-4">
+            {t('services.cvtTitle')}
+          </p>
+          <h2 className="font-display font-normal text-3xl lg:text-4xl text-foreground leading-[0.95]">
+            {t('services.cvtSubtitle')}
+          </h2>
+        </ScrollReveal>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16">
+          {points.map((pt, i) => (
+            <ScrollReveal key={i} delay={i * 0.1}>
+              <div className="border-l-[2px] border-primary pl-5">
+                <h3 className="font-display font-normal text-xl text-foreground mb-3 leading-tight">
+                  {pt.title}
+                </h3>
+                <p className="text-secondary/55 font-light text-sm leading-relaxed">
+                  {pt.text}
+                </p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Entry Point — Audit ────────────────────────────────────────────────────── */
+function EntryPoint({ t }: { t: (key: string) => string }) {
+  const auditFeatures = [1, 2, 3, 4, 5, 6].map(n => t(`services.auditFeature${n}`));
+  return (
+    <section className="py-24 lg:py-32 px-6 lg:px-16 border-t border-secondary/10">
+      <div className="max-w-7xl mx-auto">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-20 lg:items-start">
+          {/* Left */}
+          <ScrollReveal className="lg:col-span-5 mb-14 lg:mb-0">
+            <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/50 mb-6">
+              {t('services.auditTitle')}
+            </p>
+            <h2 className="font-display font-normal text-4xl lg:text-5xl text-foreground leading-[0.95] mb-6">
+              {t('services.auditSubtitle')}
+            </h2>
+            <p className="text-xs font-mono text-primary/70 mb-8 uppercase tracking-[0.2em]">
+              ↳ {t('services.auditCredit')}
+            </p>
+            <p className="text-secondary/55 font-light leading-relaxed text-base max-w-md">
+              {t('services.auditDescription')}
+            </p>
+          </ScrollReveal>
+          {/* Right */}
+          <ScrollReveal delay={0.15} className="lg:col-span-6 lg:col-start-7">
+            <ul className="space-y-0 mb-10 border-t border-secondary/10">
+              {auditFeatures.map((feature, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-4 text-secondary/65 font-light text-base border-b border-secondary/8 py-5"
+                >
+                  <span
+                    style={{
+                      display: 'block',
+                      width: '20px',
+                      height: '1px',
+                      backgroundColor: 'var(--primary)',
+                      marginTop: '11px',
+                      flexShrink: 0,
+                    }}
+                  />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/contact?intent=audit"
+              className="inline-flex items-center gap-3 px-8 py-4 border border-foreground text-foreground text-sm font-mono uppercase tracking-[0.12em] hover:bg-foreground hover:text-paper transition-all duration-300"
+            >
+              {t('services.auditCta')}
+            </Link>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 /* ── Service List Item ─────────────────────────────────────────────────────── */
 function ServiceItem({
   index,
   title,
-  price,
-  isDevis,
+  tagline,
+  priceSignature,
+  priceFlagship,
+  labelSignature,
+  labelFlagship,
   isActive,
   onSelect,
 }: {
   index: number;
   title: string;
-  price: string;
-  isDevis: boolean;
+  tagline: string;
+  priceSignature: string;
+  priceFlagship: string;
+  labelSignature: string;
+  labelFlagship: string;
   isActive: boolean;
   onSelect: () => void;
 }) {
@@ -58,7 +184,7 @@ function ServiceItem({
         />
       )}
 
-      <div className="relative flex items-center gap-5 py-7 pl-6 pr-4">
+      <div className="relative flex items-center gap-5 py-6 pl-6 pr-4">
         {/* Number */}
         <span
           className="text-sm font-mono w-6 shrink-0 transition-colors duration-500"
@@ -67,7 +193,7 @@ function ServiceItem({
           {String(index + 1).padStart(2, '0')}
         </span>
 
-        {/* Title */}
+        {/* Title + tagline */}
         <div className="flex-1 min-w-0">
           <span
             className="font-display font-normal text-lg lg:text-xl leading-tight transition-colors duration-300 block truncate"
@@ -75,15 +201,40 @@ function ServiceItem({
           >
             {title}
           </span>
+          <AnimatePresence>
+            {isActive && (
+              <motion.span
+                className="text-xs font-mono text-secondary/40 block mt-0.5 truncate"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                {tagline}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Price pill */}
-        <span
-          className="text-xs font-mono shrink-0 transition-colors duration-300"
-          style={{ color: isActive ? 'var(--primary)' : 'rgba(102,102,102,0.4)' }}
-        >
-          {isDevis ? 'Sur devis' : price}
-        </span>
+        {/* Dual price — visible when active */}
+        <AnimatePresence>
+          {isActive && (
+            <motion.div
+              className="flex flex-col items-end gap-0.5 shrink-0"
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 8 }}
+              transition={{ duration: 0.25 }}
+            >
+              <span className="text-[10px] font-mono text-secondary/35 whitespace-nowrap">
+                {labelSignature} {priceSignature}
+              </span>
+              <span className="text-[10px] font-mono text-primary whitespace-nowrap">
+                {labelFlagship} {priceFlagship}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Arrow */}
         <motion.span
@@ -127,23 +278,29 @@ export default function ServicesPage() {
   }, []);
 
   /* Build service data from translations */
-  const services = SERVICE_KEYS.map((key) => {
-    const featuresRaw = t(`services.${key}.features`);
-    const price = t(`services.${key}.price`);
-    return {
-      key,
-      title: t(`services.${key}.title`),
-      price,
-      description: t(`services.${key}.description`),
-      included: t(`services.${key}.included`),
-      features: (Array.isArray(featuresRaw) ? featuresRaw : []) as string[],
-      isDevis:
-        price.toLowerCase().includes('devis') ||
-        price.toLowerCase().includes('quote'),
-    };
-  });
+  const services = SERVICE_KEYS.map((key) => ({
+    key,
+    title: t(`services.${key}.title`),
+    tagline: t(`services.${key}.tagline`),
+    priceSignature: t(`services.${key}.priceSignature`),
+    priceFlagship: t(`services.${key}.priceFlagship`),
+    labelSignature: t(`services.${key}.labelSignature`),
+    labelFlagship: t(`services.${key}.labelFlagship`),
+    description: t(`services.${key}.description`),
+    included: t(`services.${key}.included`),
+    featuresSignature: [1, 2, 3, 4, 5, 6].map(n => t(`services.${key}.featuresSignature${n}`)),
+    featuresFlagship: [1, 2, 3, 4, 5, 6].map(n => t(`services.${key}.featuresFlagship${n}`)),
+  }));
 
   const active = services[activeIndex];
+
+  /* Trust signals */
+  const trustSignals = [
+    { label: t('services.trust1'), sub: t('services.trust1Sub') },
+    { label: t('services.trust2'), sub: t('services.trust2Sub') },
+    { label: t('services.trust3'), sub: t('services.trust3Sub') },
+    { label: t('services.trust4'), sub: t('services.trust4Sub') },
+  ];
 
   return (
     <>
@@ -176,7 +333,7 @@ export default function ServicesPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.15, ease: EASE }}
           >
-            Ce que nous<br />créons pour vous
+            Votre marque.<br />Votre code.
           </motion.h1>
 
           <motion.p
@@ -185,12 +342,16 @@ export default function ServicesPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
           >
-            Chaque discipline est une promesse.<br />Chaque projet, une nouvelle histoire.
+            Transparent sur les prix. Intransigeant sur la qualité.<br />
+            Code qui vous appartient.
           </motion.p>
         </div>
 
         <div className="absolute bottom-0 left-6 right-6 lg:left-16 lg:right-16 h-[1px] bg-secondary/10" />
       </section>
+
+      {/* ── TRUST BAR ────────────────────────────────────────────────────────── */}
+      <TrustBar signals={trustSignals} />
 
       {/* ── SERVICES SPLIT ───────────────────────────────────────────────────── */}
       <section className="px-6 lg:px-16 py-20 lg:py-32">
@@ -214,17 +375,19 @@ export default function ServicesPage() {
                     key={service.key}
                     index={i}
                     title={service.title}
-                    price={service.price}
-                    isDevis={service.isDevis}
+                    tagline={service.tagline}
+                    priceSignature={service.priceSignature}
+                    priceFlagship={service.priceFlagship}
+                    labelSignature={service.labelSignature}
+                    labelFlagship={service.labelFlagship}
                     isActive={activeIndex === i}
                     onSelect={() => setActiveIndex(i)}
                   />
                 ))}
               </div>
 
-              {/* Small contact nudge */}
               <p className="mt-8 text-xs font-mono text-secondary/60 leading-relaxed">
-                Besoin d&apos;une solution sur-mesure ?<br />
+                Un projet sur-mesure ?<br />
                 <a
                   href="mailto:studio@sqwr.be"
                   className="text-primary/60 hover:text-primary transition-colors"
@@ -257,57 +420,109 @@ export default function ServicesPage() {
                     {active.title}
                   </h2>
 
-                  {/* Price */}
-                  <div className="flex items-baseline gap-3 mb-8 pb-8 border-b border-secondary/10">
-                    {!active.isDevis ? (
-                      <>
-                        <span className="text-xs font-mono uppercase tracking-wider text-secondary/70">
-                          {t('services.startingFrom')}
-                        </span>
-                        <span className="text-4xl font-display font-normal text-primary">
-                          {active.price}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="text-4xl font-display font-normal text-primary">
-                        {active.price}
-                      </span>
-                    )}
-                  </div>
-
                   {/* Description */}
-                  <p className="text-secondary/60 font-light leading-relaxed text-lg mb-10 max-w-xl">
+                  <p className="text-secondary/60 font-light leading-relaxed text-base mb-8 max-w-xl">
                     {active.description}
                   </p>
 
-                  {/* Features */}
-                  <div className="mb-12">
-                    <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/60 mb-6">
-                      {active.included}
-                    </p>
-                    <ul className="space-y-4">
-                      {active.features.map((feature, idx) => (
-                        <motion.li
-                          key={idx}
-                          className="flex items-start gap-4 text-secondary/65 font-light text-base"
-                          initial={{ opacity: 0, x: -8 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 0.1 + idx * 0.05, ease: EASE }}
-                        >
-                          <span
-                            className="flex-shrink-0"
-                            style={{
-                              display: 'block',
-                              width: '20px',
-                              height: '1px',
-                              backgroundColor: 'var(--primary)',
-                              marginTop: '11px',
-                            }}
-                          />
-                          {feature}
-                        </motion.li>
-                      ))}
-                    </ul>
+                  {/* Dual pricing cards */}
+                  <div className="grid grid-cols-2 gap-4 mb-10 pb-10 border-b border-secondary/10">
+                    {/* Signature */}
+                    <div className="border border-secondary/12 p-5 relative">
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-secondary/45 mb-3">
+                        {active.labelSignature}
+                      </p>
+                      <p className="text-2xl lg:text-3xl font-display font-normal text-foreground mb-4">
+                        {active.priceSignature}
+                      </p>
+                      <Link
+                        href="/contact"
+                        className="inline-flex items-center gap-2 text-xs font-mono text-secondary/50 hover:text-primary transition-colors"
+                      >
+                        Démarrer →
+                      </Link>
+                    </div>
+                    {/* Flagship */}
+                    <div className="border border-primary/25 p-5 relative" style={{ background: 'rgba(224,25,25,0.015)' }}>
+                      <div className="absolute top-0 left-0 right-0 h-[2px] bg-primary" />
+                      <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary/60 mb-3">
+                        {active.labelFlagship}
+                      </p>
+                      <p className="text-2xl lg:text-3xl font-display font-normal text-primary mb-4">
+                        {active.priceFlagship}
+                      </p>
+                      <Link
+                        href="/contact"
+                        className="inline-flex items-center gap-2 text-xs font-mono text-primary/60 hover:text-primary transition-colors"
+                      >
+                        Démarrer →
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Features — two columns */}
+                  <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    {/* Signature features */}
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-secondary/45 mb-5">
+                        {active.labelSignature}
+                      </p>
+                      <ul className="space-y-3">
+                        {active.featuresSignature.map((feature, idx) => (
+                          <motion.li
+                            key={idx}
+                            className="flex items-start gap-3 text-secondary/60 font-light text-sm"
+                            initial={{ opacity: 0, x: -8 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.4, delay: 0.1 + idx * 0.04, ease: EASE }}
+                          >
+                            <span
+                              style={{
+                                display: 'block',
+                                width: '16px',
+                                height: '1px',
+                                backgroundColor: 'var(--secondary)',
+                                opacity: 0.3,
+                                marginTop: '9px',
+                                flexShrink: 0,
+                              }}
+                            />
+                            {feature}
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Flagship features */}
+                    <div>
+                      <p className="text-[10px] font-mono uppercase tracking-[0.25em] text-primary/55 mb-5">
+                        {active.labelFlagship}
+                      </p>
+                      <ul className="space-y-3">
+                        {active.featuresFlagship.map((feature, idx) => (
+                          <motion.li
+                            key={idx}
+                            className="flex items-start gap-3 text-secondary/65 font-light text-sm"
+                            initial={{ opacity: 0, x: -8 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.4, delay: 0.2 + idx * 0.04, ease: EASE }}
+                          >
+                            <span
+                              style={{
+                                display: 'block',
+                                width: '16px',
+                                height: '1px',
+                                backgroundColor: 'var(--primary)',
+                                opacity: 0.45,
+                                marginTop: '9px',
+                                flexShrink: 0,
+                              }}
+                            />
+                            {feature}
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
 
                   {/* CTA */}
@@ -324,6 +539,9 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      {/* ── CUSTOM VS TEMPLATE ───────────────────────────────────────────────── */}
+      <CustomVsTemplate t={t} />
 
       {/* ── DISCIPLINES MARQUEE ──────────────────────────────────────────────── */}
       <div aria-hidden="true" className="border-y border-secondary/10 overflow-hidden py-5 select-none">
@@ -391,6 +609,9 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      {/* ── ENTRY POINT — Audit ──────────────────────────────────────────────── */}
+      <EntryPoint t={t} />
+
       {/* ── CTA DARK ─────────────────────────────────────────────────────────── */}
       <section
         ref={ctaRef}
@@ -402,7 +623,7 @@ export default function ServicesPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-end">
             <ScrollReveal className="lg:col-span-7">
-              <h2 className="font-display font-normal text-4xl md:text-5xl lg:text-6xl leading-[0.95] text-paper">
+              <h2 className="font-display font-normal text-4xl md:text-5xl lg:text-6xl leading-[0.92] text-paper whitespace-pre-line">
                 {t('services.ctaTitle')}
               </h2>
             </ScrollReveal>
