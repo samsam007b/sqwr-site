@@ -109,17 +109,34 @@
 
 ---
 
-## 6. SEO & RÉFÉRENCEMENT — 68/80 pts
+## 6. SEO & RÉFÉRENCEMENT — 76/80 pts *(mis à jour 03/03/2026)*
 
 | Sous-critère | Score | Notes |
 |---|---|---|
-| 6.1 Metadata & Titres | 18/20 | Title ✅ Meta desc ✅ H1 ✅ OG ✅ — **OG image maintenant présente** ✅ |
-| 6.2 Indexation & Crawlabilité | 13/15 | robots.txt ✅ sitemap.xml ✅ — **domaine corrigé sqwr.be** ✅ — GSC à configurer |
-| 6.3 SEO Multilingue | 6/15 | Multilingue client-side sans hreflang — URLs non segmentées par langue |
-| 6.4 SEO Technique | 13/15 | **JSON-LD Organization + LocalBusiness ajouté** ✅ — URLs propres ✅ |
-| 6.5 CWV comme signal SEO | 10/15 | GSC pas encore configuré — données lab correctes |
+| 6.1 Metadata & Titres | 20/20 | Title ✅ Meta desc ✅ canonical ✅ OpenGraph ✅ sur **toutes les pages** — homepage metadata explicite ajoutée ✅ |
+| 6.2 Indexation & Crawlabilité | 15/15 | robots.txt ✅ sitemap.xml complet ✅ — **GSC configuré et vérifié** ✅ — sitemap soumis ✅ — 2 TXT DNS Google confirmés |
+| 6.3 SEO Multilingue | 6/15 | Multilingue client-side sans hreflang — URLs non segmentées par langue (hreflang incorrect retiré ✅) |
+| 6.4 SEO Technique | 15/15 | JSON-LD @graph ✅ (Organization + LocalBusiness + WebSite + OfferCatalog + founders) — **Server Components sur toutes les pages** ✅ — FAQ schema /services ✅ — BreadcrumbList portfolio ✅ — blog avec BlogPosting + Article schema ✅ |
+| 6.5 CWV comme signal SEO | 14/15 | **GSC configuré** ✅ — GA4 installé ✅ — Plausible ✅ — sitemap avec dates réelles et priorités ✅ |
 
-**⚠️ Actions** : Configurer Google Search Console. Évaluer migration vers `next-intl` avec routes `/fr/` `/en/` pour le SEO multilingue.
+**✅ Actions réalisées** : GSC configuré, Search Console vérifié DNS, sitemap soumis, Server Components + metadata toutes pages, JSON-LD enrichi, blog infrastructure, OG images dynamiques (blog/[slug] + contact + services + about).
+
+**⚠️ Reste** : Évaluer migration vers `next-intl` avec routes `/fr/` `/en/` pour le SEO multilingue (P2).
+
+### Détail SEO — Audit complet 03/03/2026 (92/100)
+
+| Composant | Score | Détail |
+|-----------|-------|--------|
+| Metadata pages | 96/100 | Toutes pages : title, description, canonical, OG — homepage corrigée |
+| Layout & JSON-LD | 94/100 | @graph complet, LocalBusiness geo, WebSite, OfferCatalog |
+| Blog | 88/100 | BlogPosting schema, generateMetadata dynamique, BreadcrumbList, 1 article |
+| Sitemap | 92/100 | Dates réelles, priorités intelligentes, blog routes incluses |
+| OG Images | 88/100 | home ✅ services ✅ about ✅ contact ✅ blog/[slug] dynamique ✅ |
+| Portfolio dynamique | 93/100 | CreativeWork schema, BreadcrumbList, OG dynamique, prev/next |
+| Robots.txt | 95/100 | Correct, minimal, sitemap lié |
+| Server Components | 100/100 | Zéro `use client` sur pages — toutes pages en SSR |
+| Footer backlink | 92/100 | Lien "Site par sqwr." dans footer — tous sites clients |
+| **Score SEO global** | **92/100** | |
 
 ---
 
@@ -129,11 +146,12 @@
 |---|---|---|
 | 7.1 TypeScript strict | 18/20 | `strict: true` ✅ — 1 `any` dans LanguageContext (acceptable, traversal dynamique) |
 | 7.2 Qualité & Conventions | 18/20 | ESLint propre ✅ — **console.log supprimés** ✅ — nommage cohérent ✅ |
-| 7.3 Architecture & Organisation | 16/20 | Structure claire ✅ — **95% `use client`** sur-utilisé — Server Components sous-exploités |
+| 7.3 Architecture & Organisation | 19/20 | Structure claire ✅ — **Server Components + Client Island pattern** implémenté ✅ — pages.tsx en SSR, composants UI isolés en `use client` |
 | 7.4 Gestion des erreurs | 7/10 | try/catch dans API ✅ — **error.tsx ajouté** ✅ — pas de logger structuré |
 | 7.5 Tests | 0/10 | Aucun test — pénalité documentée |
 
-**⚠️ Actions** : Ajouter Vitest/Jest pour les fonctions utilitaires (`hexToRgba`, `getProjectById`, etc.). Migrer des pages statiques en Server Components.
+**✅ Actions réalisées** : Server Components migration complète — pattern "Server Wrapper + Client Island" sur toutes les pages.
+**⚠️ Reste** : Ajouter Vitest/Jest pour les fonctions utilitaires.
 
 ---
 
@@ -174,12 +192,12 @@
 
 | Sous-critère | Score | Notes |
 |---|---|---|
-| 11.1 RGPD & Cookies | 16/25 | Pas de cookies tiers ✅ — **pas de bannière cookie** (acceptable sans analytics) — **politique confidentialité créée** ✅ |
+| 11.1 RGPD & Cookies | 14/25 | **GA4 ajouté** ⚠️ — bannière cookie maintenant requise (GA4 = cookies tiers) — Plausible reste RGPD-friendly ✅ — politique confidentialité ✅ |
 | 11.2 Mentions légales & CGU | 12/15 | **Mentions légales créées** ✅ — lien dans footer ✅ |
 | 11.3 Droits des données | 8/10 | Droits RGPD documentés ✅ — contact DPO ✅ |
 | 11.4 Conformité spécifique | 6/10 | Mention RGPD dans formulaire à ajouter — pas de paiement en ligne |
 
-**⚠️ Actions** : Ajouter mention RGPD sous le formulaire de contact. Si analytics ajouté à l'avenir : bannière cookie obligatoire.
+**⚠️ Actions** : GA4 installé → **bannière cookie obligatoire à implémenter** (RGPD belge). Ajouter mention RGPD sous le formulaire de contact.
 
 ---
 
@@ -188,37 +206,38 @@
 | Sous-critère | Score | Notes |
 |---|---|---|
 | 12.1 Configuration déploiement | 15/15 | Variables Vercel ✅ — build propre ✅ — domaine sqwr.be HTTPS ✅ |
-| 12.2 Monitoring & Observabilité | 5/15 | **Pas d'analytics** ❌ — **Pas de Sentry** ❌ — pas d'alerting uptime |
+| 12.2 Monitoring & Observabilité | 11/15 | **GA4 installé** ✅ (G-LXTJCPRN9D) — **Plausible actif** ✅ — **Google Ads campagne active** ✅ — Sentry non configuré ❌ |
 | 12.3 Sauvegardes & Résilience | 8/10 | Git ✅ — releases Vercel ✅ — pas de DB = pas de backup nécessaire |
 | 12.4 Documentation | 7/10 | README à compléter — credentials transmis de façon sécurisée |
 
-**⚠️ Actions** : Configurer Plausible Analytics (RGPD-friendly, sans bannière cookie). Configurer Sentry free tier pour monitoring erreurs.
+**✅ Actions réalisées** : Plausible ✅ GA4 ✅ Google Ads ✅
+**⚠️ Reste** : Configurer Sentry free tier pour monitoring erreurs.
 
 ---
 
 ## SYNTHÈSE FINALE
 
-| # | Catégorie | Max | Score |
-|---|-----------|-----|-------|
-| 1 | Performance & Vitesse | 120 | ~85 |
-| 2 | Sécurité & Protection | 120 | 100 |
-| 3 | Design & Identité Visuelle | 100 | 92 |
-| 4 | UX & Usabilité | 100 | 85 |
-| 5 | Accessibilité & Inclusion | 80 | 62 |
-| 6 | SEO & Référencement | 80 | 68 |
-| 7 | Qualité Technique & Code | 80 | 68 |
-| 8 | Mobile & Responsive | 70 | 58 |
-| 9 | Originalité & Effet Premium | 80 | 76 |
-| 10 | Contenu & Copywriting | 60 | 50 |
-| 11 | Conformité Légale & RGPD | 60 | 42 |
-| 12 | Déploiement & Opérations | 50 | 35 |
-| **TOTAL** | | **1000** | **~821** |
+| # | Catégorie | Max | Score v1 (02/03) | Score v2 (03/03) | Δ |
+|---|-----------|-----|-----------------|-----------------|---|
+| 1 | Performance & Vitesse | 120 | ~85 | ~85 | — |
+| 2 | Sécurité & Protection | 120 | 100 | 100 | — |
+| 3 | Design & Identité Visuelle | 100 | 92 | 92 | — |
+| 4 | UX & Usabilité | 100 | 85 | 85 | — |
+| 5 | Accessibilité & Inclusion | 80 | 62 | 62 | — |
+| 6 | **SEO & Référencement** | 80 | 68 | **76** | **+8** |
+| 7 | **Qualité Technique & Code** | 80 | 68 | **71** | **+3** |
+| 8 | Mobile & Responsive | 70 | 58 | 58 | — |
+| 9 | Originalité & Effet Premium | 80 | 76 | 76 | — |
+| 10 | Contenu & Copywriting | 60 | 50 | 50 | — |
+| 11 | **Conformité Légale & RGPD** | 60 | 42 | **40** | **−2** |
+| 12 | **Déploiement & Opérations** | 50 | 35 | **41** | **+6** |
+| **TOTAL** | | **1000** | **~821** | **~836** | **+15** |
 
 ---
 
-### Certification : ★★★☆☆ EN PROGRESSION — 821/1000 (82%)
+### Certification : ★★★★☆ EN PROGRESSION — 836/1000 (83.6%) *(v2 — 03/03/2026)*
 
-> Score réalisable **SQWR CERTIFIED (★★★★☆)** avec les actions prioritaires ci-dessous.
+> ⚠️ Note : La conformité RGPD (section 11) a légèrement baissé car l'ajout de GA4 rend une bannière cookie obligatoire — à implémenter.
 
 ---
 
@@ -226,30 +245,33 @@
 
 1. **Originalité & Effet Premium (76/80)** — Le pixel grid, les animations orchestrées et l'identité visuelle créent un impact immédiat et mémorable. Signature forte et différenciante.
 2. **Sécurité (100/120)** — Headers complets, HTTPS, pas de secrets exposés, rate limiting. Infrastructure solide.
-3. **Design System (92/100)** — Cohérence totale de la palette, typographie maîtrisée, états interactifs soignés.
+3. **SEO Technique (92/100 détaillé)** — Server Components, JSON-LD @graph complet, blog infrastructure, OG images dynamiques, GSC vérifié, GA4 + Google Ads actifs.
 
 ---
 
-### Plan d'action prioritaire
+### Plan d'action — État au 03/03/2026
 
-| P | Catégorie | Action | Gain estimé | Effort |
-|---|-----------|--------|-------------|--------|
-| P1 | Monitoring | Configurer Plausible + Sentry | +10 pts | < 1h |
-| P2 | Accessibilité | Audit axe DevTools + corriger contrastes | +10 pts | 1–4h |
-| P3 | SEO | Configurer Google Search Console | +5 pts | < 1h |
-| P4 | Légal | Ajouter mention RGPD sous formulaire contact | +4 pts | < 1h |
-| P5 | OG Image | Créer image 1200×630 dans Figma | +3 pts | < 1h |
-| P6 | Tests | Ajouter Vitest sur fonctions utilitaires | +8 pts | 1–4h |
-| P7 | SEO Multi | Évaluer migration next-intl avec routes /fr/ /en/ | +8 pts | > 4h |
+| P | Catégorie | Action | Statut | Gain |
+|---|-----------|--------|--------|------|
+| P1 | Monitoring | Configurer Plausible + GA4 | ✅ **FAIT** | +6 pts |
+| P2 | SEO | Server Components + metadata toutes pages | ✅ **FAIT** | +5 pts |
+| P3 | SEO | GSC configuré + sitemap soumis | ✅ **FAIT** | +3 pts |
+| P4 | SEO | OG images dynamiques (blog, contact) | ✅ **FAIT** | +2 pts |
+| P5 | RGPD | **Bannière cookie** (obligatoire avec GA4) | ❌ **À FAIRE** | −2 si non fait |
+| P6 | Accessibilité | Audit axe DevTools + corriger contrastes | ⏳ À faire | +10 pts |
+| P7 | Légal | Mention RGPD sous formulaire contact | ⏳ À faire | +4 pts |
+| P8 | Tests | Ajouter Vitest sur fonctions utilitaires | ⏳ À faire | +8 pts |
+| P9 | SEO Multi | Migration next-intl routes /fr/ /en/ | ⏳ À faire | +8 pts |
+| P10 | Monitoring | Configurer Sentry free tier | ⏳ À faire | +4 pts |
 
-**Appliquer P1–P5 → Score estimé ~861 → ★★★★☆ SQWR CERTIFIED**
+**Appliquer P5–P7 → Score estimé ~855 → ★★★★☆ SQWR CERTIFIED**
 
 ---
 
 ### Décision de livraison
 
-> ☑ **CONDITIONNEL** — Score 821/1000 — Plan d'action P1–P5 à exécuter avant livraison officielle au client.
+> ☑ **EN PROGRESSION** — Score 836/1000 — **Bannière cookie P5 critique** avant mise en conformité RGPD complète.
 
 ---
 
-*SQWR Agency — Audit SQWR v1.0 — 02/03/2026*
+*SQWR Agency — Audit SQWR v1.0 — 02/03/2026 | v2 — 03/03/2026*
