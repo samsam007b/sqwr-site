@@ -463,7 +463,7 @@ const Header = () => {
                     <span className="text-xs font-mono text-primary lg:text-paper/30 group-hover:text-primary transition-colors duration-300">
                       {item.num}
                     </span>
-                    <span className="text-4xl md:text-5xl lg:text-6xl font-display font-normal text-paper lg:text-paper/80 group-hover:text-paper transition-colors duration-300">
+                    <span className="text-4xl md:text-5xl lg:text-6xl font-display font-normal text-paper lg:text-paper/0 lg:group-hover:text-paper transition-colors duration-300">
                       {item.label}
                     </span>
                   </Link>
