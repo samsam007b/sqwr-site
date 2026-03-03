@@ -4,14 +4,14 @@ import PortfolioPage from '@/components/pages/PortfolioPage';
 export const metadata: Metadata = {
   title: 'Portfolio — Projets branding & web sélectionnés',
   description:
-    'La Villa, Nanou Mendels, izzico, Villa Coladeira. Nos réalisations en identité visuelle, branding et développement web à Bruxelles.',
+    'La Villa, Massages et Naissance, izzico, Villa Coladeira. Nos réalisations en identité visuelle, branding et développement web à Bruxelles.',
   alternates: {
     canonical: 'https://sqwr.be/portfolio',
   },
   openGraph: {
     title: 'Portfolio — Projets branding & web | SQWR Studio',
     description:
-      'Découvrez nos projets : La Villa, Nanou Mendels, izzico, Villa Coladeira. Branding et sites web sur-mesure.',
+      'Découvrez nos projets : La Villa, Massages et Naissance, izzico, Villa Coladeira. Branding et sites web sur-mesure.',
     url: 'https://sqwr.be/portfolio',
     type: 'website',
   },
@@ -32,11 +32,11 @@ const portfolioSchema = {
       '@id': 'https://sqwr.be/portfolio',
       name: 'Portfolio SQWR Studio — Branding & Web',
       url: 'https://sqwr.be/portfolio',
-      description: 'Réalisations en identité visuelle, branding et développement web. La Villa, Nanou Mendels, izzico, Villa Coladeira.',
+      description: 'Réalisations en identité visuelle, branding et développement web. La Villa, Massages et Naissance, izzico, Villa Coladeira.',
       publisher: { '@id': 'https://sqwr.be/#organization' },
       hasPart: [
         { '@type': 'CreativeWork', name: 'La Villa — Identité visuelle', url: 'https://sqwr.be/portfolio/la-villa', dateCreated: '2024-12-01' },
-        { '@type': 'CreativeWork', name: 'Nanou Mendels — Site web', url: 'https://sqwr.be/portfolio/nanou', dateCreated: '2025-04-01' },
+        { '@type': 'CreativeWork', name: 'Massages et Naissance — Site web', url: 'https://sqwr.be/portfolio/nanou', dateCreated: '2025-04-01' },
         { '@type': 'CreativeWork', name: 'izzico — Branding startup', url: 'https://sqwr.be/portfolio/izzico', dateCreated: '2025-06-01' },
         { '@type': 'CreativeWork', name: 'Villa Coladeira — Site web', url: 'https://sqwr.be/portfolio/villa-coladeira', dateCreated: '2025-09-01' },
       ],

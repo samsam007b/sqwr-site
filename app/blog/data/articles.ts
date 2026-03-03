@@ -1049,7 +1049,7 @@ export const articles: Article[] = [
 <p>
   Résultat : la proximité du freelance avec la rigueur de l'agence. C'est ce que nos clients comme
   <a href="/portfolio/villa-coladeira">Villa Coladeira</a> et
-  <a href="/portfolio/nanou">Nanou Mendels</a> apprécient.
+  <a href="/portfolio/nanou">Massages et Naissance</a> apprécient.
 </p>
 
 <h2>Comment choisir selon votre projet ?</h2>
