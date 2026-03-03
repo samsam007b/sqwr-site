@@ -105,8 +105,6 @@ const Footer = () => {
           </span>
           <a
             href="https://sqwr.be"
-            target="_blank"
-            rel="noopener"
             className="text-[11px] font-mono text-paper/15 hover:text-paper/35 uppercase tracking-[0.15em] transition-colors duration-300"
           >
             Site par sqwr.
