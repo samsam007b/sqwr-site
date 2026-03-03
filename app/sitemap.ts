@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://sqwr.be';
 
   // Date du dernier déploiement significatif
-  const SITE_LAST_UPDATED = new Date('2026-03-01');
+  const SITE_LAST_UPDATED = new Date('2026-03-03');
 
   // Static pages
   const staticPages = [

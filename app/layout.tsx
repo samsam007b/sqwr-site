@@ -113,10 +113,10 @@ const jsonLd = {
       ],
       knowsAbout: ['Branding', 'Identité Visuelle', 'Web Design', 'React', 'Next.js', 'Direction Artistique'],
       areaServed: ['Bruxelles', 'Belgique'],
-      // sameAs: ajouter quand les comptes sociaux sont actifs
-      // 'https://www.instagram.com/sqwr.studio/',
-      // 'https://www.linkedin.com/company/sqwr-studio/',
-      sameAs: [],
+      sameAs: [
+        'https://www.instagram.com/sqwr.studio/',
+        'https://www.linkedin.com/company/sqwr-studio/',
+      ],
     },
     {
       '@type': ['LocalBusiness', 'ProfessionalService'],
