@@ -4,47 +4,48 @@ import { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ScrollReveal from '@/components/ScrollReveal';
 import MagneticButton from '@/components/MagneticButton';
+import { useLanguage } from '@/context/LanguageContext';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const TEAM = [
-  {
-    number: '01',
-    name: 'Samuel Baudon',
-    tag: 'Direction',
-    role: 'IHECS · Affaires europ\u00e9ennes · Strat\u00e9gie · Web',
-    bio: 'Master en affaires europ\u00e9ennes \u00e0 l\u2019IHECS (Bruxelles) — une formation qui croise communication institutionnelle, analyse strat\u00e9gique et relations publiques. Auto-entrepreneur chez izzico. Deux ans de production d\u2019\u00e9v\u00e9nements (festivals, vernissages musicaux). Trois projets web livr\u00e9s\u00a0: Villa Coladeira, Massages\u00a0& Naissances, izzico. Il pilote la strat\u00e9gie, le d\u00e9veloppement et la vision du studio.',
-  },
-  {
-    number: '02',
-    name: 'Joakim Baudon',
-    tag: 'Création',
-    role: 'Design · Direction Artistique',
-    bio: 'Formé à La Cambre (Bruxelles), actuellement à la Kunstschule de Liechtenstein. Direction artistique de Lost Garden (événement musical, Bruxelles). Identité de marque complète — logo et affiches — pour La Villa, fondation basée en Suisse. Il insuffle une approche contemporaine et exigeante à chaque projet.',
-  },
-];
-
-/* Three identity pillars — qualitative, not inflated numbers */
-const PILLARS = [
-  {
-    label: 'Ancrage',
-    value: 'La Cambre\nKunstschule',
-    sub: "Deux des meilleures \u00e9coles d\u2019art d\u2019Europe continentale",
-  },
-  {
-    label: 'Origine',
-    value: 'Bruxelles\nBelgique',
-    sub: 'Studio fondé à Bruxelles, actif depuis 2024',
-  },
-  {
-    label: 'Approche',
-    value: 'AI-driven\nDesign',
-    sub: 'Outils IA intégrés pour livrer plus vite, sans sacrifier la qualité',
-  },
-];
-
 export default function AboutPage() {
+  const { t } = useLanguage();
   const ctaRef = useRef<HTMLElement>(null);
+
+  const TEAM = [
+    {
+      number: '01',
+      name: 'Samuel Baudon',
+      tag: t('about.member1Tag'),
+      role: t('about.member1Role'),
+      bio: t('about.member1Bio'),
+    },
+    {
+      number: '02',
+      name: 'Joakim Baudon',
+      tag: t('about.member2Tag'),
+      role: t('about.member2Role'),
+      bio: t('about.member2Bio'),
+    },
+  ];
+
+  const PILLARS = [
+    {
+      label: t('about.pillar1Label'),
+      value: t('about.pillar1Value'),
+      sub: t('about.pillar1Sub'),
+    },
+    {
+      label: t('about.pillar2Label'),
+      value: t('about.pillar2Value'),
+      sub: t('about.pillar2Sub'),
+    },
+    {
+      label: t('about.pillar3Label'),
+      value: t('about.pillar3Value'),
+      sub: t('about.pillar3Sub'),
+    },
+  ];
 
   useEffect(() => {
     const section = ctaRef.current;
@@ -88,7 +89,7 @@ export default function AboutPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.1 }}
           >
-            À propos
+            {t('about.heroLabel')}
           </motion.p>
 
           <motion.h1
@@ -96,18 +97,16 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.15, ease: EASE }}
-          >
-            Un studio familial<br />bruxellois.
-          </motion.h1>
+            dangerouslySetInnerHTML={{ __html: t('about.heroTitle').replace(/\n/g, '<br />') }}
+          />
 
           <motion.p
-            className="mt-8 text-lg text-secondary/50 font-light max-w-lg relative z-10"
+            className="mt-8 text-lg text-secondary/50 font-light max-w-lg relative z-10 whitespace-pre-line"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
           >
-            Deux profils. Une exigence commune.<br />
-            Des projets pensés pour durer.
+            {t('about.heroSub')}
           </motion.p>
         </div>
 
@@ -120,37 +119,25 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
             <ScrollReveal className="lg:col-span-4">
               <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-6">
-                01 &mdash; Qui sommes-nous
+                {t('about.storyLabel')}
               </p>
-              <h2 className="font-display font-normal text-3xl lg:text-4xl leading-tight text-foreground">
-                Jeune studio.<br />Vraie exigence.
-              </h2>
+              <h2
+                className="font-display font-normal text-3xl lg:text-4xl leading-tight text-foreground"
+                dangerouslySetInnerHTML={{ __html: t('about.storyTitle').replace(/\n/g, '<br />') }}
+              />
             </ScrollReveal>
 
             <ScrollReveal delay={0.15} className="lg:col-span-7 lg:col-start-6">
               <div className="space-y-6 text-base lg:text-lg text-secondary/58 leading-relaxed font-light">
-                <p>
-                  SQWR Studio est né à Bruxelles en 2024. Un studio récent, porté par deux frères
-                  dont les parcours se complètent — communication et stratégie d&apos;un côté,
-                  design et direction artistique de l&apos;autre.
-                </p>
-                <p>
-                  Nous ne prétendons pas à vingt ans d&apos;expérience. Ce que nous apportons,
-                  c&apos;est une formation dans deux des meilleures écoles d&apos;art d&apos;Europe,
-                  une maîtrise native des outils IA, et une rigueur créative que l&apos;on retrouve
-                  dans chaque livrable — qu&apos;il s&apos;agisse d&apos;une identité de marque
-                  ou d&apos;une plateforme web.
-                </p>
-                <p>
-                  Notre taille est notre avantage : vous travaillez directement avec les créateurs,
-                  sans intermédaire, sans perte de sens entre le brief et le résultat final.
-                </p>
+                <p>{t('about.storyP1')}</p>
+                <p>{t('about.storyP2')}</p>
+                <p>{t('about.storyP3')}</p>
               </div>
 
               {/* Pull quote */}
               <div className="mt-12 pl-6 border-l-2 border-primary">
-                <p className="font-display font-normal text-xl lg:text-2xl text-foreground leading-snug">
-                  &ldquo;Pas une grande agence.<br />Mais la même qualité — sans les frais généraux.&rdquo;
+                <p className="font-display font-normal text-xl lg:text-2xl text-foreground leading-snug whitespace-pre-line">
+                  {t('about.quote')}
                 </p>
               </div>
             </ScrollReveal>
@@ -189,10 +176,10 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto">
           <ScrollReveal className="mb-16 lg:mb-20">
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-6">
-              02 &mdash; L&apos;&eacute;quipe
+              {t('about.sectionTeamLabel')}
             </p>
             <h2 className="font-display font-normal text-3xl lg:text-4xl leading-tight text-foreground">
-              La famille Baudon
+              {t('about.sectionTeamTitle')}
             </h2>
           </ScrollReveal>
 
@@ -250,32 +237,19 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
             <ScrollReveal className="lg:col-span-4">
               <p className="text-xs font-mono uppercase tracking-[0.3em] text-paper/25 mb-8">
-                03 &mdash; Notre philosophie
+                {t('about.sectionPhilosophyLabel')}
               </p>
-              <h2 className="font-display font-normal text-3xl lg:text-4xl leading-tight text-paper">
-                L&apos;approche<br />AI-driven
-              </h2>
+              <h2
+                className="font-display font-normal text-3xl lg:text-4xl leading-tight text-paper"
+                dangerouslySetInnerHTML={{ __html: t('about.philosophyTitle').replace(/\n/g, '<br />') }}
+              />
             </ScrollReveal>
 
             <ScrollReveal delay={0.2} className="lg:col-span-7 lg:col-start-6">
               <div className="space-y-6 text-base lg:text-lg text-paper/50 leading-relaxed font-light">
-                <p>
-                  Notre philosophie de travail{' '}
-                  <span className="text-paper/90 font-normal">AI-driven</span> n&apos;est pas un
-                  argument marketing — c&apos;est notre réalité quotidienne. Les outils IA nous
-                  permettent de compresser les phases chronophages sans sacrifier l&apos;intention
-                  créative.
-                </p>
-                <p>
-                  Ce que d&apos;autres studios facturent à travers des heures d&apos;exécution
-                  répétitive, nous le résolvons en amont — libérant du temps pour ce qui
-                  compte vraiment :{' '}
-                  <span className="text-paper/90 font-normal">la réflexion, la création, le dialogue avec le client.</span>
-                </p>
-                <p>
-                  C&apos;est pourquoi nous pouvons proposer une qualité de conception exigeante
-                  à des tarifs qui n&apos;ont rien à voir avec ceux d&apos;une agence traditionnelle.
-                </p>
+                <p>{t('about.philosophyP1')}</p>
+                <p>{t('about.philosophyP2')}</p>
+                <p>{t('about.philosophyP3')}</p>
               </div>
 
               <div className="mt-12 pt-8 border-t border-paper/10 flex flex-col gap-6">
@@ -284,7 +258,7 @@ export default function AboutPage() {
                   strength={0.15}
                   className="inline-block w-fit px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300"
                 >
-                  Nous contacter
+                  {t('about.ctaButton')}
                 </MagneticButton>
                 <a
                   href="mailto:studio@sqwr.be"

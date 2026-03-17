@@ -92,22 +92,22 @@ const Footer = () => {
             href="/mentions-legales"
             className="text-[11px] font-mono text-paper/15 hover:text-paper/35 uppercase tracking-[0.15em] transition-colors duration-300"
           >
-            Mentions légales
+            {t('footer.legal')}
           </Link>
           <Link
             href="/politique-confidentialite"
             className="text-[11px] font-mono text-paper/15 hover:text-paper/35 uppercase tracking-[0.15em] transition-colors duration-300"
           >
-            Confidentialité
+            {t('footer.privacy')}
           </Link>
           <span className="text-[11px] font-mono text-paper/15 uppercase tracking-[0.2em]">
-            Bruxelles &middot; Belgique
+            {t('footer.location')}
           </span>
           <a
             href="https://sqwr.be"
             className="text-[11px] font-mono text-paper/15 hover:text-paper/35 uppercase tracking-[0.15em] transition-colors duration-300"
           >
-            Site par sqwr.
+            {t('footer.madeBy')}
           </a>
         </div>
       </div>

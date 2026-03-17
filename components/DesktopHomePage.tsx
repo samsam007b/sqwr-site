@@ -10,14 +10,10 @@ import ScatterText from '@/components/ScatterText';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 
-const sections = [
-  { id: 'hero', label: 'Accueil' },
-  { id: 'philosophy', label: 'Philosophie' },
-  { id: 'work', label: 'Projets' },
-  { id: 'closing', label: 'Contact' },
-];
+// sections are computed inside DesktopHomePage using t() for i18n
 
 function HeroOverlay() {
+  const { t } = useLanguage();
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -51,7 +47,7 @@ function HeroOverlay() {
           visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}
       >
-        Studio cr&eacute;atif &middot; Bruxelles
+        {t('home.heroBadge')}
       </p>
       <div
         className={`mb-6 transition-all duration-1000 ${
@@ -124,6 +120,7 @@ function PhilosophySection() {
 
 // ── Carte 3D flip ─────────────────────────────────────────────────────────────
 function CTACard() {
+  const { t } = useLanguage();
   const [flipped, setFlipped] = useState(false);
 
   return (
@@ -146,28 +143,28 @@ function CTACard() {
         >
           <div className="flex items-start justify-between">
             <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-white/40">
-              04 — Démarrer
+              {t('home.ctaStep')}
             </span>
             <div className="w-4 h-4 border border-white/25" />
           </div>
 
           <div>
-            <p className="font-display font-normal text-[2.1rem] leading-[1] text-white mb-1">
-              Commencer<br />un projet
-            </p>
+            <p className="font-display font-normal text-[2.1rem] leading-[1] text-white mb-1"
+              dangerouslySetInnerHTML={{ __html: t('home.ctaStart').replace('\n', '<br />') }}
+            />
             <span className="text-white/40 text-3xl leading-none">→</span>
           </div>
 
           <div className="flex items-center justify-between">
             <span className="text-[9px] font-mono text-white/25 uppercase tracking-[0.2em]">
-              Survoler pour pivoter
+              {t('home.ctaHover')}
             </span>
             <Link
               href="/contact"
               onClick={(e) => e.stopPropagation()}
               className="px-5 py-2.5 bg-white text-primary text-[10px] font-mono uppercase tracking-[0.15em] hover:bg-white/90 transition-colors duration-200"
             >
-              Lancer →
+              {t('home.ctaLaunch')}
             </Link>
           </div>
         </div>
@@ -184,7 +181,7 @@ function CTACard() {
 
           <div>
             <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-paper/25 block mb-5">
-              Contact direct
+              {t('home.ctaDirect')}
             </span>
             <a
               href="mailto:studio@sqwr.be"
@@ -201,7 +198,7 @@ function CTACard() {
           </div>
 
           <p className="text-[9px] font-mono text-paper/20 uppercase tracking-[0.2em]">
-            Réponse sous 24h ouvrables
+            {t('home.ctaResponse')}
           </p>
         </div>
       </motion.div>
@@ -211,10 +208,11 @@ function CTACard() {
 
 // ── Section finale ─────────────────────────────────────────────────────────────
 function ClosingSection() {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-12%' });
 
-  const lines = ['Prêts pour', 'votre projet ?'];
+  const lines = [t('home.closingLine1'), t('home.closingLine2')];
 
   return (
     <section
@@ -247,7 +245,7 @@ function ClosingSection() {
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.8, delay: 0.05 }}
             >
-              04 — Démarrer
+              {t('home.ctaStep')}
             </motion.p>
 
             {/* Rideau de mots */}
@@ -277,7 +275,7 @@ function ClosingSection() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.9, delay: 0.48, ease: [0.22, 1, 0.36, 1] }}
             >
-              Un café, une conversation,<br />une vision commune.
+              {t('home.ctaSubtitle')}
             </motion.p>
           </div>
 
@@ -311,6 +309,15 @@ function ClosingSection() {
 }
 
 export default function DesktopHomePage() {
+  const { t } = useLanguage();
+
+  const sections = [
+    { id: 'hero', label: t('home.scrollHome') },
+    { id: 'philosophy', label: t('home.scrollPhilosophy') },
+    { id: 'work', label: t('home.scrollProjects') },
+    { id: 'closing', label: t('home.scrollContact') },
+  ];
+
   return (
     <>
       <ScrollProgress sections={sections} />

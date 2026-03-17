@@ -7,6 +7,7 @@ import ScrollReveal from '@/components/ScrollReveal';
 import MagneticButton from '@/components/MagneticButton';
 import { projects, getProjectsByCategory } from '@/app/data/projects';
 import type { Project } from '@/app/data/projects';
+import { useLanguage } from '@/context/LanguageContext';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -224,6 +225,7 @@ function ProjectRow({ project, index }: { project: Project; index: number }) {
 
 /* ── Page ─────────────────────────────────────────────────────────────────────── */
 export default function PortfolioPage() {
+  const { t } = useLanguage();
   const [activeFilter, setActiveFilter] = useState('all');
   const ctaRef = useRef<HTMLElement>(null);
 
@@ -253,11 +255,11 @@ export default function PortfolioPage() {
   }, []);
 
   const categories = [
-    { id: 'all',      label: 'Tout' },
-    { id: 'branding', label: 'Branding' },
-    { id: 'web',      label: 'Web' },
-    { id: 'print',    label: 'Print' },
-    { id: 'social',   label: 'Social' },
+    { id: 'all',      label: t('portfolio.catAll') },
+    { id: 'branding', label: t('portfolio.catBranding') },
+    { id: 'web',      label: t('portfolio.catWeb') },
+    { id: 'print',    label: t('portfolio.catPrint') },
+    { id: 'social',   label: t('portfolio.catSocial') },
   ];
 
   const filteredProjects = getProjectsByCategory(activeFilter);
@@ -290,7 +292,7 @@ export default function PortfolioPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.1 }}
           >
-            Portfolio
+            {t('portfolio.heroLabel')}
           </motion.p>
 
           <motion.h1
@@ -298,9 +300,8 @@ export default function PortfolioPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.15, ease: EASE }}
-          >
-            Projets<br />s&eacute;lectionn&eacute;s
-          </motion.h1>
+            dangerouslySetInnerHTML={{ __html: t('portfolio.heroTitle').replace(/\n/g, '<br />') }}
+          />
 
           <motion.p
             className="mt-8 text-lg text-secondary/50 font-light max-w-lg relative z-10"
@@ -308,7 +309,7 @@ export default function PortfolioPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
           >
-            Chaque projet est une histoire, chaque pixel est intentionnel.
+            {t('portfolio.heroSub')}
           </motion.p>
         </div>
       </section>
@@ -382,7 +383,7 @@ export default function PortfolioPage() {
           {filteredProjects.length === 0 && (
             <div className="text-center py-32">
               <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/40">
-                Aucun projet dans cette cat&eacute;gorie.
+                {t('portfolio.noProjects')}
               </p>
             </div>
           )}
@@ -400,9 +401,10 @@ export default function PortfolioPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-end">
             <ScrollReveal className="lg:col-span-7">
-              <h2 className="font-display font-normal text-4xl md:text-5xl lg:text-6xl leading-[0.95] text-paper">
-                Votre projet m&eacute;rite<br />le m&ecirc;me niveau<br />d&apos;excellence
-              </h2>
+              <h2
+                className="font-display font-normal text-4xl md:text-5xl lg:text-6xl leading-[0.95] text-paper"
+                dangerouslySetInnerHTML={{ __html: t('portfolio.ctaTitle').replace(/\n/g, '<br />') }}
+              />
             </ScrollReveal>
 
             <ScrollReveal
@@ -410,8 +412,7 @@ export default function PortfolioPage() {
               className="lg:col-span-4 lg:col-start-9 flex flex-col gap-8"
             >
               <p className="text-lg text-paper/40 font-light leading-relaxed">
-                Travaillons ensemble pour cr&eacute;er quelque chose d&apos;unique et
-                m&eacute;morable.
+                {t('portfolio.ctaSubtitle')}
               </p>
               <div className="flex flex-col gap-4">
                 <MagneticButton
@@ -419,7 +420,7 @@ export default function PortfolioPage() {
                   strength={0.15}
                   className="inline-block w-fit px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300"
                 >
-                  D&eacute;marrer un projet
+                  {t('portfolio.ctaButton')}
                 </MagneticButton>
                 <a
                   href="mailto:studio@sqwr.be"

@@ -339,19 +339,16 @@ export default function ServicesPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.15, ease: EASE }}
-          >
-            Votre marque.<br />Votre code.
-          </motion.h1>
+            dangerouslySetInnerHTML={{ __html: t('services.heroHeadline').replace('\n', '<br />') }}
+          />
 
           <motion.p
             className="mt-8 text-lg text-secondary/50 font-light max-w-lg relative z-10"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
-          >
-            Transparent sur les prix. Intransigeant sur la qualité.<br />
-            Code qui vous appartient.
-          </motion.p>
+            dangerouslySetInnerHTML={{ __html: t('services.heroSub').replace('\n', '<br />') }}
+          />
         </div>
 
         <div className="absolute bottom-0 left-6 right-6 lg:left-16 lg:right-16 h-[1px] bg-secondary/10" />
@@ -394,7 +391,7 @@ export default function ServicesPage() {
               </div>
 
               <p className="mt-8 text-xs font-mono text-secondary/60 leading-relaxed">
-                Un projet sur-mesure ?<br />
+                {t('services.customProject')}<br />
                 <a
                   href="mailto:studio@sqwr.be"
                   className="text-primary/60 hover:text-primary transition-colors"
@@ -461,7 +458,7 @@ export default function ServicesPage() {
                         className="inline-flex items-center gap-2 text-xs font-mono transition-colors duration-300"
                         style={{ color: activeTier === 'signature' ? 'var(--foreground)' : 'rgba(102,102,102,0.4)' }}
                       >
-                        Sélectionner →
+                        {t('services.selectTier')}
                       </span>
                     </motion.button>
 
@@ -497,7 +494,7 @@ export default function ServicesPage() {
                         className="inline-flex items-center gap-2 text-xs font-mono transition-colors duration-300"
                         style={{ color: activeTier === 'flagship' ? 'var(--primary)' : 'rgba(224,25,25,0.4)' }}
                       >
-                        Sélectionner →
+                        {t('services.selectTier')}
                       </span>
                     </motion.button>
                   </div>
@@ -673,7 +670,7 @@ export default function ServicesPage() {
 
           <div className="mt-24 lg:mt-32 pt-8 border-t border-paper/10 flex items-center justify-between">
             <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">SQWR Studio</span>
-            <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">Bruxelles, Belgique</span>
+            <span className="text-xs font-mono text-paper/15 uppercase tracking-[0.2em]">{t('footer.location')}</span>
           </div>
         </div>
       </section>

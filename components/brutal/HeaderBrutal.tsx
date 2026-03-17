@@ -4,23 +4,25 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './HeaderBrutal.module.css';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface NavItem {
   label: string;
   href: string;
 }
 
-const navItems: NavItem[] = [
-  { label: 'Accueil', href: '/' },
-  { label: 'Services', href: '/services' },
-  { label: 'Portfolio', href: '/portfolio' },
-  { label: 'À propos', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-];
-
 export default function HeaderBrutal() {
+  const { t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const navItems: NavItem[] = [
+    { label: t('nav.home'), href: '/' },
+    { label: t('nav.services'), href: '/services' },
+    { label: t('nav.portfolio'), href: '/portfolio' },
+    { label: t('nav.about'), href: '/about' },
+    { label: t('nav.contact'), href: '/contact' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,7 +71,7 @@ export default function HeaderBrutal() {
               onClick={() => setIsMenuOpen(false)}
             >
               <div className={styles.closeSquare} />
-              <span>CLOSE</span>
+              <span style={{ textTransform: 'uppercase' }}>{t('common.close')}</span>
             </button>
 
             {/* Navigation */}
@@ -106,7 +108,7 @@ export default function HeaderBrutal() {
               >
                 <div className={styles.infoBlock}>
                   <p className={styles.infoLabel}>STUDIO</p>
-                  <p className={styles.infoText}>Bruxelles, Belgique</p>
+                  <p className={styles.infoText}>{t('footer.location')}</p>
                   <p className={styles.infoText}>AI-Driven Design</p>
                 </div>
 

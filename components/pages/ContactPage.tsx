@@ -4,28 +4,31 @@ import { useState, useRef, FormEvent } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from '@/components/ScrollReveal';
+import { useLanguage } from '@/context/LanguageContext';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-const SERVICES = [
-  'Site vitrine',
-  'E-commerce',
-  'Identité de marque',
-  'Direction artistique',
-  'Solution sur-mesure',
-  'Autre',
-];
-
-const BUDGETS = [
-  '< 1 000€',
-  '1 000 – 2 500€',
-  '2 500 – 5 000€',
-  '5 000 – 10 000€',
-  '10 000€+',
-  'À discuter',
-];
-
 export default function ContactPage() {
+  const { t } = useLanguage();
+
+  const SERVICES = [
+    t('contact.service1'),
+    t('contact.service2'),
+    t('contact.service3'),
+    t('contact.service4'),
+    t('contact.service5'),
+    t('contact.service6'),
+  ];
+
+  const BUDGETS = [
+    t('contact.budget1'),
+    t('contact.budget2'),
+    t('contact.budget3'),
+    t('contact.budget4'),
+    t('contact.budget5'),
+    t('contact.budget6'),
+  ];
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -123,7 +126,7 @@ export default function ContactPage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.1 }}
           >
-            Contact
+            {t('contact.heroLabel')}
           </motion.p>
 
           <motion.h1
@@ -131,9 +134,8 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.15, ease: EASE }}
-          >
-            Parlons de<br />votre projet.
-          </motion.h1>
+            dangerouslySetInnerHTML={{ __html: t('contact.heroTitle').replace(/\n/g, '<br />') }}
+          />
 
           <motion.p
             className="mt-8 text-lg text-secondary/50 font-light max-w-md relative z-10"
@@ -141,7 +143,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.35, ease: EASE }}
           >
-            Que vous ayez un brief précis ou juste une idée, on est là pour l&apos;écouter.
+            {t('contact.heroSub')}
           </motion.p>
         </div>
 
@@ -159,7 +161,7 @@ export default function ContactPage() {
               className="flex items-center justify-between py-4 border-b border-secondary/10 active:bg-foreground/5 transition-colors duration-200"
             >
               <div>
-                <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/60 block mb-0.5">Téléphone</span>
+                <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/60 block mb-0.5">{t('contact.phone')}</span>
                 <span className="font-light text-base">+32 493 30 27 52</span>
               </div>
               <span className="text-secondary/40">↗</span>
@@ -193,12 +195,12 @@ export default function ContactPage() {
                     className="py-20 lg:py-28"
                   >
                     <div className="w-8 h-[2px] bg-primary mb-8" />
-                    <h2 className="font-display font-normal text-3xl lg:text-4xl text-foreground mb-6 leading-tight">
-                      Message envoyé.<br />On revient vite.
-                    </h2>
+                    <h2
+                      className="font-display font-normal text-3xl lg:text-4xl text-foreground mb-6 leading-tight"
+                      dangerouslySetInnerHTML={{ __html: t('contact.successTitle').replace(/\n/g, '<br />') }}
+                    />
                     <p className="text-secondary/55 font-light text-lg max-w-md">
-                      Merci pour votre message — nous vous répondons généralement
-                      sous 24h ouvrables.
+                      {t('contact.successMessage')}
                     </p>
                     <p className="mt-6 text-sm font-mono text-secondary/70">
                       studio@sqwr.be &mdash; +32 493 30 27 52
@@ -213,18 +215,18 @@ export default function ContactPage() {
                     exit={{ opacity: 0 }}
                   >
 
-                    {/* Step 01 — Vous */}
+                    {/* Step 01 */}
                     <div className="mb-8 lg:mb-14">
                       <div className="flex items-center gap-4 mb-6 lg:mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">01</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
-                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Vous</span>
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">{t('contact.stepYou')}</span>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
                         <div>
                           <label htmlFor="name" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
-                            Nom complet *
+                            {t('contact.nameLabel')} *
                           </label>
                           <input
                             ref={nameRef}
@@ -238,17 +240,17 @@ export default function ContactPage() {
                             aria-invalid={fieldErrors.name ? 'true' : undefined}
                             aria-describedby={fieldErrors.name ? 'name-error' : undefined}
                             className={inputClass}
-                            placeholder="Votre nom"
+                            placeholder={t('contact.namePlaceholder')}
                           />
                           {fieldErrors.name && (
                             <span id="name-error" role="alert" className="text-xs text-primary mt-1 block">
-                              Ce champ est requis
+                              {t('contact.fieldRequired')}
                             </span>
                           )}
                         </div>
                         <div>
                           <label htmlFor="email" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
-                            Email *
+                            {t('contact.emailLabel')} *
                           </label>
                           <input
                             ref={emailRef}
@@ -266,7 +268,7 @@ export default function ContactPage() {
                           />
                           {fieldErrors.email && (
                             <span id="email-error" role="alert" className="text-xs text-primary mt-1 block">
-                              Adresse email invalide
+                              {t('contact.emailInvalid')}
                             </span>
                           )}
                         </div>
@@ -274,7 +276,7 @@ export default function ContactPage() {
 
                       <div className="mt-10">
                         <label htmlFor="company" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
-                          Entreprise <span className="text-secondary/60 normal-case tracking-normal">(optionnel)</span>
+                          {t('contact.companyLabel')} <span className="text-secondary/60 normal-case tracking-normal">{t('contact.optional')}</span>
                         </label>
                         <input
                           type="text"
@@ -283,23 +285,23 @@ export default function ContactPage() {
                           value={formData.company}
                           onChange={handleChange}
                           className={inputClass}
-                          placeholder="Nom de votre organisation"
+                          placeholder={t('contact.companyPlaceholder')}
                         />
                       </div>
                     </div>
 
-                    {/* Step 02 — Votre projet */}
+                    {/* Step 02 */}
                     <div className="mb-8 lg:mb-14">
                       <div className="flex items-center gap-4 mb-6 lg:mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">02</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
-                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Votre projet</span>
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">{t('contact.stepProject')}</span>
                       </div>
 
                       {/* Service pills */}
                       <div className="mb-8 lg:mb-10">
                         <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-3 lg:mb-4">
-                          Type de service *
+                          {t('contact.serviceType')} *
                         </p>
                         <div className="flex flex-wrap gap-2.5">
                           {SERVICES.map((s) => (
@@ -326,7 +328,7 @@ export default function ContactPage() {
                       {/* Budget pills */}
                       <div>
                         <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-3 lg:mb-4">
-                          Budget estimé
+                          {t('contact.budgetLabel')}
                         </p>
                         <div className="flex flex-wrap gap-2.5">
                           {BUDGETS.map((b) => (
@@ -350,16 +352,16 @@ export default function ContactPage() {
                       </div>
                     </div>
 
-                    {/* Step 03 — Message */}
+                    {/* Step 03 */}
                     <div className="mb-8 lg:mb-12">
                       <div className="flex items-center gap-4 mb-6 lg:mb-8">
                         <span className="text-xs font-mono text-primary tracking-[0.2em]">03</span>
                         <div className="flex-1 h-[1px] bg-secondary/10" />
-                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">Le message</span>
+                        <span className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60">{t('contact.stepMessage')}</span>
                       </div>
 
                       <label htmlFor="message" className="block text-[11px] font-mono uppercase tracking-[0.2em] text-secondary mb-1">
-                        Votre message *
+                        {t('contact.messageLabel')} *
                       </label>
                       <textarea
                         ref={messageRef}
@@ -373,11 +375,11 @@ export default function ContactPage() {
                         aria-describedby={fieldErrors.message ? 'message-error' : undefined}
                         rows={6}
                         className={`${inputClass} resize-none`}
-                        placeholder="Décrivez votre projet, votre contexte, vos objectifs..."
+                        placeholder={t('contact.messagePlaceholder')}
                       />
                       {fieldErrors.message && (
                         <span id="message-error" role="alert" className="text-xs text-primary mt-1 block">
-                          Ce champ est requis
+                          {t('contact.fieldRequired')}
                         </span>
                       )}
                     </div>
@@ -389,11 +391,11 @@ export default function ContactPage() {
                         disabled={isSubmitting || !formData.service}
                         className="w-full md:w-auto px-10 py-4 bg-primary text-white text-sm font-mono uppercase tracking-[0.15em] hover:bg-primary/85 transition-colors duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
                       >
-                        {isSubmitting ? 'Envoi...' : 'Envoyer →'}
+                        {isSubmitting ? t('contact.sending') : t('contact.sendButton')}
                       </button>
                       {!formData.service && (
                         <span className="text-xs font-mono text-secondary/60">
-                          Sélectionnez un service pour continuer
+                          {t('contact.selectService')}
                         </span>
                       )}
                     </div>
@@ -406,20 +408,20 @@ export default function ContactPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="mt-6 text-sm font-light text-foreground border-l-2 border-primary pl-4"
                       >
-                        Une erreur s&apos;est produite. Réessayez ou écrivez-nous directement à{' '}
+                        {t('contact.errorMessage')}{' '}
                         <a href="mailto:studio@sqwr.be" className="text-primary">
                           studio@sqwr.be
                         </a>
                       </motion.p>
                     )}
 
-                    {/* RGPD notice — A8 */}
+                    {/* RGPD notice */}
                     <p className="text-[10px] font-mono text-secondary/60 mt-5 leading-relaxed">
-                      Données traitées conformément à notre{' '}
+                      {t('contact.rgpd')}{' '}
                       <Link href="/politique-confidentialite" className="underline hover:text-primary transition-colors">
-                        politique de confidentialité
+                        {t('contact.rgpdLink')}
                       </Link>
-                      . Aucun cookie de suivi.
+                      {t('contact.rgpdSuffix')}
                     </p>
                   </motion.form>
                 )}
@@ -431,7 +433,7 @@ export default function ContactPage() {
               <div className="lg:sticky lg:top-32 space-y-12">
                 <ScrollReveal delay={0.2}>
                   <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/60 mb-8">
-                    Nous joindre
+                    {t('contact.contactUsLabel')}
                   </p>
 
                   <div className="space-y-0 border-t border-secondary/10">
@@ -453,7 +455,7 @@ export default function ContactPage() {
                       className="group flex items-center justify-between py-5 border-b border-secondary/10 hover:text-primary transition-colors duration-300"
                     >
                       <div>
-                        <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">T&eacute;l&eacute;phone</span>
+                        <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">{t('contact.phone')}</span>
                         <span className="font-light text-base text-foreground group-hover:text-primary transition-colors duration-300">
                           +32 493 30 27 52
                         </span>
@@ -462,13 +464,13 @@ export default function ContactPage() {
                     </a>
 
                     <div className="py-5 border-b border-secondary/10">
-                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">Localisation</span>
-                      <span className="font-light text-base text-foreground">Bruxelles, Belgique</span>
+                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">{t('contact.locationLabel')}</span>
+                      <span className="font-light text-base text-foreground">{t('footer.location')}</span>
                     </div>
 
                     <div className="py-5">
-                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">R&eacute;ponse</span>
-                      <span className="font-light text-base text-foreground">Sous 24h ouvrables</span>
+                      <span className="text-[11px] font-mono uppercase tracking-[0.15em] text-secondary/70 block mb-1">{t('contact.responseLabel')}</span>
+                      <span className="font-light text-base text-foreground">{t('contact.responseTime')}</span>
                     </div>
                   </div>
                 </ScrollReveal>
@@ -477,8 +479,7 @@ export default function ContactPage() {
                 <ScrollReveal delay={0.35}>
                   <div className="border-l-2 border-primary/30 pl-5">
                     <p className="text-sm text-secondary/45 font-light leading-relaxed">
-                      Pas de formulaire standardisé. Chaque projet est discuté directement avec les
-                      créateurs &mdash; sans intermédiaire.
+                      {t('contact.sidebarNote')}
                     </p>
                   </div>
                 </ScrollReveal>

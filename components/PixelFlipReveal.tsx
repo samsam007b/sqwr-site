@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import Link from 'next/link';
 import type { ProjectMockup } from '@/app/data/projects';
+import { useLanguage } from '@/context/LanguageContext';
 
 /* ── Grid constants — must match PixelGridHero ── */
 const CELL_SIZE = 10;
@@ -689,6 +690,7 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
 
 /* ── Mockup Overlay (reused from VideoRevealSection) ── */
 function MockupOverlay({ mockup, href }: { mockup: ProjectMockup; href: string }) {
+  const { t } = useLanguage();
   return (
     <>
       {/* Dark vignette */}
@@ -772,7 +774,7 @@ function MockupOverlay({ mockup, href }: { mockup: ProjectMockup; href: string }
           className="text-white/30 uppercase"
           style={{ fontSize: 'clamp(0.4rem, 0.5vw, 0.45rem)', letterSpacing: '0.25em' }}
         >
-          Défiler
+          {t('home.scroll')}
         </span>
         <div className="w-[1px] h-6 bg-white/20 mt-1 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-white/50 animate-scroll-line" />
