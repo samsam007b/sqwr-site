@@ -204,8 +204,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <Script
-          async
-          src="https://plausible.io/js/pa-R2EajvyZiMg77-kBchQnU.js"
+          defer
+          data-domain="sqwr.be"
+          src="https://plausible.io/js/script.js"
           strategy="afterInteractive"
         />
       </head>
