@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import { useRef, useEffect, useState, memo } from 'react';
 import type { ProjectMockup } from '@/app/data/projects';
+import { useLanguage } from '@/context/LanguageContext';
 
 // ── Pixel constants ────────────────────────────────────────────────────────────
 // Base pixel size (like PixelGridHero). For large cards the grid auto-scales up
@@ -242,6 +243,7 @@ const ProjectCard = ({
   aspectRatio = '4/5',
   size = 'medium',
 }: ProjectCardProps) => {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
@@ -309,7 +311,7 @@ const ProjectCard = ({
                     </div>
                   </div>
                   <div className="flex flex-col items-center pb-[3%]">
-                    <span className="text-white/30 uppercase" style={{ fontSize: 'clamp(0.25rem, 0.4vw, 0.35rem)', letterSpacing: '0.25em' }}>Défiler</span>
+                    <span className="text-white/30 uppercase" style={{ fontSize: 'clamp(0.25rem, 0.4vw, 0.35rem)', letterSpacing: '0.25em' }}>{t('home.scroll')}</span>
                     <div className="w-[1px] h-[1.5em] bg-white/20 mt-1 relative overflow-hidden">
                       <div className="absolute top-0 left-0 w-full h-full bg-white/50 animate-scroll-line" />
                     </div>

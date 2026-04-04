@@ -4,6 +4,7 @@ import { useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 import Link from 'next/link';
 import type { ProjectMockup } from '@/app/data/projects';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface VideoRevealSectionProps {
   videoSrc: string;
@@ -19,6 +20,7 @@ const VideoRevealSection = ({
   mockup,
   projectHref,
 }: VideoRevealSectionProps) => {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -186,7 +188,7 @@ const VideoRevealSection = ({
               className="text-white/30 uppercase"
               style={{ fontSize: 'clamp(0.4rem, 0.5vw, 0.45rem)', letterSpacing: '0.25em' }}
             >
-              Défiler
+              {t('home.scroll')}
             </span>
             <div className="w-[1px] h-6 bg-white/20 mt-1 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-full bg-white/50 animate-scroll-line" />
