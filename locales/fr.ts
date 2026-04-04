@@ -311,6 +311,7 @@ export const fr = {
     nameLabel: 'Nom complet',
     namePlaceholder: 'Votre nom',
     emailLabel: 'Email',
+    emailPlaceholder: 'votre@email.com',
     fieldRequired: 'Ce champ est requis',
     emailInvalid: 'Adresse email invalide',
     companyLabel: 'Entreprise',

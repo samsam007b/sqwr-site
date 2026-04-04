@@ -311,6 +311,7 @@ export const nl = {
     nameLabel: 'Volledige naam',
     namePlaceholder: 'Uw naam',
     emailLabel: 'E-mail',
+    emailPlaceholder: 'uw@email.com',
     fieldRequired: 'Dit veld is verplicht',
     emailInvalid: 'Ongeldig e-mailadres',
     companyLabel: 'Bedrijf',

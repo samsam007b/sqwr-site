@@ -264,7 +264,7 @@ export default function ContactPage() {
                             aria-invalid={fieldErrors.email ? 'true' : undefined}
                             aria-describedby={fieldErrors.email ? 'email-error' : undefined}
                             className={inputClass}
-                            placeholder="votre@email.com"
+                            placeholder={t('contact.emailPlaceholder')}
                           />
                           {fieldErrors.email && (
                             <span id="email-error" role="alert" className="text-xs text-primary mt-1 block">
