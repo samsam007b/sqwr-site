@@ -6,45 +6,109 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import ScrollReveal from '@/components/ScrollReveal';
 import { projects } from '@/app/data/projects';
+import { useLanguage } from '@/context/LanguageContext';
 
 const COPPER = '#B8956A';
 const COPPER_DARK = '#8B6F47';
 const BEIGE = '#fdfbf7';
 
-const palette = [
-  { name: 'Fond global', hex: '#fdfbf7', label: 'Beige blanc chaud' },
-  { name: 'Texte principal', hex: '#4a3a24', label: 'Brun profond' },
-  { name: 'Cuivre signature', hex: '#B8956A', label: 'CTA & accents' },
-  { name: 'Cuivre moyen', hex: '#8B6F47', label: 'Texte secondaire' },
-  { name: 'Beige ornement', hex: '#E8DCC4', label: 'Séparateurs' },
-  { name: 'Mineral sage', hex: '#8aab8a', label: 'Accent végétal' },
+const paletteBase = [
+  { key: 'fond', hex: '#fdfbf7' },
+  { key: 'texte', hex: '#4a3a24' },
+  { key: 'cuivre', hex: '#B8956A' },
+  { key: 'cuivreMoyen', hex: '#8B6F47' },
+  { key: 'beigeOrnement', hex: '#E8DCC4' },
+  { key: 'mineral', hex: '#8aab8a' },
 ];
 
-const features = [
-  {
-    label: 'Design system premium',
-    description: 'Palette cuivre × beige × mineral, curseur personnalisé et glassmorphism sur le header.',
+const paletteLabels: Record<string, Record<string, { name: string; label: string }>> = {
+  fr: {
+    fond: { name: 'Fond global', label: 'Beige blanc chaud' },
+    texte: { name: 'Texte principal', label: 'Brun profond' },
+    cuivre: { name: 'Cuivre signature', label: 'CTA & accents' },
+    cuivreMoyen: { name: 'Cuivre moyen', label: 'Texte secondaire' },
+    beigeOrnement: { name: 'Beige ornement', label: 'Séparateurs' },
+    mineral: { name: 'Mineral sage', label: 'Accent végétal' },
   },
-  {
-    label: 'Multilingue FR/NL/EN/IT',
-    description: 'Moteur i18n custom de 1 784 lignes, changement de langue sans rechargement de page.',
+  en: {
+    fond: { name: 'Global background', label: 'Warm off-white' },
+    texte: { name: 'Main text', label: 'Deep brown' },
+    cuivre: { name: 'Signature copper', label: 'CTA & accents' },
+    cuivreMoyen: { name: 'Medium copper', label: 'Secondary text' },
+    beigeOrnement: { name: 'Ornament beige', label: 'Separators' },
+    mineral: { name: 'Mineral sage', label: 'Vegetal accent' },
   },
-  {
-    label: 'Animations orchestrées',
-    description: 'Entrées scroll progressives, ornements animés et transitions cubic-bezier premium.',
+  nl: {
+    fond: { name: 'Globale achtergrond', label: 'Warm gebroken wit' },
+    texte: { name: 'Hoofdtekst', label: 'Diep bruin' },
+    cuivre: { name: 'Signatuur koper', label: 'CTA & accenten' },
+    cuivreMoyen: { name: 'Medium koper', label: 'Secundaire tekst' },
+    beigeOrnement: { name: 'Ornament beige', label: 'Scheidingslijnen' },
+    mineral: { name: 'Mineral sage', label: 'Plantaardig accent' },
   },
-  {
-    label: '100 % statique + Vercel',
-    description: 'Zéro dépendance npm, headers de sécurité (CSP, SRI, HSTS), ultra-rapide.',
+  de: {
+    fond: { name: 'Globaler Hintergrund', label: 'Warmes Naturweiß' },
+    texte: { name: 'Haupttext', label: 'Tiefes Braun' },
+    cuivre: { name: 'Signatur-Kupfer', label: 'CTA & Akzente' },
+    cuivreMoyen: { name: 'Mittleres Kupfer', label: 'Sekundärtext' },
+    beigeOrnement: { name: 'Ornament-Beige', label: 'Trennlinien' },
+    mineral: { name: 'Mineral Sage', label: 'Pflanzlicher Akzent' },
   },
-];
+};
 
-const fonts = [
-  { name: 'Cormorant Garamond', role: 'Hero display & citations poétiques', style: 'italic' },
-  { name: 'Playfair Display', role: 'Titres de sections H2 – H4', style: 'normal' },
-  { name: 'DM Sans', role: 'Corps, boutons, navigation', style: 'normal' },
-  { name: 'Cinzel', role: 'Labels eyebrows en petites capitales', style: 'normal' },
-];
+const featuresData: Record<string, Array<{ label: string; description: string }>> = {
+  fr: [
+    { label: 'Design system premium', description: 'Palette cuivre × beige × mineral, curseur personnalisé et glassmorphism sur le header.' },
+    { label: 'Multilingue FR/NL/EN/IT', description: 'Moteur i18n custom de 1 784 lignes, changement de langue sans rechargement de page.' },
+    { label: 'Animations orchestrées', description: 'Entrées scroll progressives, ornements animés et transitions cubic-bezier premium.' },
+    { label: '100 % statique + Vercel', description: 'Zéro dépendance npm, headers de sécurité (CSP, SRI, HSTS), ultra-rapide.' },
+  ],
+  en: [
+    { label: 'Premium design system', description: 'Copper × beige × mineral palette, custom cursor and glassmorphism on the header.' },
+    { label: 'Multilingual FR/NL/EN/IT', description: 'Custom i18n engine of 1,784 lines, language change without page reload.' },
+    { label: 'Orchestrated animations', description: 'Progressive scroll entries, animated ornaments and premium cubic-bezier transitions.' },
+    { label: '100% static + Vercel', description: 'Zero npm dependencies, security headers (CSP, SRI, HSTS), ultra-fast.' },
+  ],
+  nl: [
+    { label: 'Premium ontwerpsysteem', description: 'Koper × beige × mineral palet, aangepaste cursor en glassmorphism op de header.' },
+    { label: 'Meertalig FR/NL/EN/IT', description: 'Aangepaste i18n-motor van 1.784 regels, taalwissel zonder pagina herladen.' },
+    { label: 'Georchestreerde animaties', description: 'Progressieve scroll-invoer, geanimeerde ornamenten en premium cubic-bezier overgangen.' },
+    { label: '100% statisch + Vercel', description: 'Nul npm-afhankelijkheden, beveiligingsheaders (CSP, SRI, HSTS), ultra-snel.' },
+  ],
+  de: [
+    { label: 'Premium-Designsystem', description: 'Kupfer × Beige × Mineral-Palette, benutzerdefinierter Cursor und Glassmorphism im Header.' },
+    { label: 'Mehrsprachig FR/NL/EN/IT', description: 'Benutzerdefinierte i18n-Engine mit 1.784 Zeilen, Sprachwechsel ohne Seitenneuladung.' },
+    { label: 'Orchestrierte Animationen', description: 'Progressive Scroll-Einträge, animierte Ornamente und Premium-Cubic-Bezier-Übergänge.' },
+    { label: '100% statisch + Vercel', description: 'Null npm-Abhängigkeiten, Sicherheits-Header (CSP, SRI, HSTS), ultra-schnell.' },
+  ],
+};
+
+const fontsData: Record<string, Array<{ name: string; role: string; style: string }>> = {
+  fr: [
+    { name: 'Cormorant Garamond', role: 'Hero display & citations poétiques', style: 'italic' },
+    { name: 'Playfair Display', role: 'Titres de sections H2 – H4', style: 'normal' },
+    { name: 'DM Sans', role: 'Corps, boutons, navigation', style: 'normal' },
+    { name: 'Cinzel', role: 'Labels eyebrows en petites capitales', style: 'normal' },
+  ],
+  en: [
+    { name: 'Cormorant Garamond', role: 'Hero display & poetic quotes', style: 'italic' },
+    { name: 'Playfair Display', role: 'Section headings H2 – H4', style: 'normal' },
+    { name: 'DM Sans', role: 'Body, buttons, navigation', style: 'normal' },
+    { name: 'Cinzel', role: 'Eyebrow labels in small caps', style: 'normal' },
+  ],
+  nl: [
+    { name: 'Cormorant Garamond', role: 'Hero display & poëtische citaten', style: 'italic' },
+    { name: 'Playfair Display', role: 'Sectietitels H2 – H4', style: 'normal' },
+    { name: 'DM Sans', role: 'Broodtekst, knoppen, navigatie', style: 'normal' },
+    { name: 'Cinzel', role: 'Eyebrow labels in kleine kapitalen', style: 'normal' },
+  ],
+  de: [
+    { name: 'Cormorant Garamond', role: 'Hero-Display & poetische Zitate', style: 'italic' },
+    { name: 'Playfair Display', role: 'Abschnittsüberschriften H2 – H4', style: 'normal' },
+    { name: 'DM Sans', role: 'Fließtext, Schaltflächen, Navigation', style: 'normal' },
+    { name: 'Cinzel', role: 'Eyebrow-Labels in Kapitälchen', style: 'normal' },
+  ],
+};
 
 function ParallaxImage({ src, alt, className = '' }: { src: string; alt: string; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -61,10 +125,23 @@ function ParallaxImage({ src, alt, className = '' }: { src: string; alt: string;
 }
 
 export default function NanouPage() {
+  const { t, locale } = useLanguage();
   const project = projects.find((p) => p.id === 'nanou')!;
   const projectIndex = projects.findIndex((p) => p.id === 'nanou');
   const nextProject = projects[(projectIndex + 1) % projects.length];
   const prevProject = projects[(projectIndex - 1 + projects.length) % projects.length];
+
+  const localeKey = locale as keyof typeof paletteLabels;
+  const palette = paletteBase.map((c) => ({
+    ...c,
+    ...(paletteLabels[localeKey]?.[c.key] ?? paletteLabels.fr[c.key]),
+  }));
+  const features = featuresData[localeKey] ?? featuresData.fr;
+  const fonts = fontsData[localeKey] ?? fontsData.fr;
+
+  // Localized project content
+  const localeData = locale !== 'fr' ? project.translations?.[locale as 'en' | 'nl' | 'de'] : null;
+  const impact = localeData?.impact ?? project.impact;
 
   const heroRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -99,7 +176,7 @@ export default function NanouPage() {
               className="inline-flex items-center text-xs font-mono uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300"
             >
               <span className="mr-2">←</span>
-              Retour
+              {t('portfolioDetail.back')}
             </Link>
           </motion.div>
 
@@ -111,7 +188,7 @@ export default function NanouPage() {
               className="text-xs font-mono uppercase tracking-[0.2em] mb-6"
               style={{ color: COPPER }}
             >
-              WEB DESIGN · 2025
+              {t('nanou.categoryTag')}
             </motion.p>
 
             <motion.h1
@@ -129,7 +206,7 @@ export default function NanouPage() {
               transition={{ duration: 0.7, delay: 0.5 }}
               className="text-xl text-white/60 font-light"
             >
-              Site vitrine · Nanou Mendels · Bruxelles
+              {t('nanou.subtitle')}
             </motion.p>
           </motion.div>
         </div>
@@ -143,20 +220,17 @@ export default function NanouPage() {
             <div className="lg:col-span-8">
               <ScrollReveal>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
-                  Le projet
+                  {t('portfolioDetail.theProject')}
                 </p>
                 <p className="text-2xl leading-relaxed text-foreground font-light mb-16">
-                  Un site vitrine 7 pages pour Nanou Mendels — praticienne en massage, haptonomie
-                  et thérapie psycho-corporelle. Design premium sur-mesure, moteur multilingue
-                  custom et animations soignées pour une expérience qui reflète la sensibilité
-                  du travail de la praticienne.
+                  {t('nanou.projectDescription')}
                 </p>
               </ScrollReveal>
 
               {/* Services */}
               <ScrollReveal delay={0.1}>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
-                  Services réalisés
+                  {t('portfolioDetail.servicesPerformed')}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
                   {project.services.map((service, i) => (
@@ -177,7 +251,7 @@ export default function NanouPage() {
               {/* Features */}
               <ScrollReveal delay={0.15}>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
-                  Points forts
+                  {t('portfolioDetail.highlights')}
                 </p>
                 <div className="space-y-4 mb-16">
                   {features.map((f, i) => (
@@ -205,10 +279,10 @@ export default function NanouPage() {
               {/* Impact */}
               <ScrollReveal delay={0.2}>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
-                  Impact
+                  {t('portfolioDetail.impact')}
                 </p>
                 <p className="text-lg text-secondary/70 leading-relaxed font-light mb-8">
-                  {project.impact}
+                  {impact}
                 </p>
                 <a
                   href="https://massages-et-naissance.com"
@@ -217,7 +291,7 @@ export default function NanouPage() {
                   className="inline-flex items-center gap-3 text-sm font-mono uppercase tracking-[0.15em] hover:opacity-70 transition-opacity duration-300"
                   style={{ color: COPPER }}
                 >
-                  Voir le site live
+                  {t('portfolioDetail.viewLiveSite')}
                   <span>↗</span>
                 </a>
               </ScrollReveal>
@@ -228,28 +302,28 @@ export default function NanouPage() {
               <ScrollReveal delay={0.3}>
                 <div className="glass-surface p-10 rounded-2xl sticky top-32">
                   <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-10">
-                    Détails
+                    {t('portfolioDetail.details')}
                   </p>
                   <div className="space-y-8">
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Client</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.client')}</p>
                       <p className="text-lg font-display text-foreground">Nanou Mendels</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Année</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.year')}</p>
                       <p className="text-lg font-display text-foreground">2025</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Stack</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.stack')}</p>
                       <p className="text-lg font-display text-foreground">HTML · Tailwind · Vanilla JS</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Langues</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.languages')}</p>
                       <p className="text-lg font-display text-foreground">FR · NL · EN · IT</p>
                     </div>
                     <div>
                       <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
-                        Couleur signature
+                        {t('portfolioDetail.signatureColor')}
                       </p>
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg" style={{ backgroundColor: COPPER }} />
@@ -269,7 +343,7 @@ export default function NanouPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] mb-12" style={{ color: COPPER_DARK }}>
-              Vue d&apos;ensemble
+              {t('nanou.overview')}
             </p>
           </ScrollReveal>
 
@@ -297,7 +371,7 @@ export default function NanouPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-12">
-              Pages intérieures
+              {t('nanou.innerPages')}
             </p>
           </ScrollReveal>
 
@@ -331,7 +405,7 @@ export default function NanouPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] mb-16" style={{ color: COPPER }}>
-              Mobile · Design responsive
+              {t('nanou.mobileResponsive')}
             </p>
           </ScrollReveal>
 
@@ -365,7 +439,7 @@ export default function NanouPage() {
             {/* Color palette */}
             <div>
               <p className="text-xs font-mono uppercase tracking-[0.2em] mb-8" style={{ color: COPPER }}>
-                Palette de couleurs
+                {t('portfolioDetail.colorPalette')}
               </p>
               <div className="grid grid-cols-2 gap-3">
                 {palette.map((c, i) => (
@@ -393,7 +467,7 @@ export default function NanouPage() {
             <ScrollReveal delay={0.1}>
               <div>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] mb-6" style={{ color: COPPER_DARK }}>
-                  Typographie
+                  {t('portfolioDetail.typography')}
                 </p>
                 <ParallaxImage
                   src="/projet-nanou/typography-specimen.png"
@@ -416,7 +490,7 @@ export default function NanouPage() {
             <ScrollReveal delay={0.15}>
               <div>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] mb-6" style={{ color: COPPER_DARK }}>
-                  Color system
+                  {t('portfolioDetail.colorSystem')}
                 </p>
                 <ParallaxImage
                   src="/projet-nanou/color-system.png"
@@ -434,12 +508,12 @@ export default function NanouPage() {
         <div className="max-w-4xl mx-auto px-6 lg:px-16 text-center">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-display font-normal mb-10 text-balance leading-tight">
-              Un site qui vous ressemble ?
+              {t('nanou.ctaTitle')}
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
             <p className="text-xl text-paper/70 mb-14 max-w-2xl mx-auto font-light leading-relaxed">
-              Design premium, développement sur-mesure, livraison rapide — pour les indépendants qui veulent une présence digitale à leur hauteur.
+              {t('nanou.ctaDescription')}
             </p>
           </ScrollReveal>
           <ScrollReveal delay={0.4}>
@@ -448,7 +522,7 @@ export default function NanouPage() {
               className="inline-block px-10 py-5 text-paper hover:opacity-80 transition-opacity duration-300 rounded-xl text-lg"
               style={{ backgroundColor: COPPER }}
             >
-              Démarrer une conversation
+              {t('portfolioDetail.startConversation')}
             </Link>
           </ScrollReveal>
         </div>
@@ -459,13 +533,13 @@ export default function NanouPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-12">
-              Autres projets
+              {t('portfolioDetail.otherProjects')}
             </p>
           </ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
             <ScrollReveal delay={0.1}>
               <Link href={`/portfolio/${prevProject.id}`} className="group block">
-                <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">← Précédent</p>
+                <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">← {t('portfolioDetail.previous')}</p>
                 <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
                   {prevProject.title}
                 </h3>
@@ -474,7 +548,7 @@ export default function NanouPage() {
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
               <Link href={`/portfolio/${nextProject.id}`} className="group block text-right">
-                <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Suivant →</p>
+                <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.next')} →</p>
                 <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
                   {nextProject.title}
                 </h3>

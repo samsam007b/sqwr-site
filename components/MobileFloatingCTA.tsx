@@ -4,27 +4,29 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { useLanguage } from '@/context/LanguageContext';
 
 type CTAConfig = { label: string; href: string };
 
-function getCTAConfig(pathname: string): CTAConfig | null {
+function getCTAConfig(pathname: string, t: (key: string) => string): CTAConfig | null {
   // Page contact : on masque le CTA (le formulaire est déjà là)
   if (pathname === '/contact') return null;
 
   // Portfolio (liste + fiches) et Services → devis
   if (pathname.startsWith('/portfolio') || pathname.startsWith('/services')) {
-    return { label: 'Obtenir un devis', href: '/contact' };
+    return { label: t('mobileCta.getQuote'), href: '/contact' };
   }
 
   // Home, À propos, mentions légales, etc.
-  return { label: 'Nous contacter', href: '/contact' };
+  return { label: t('mobileCta.contactUs'), href: '/contact' };
 }
 
 export default function MobileFloatingCTA() {
+  const { t } = useLanguage();
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
 
-  const config = getCTAConfig(pathname);
+  const config = getCTAConfig(pathname, t);
   const isHome = pathname === '/';
 
   useEffect(() => {

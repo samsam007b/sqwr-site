@@ -489,7 +489,7 @@ const Header = () => {
                   studio@sqwr.be
                 </a>
                 <p className="text-paper/20 text-xs font-mono uppercase tracking-[0.15em]">
-                  Bruxelles, Belgique
+                  {t('footer.location')}
                 </p>
               </div>
               <div className="hidden md:flex items-center gap-3">

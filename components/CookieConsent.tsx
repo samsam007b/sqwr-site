@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Script from 'next/script';
+import { useLanguage } from '@/context/LanguageContext';
 
 const GA_ID = 'G-LXTJCPRN9D';
 const STORAGE_KEY = 'sqwr_cookie_consent';
 
 export default function CookieConsent() {
+  const { t } = useLanguage();
   const [visible, setVisible] = useState(false);
   const [accepted, setAccepted] = useState(false);
 
@@ -58,12 +60,12 @@ export default function CookieConsent() {
 
             <div className="flex-1">
               <p className="text-[11px] font-mono text-paper/50 leading-relaxed tracking-wide">
-                Nous utilisons Google Analytics pour mesurer l&apos;audience de ce site.{' '}
+                {t('cookie.message')}{' '}
                 <Link
                   href="/politique-confidentialite"
                   className="text-paper/70 underline underline-offset-2 hover:text-paper transition-colors"
                 >
-                  Politique de confidentialité
+                  {t('cookie.privacyLink')}
                 </Link>
               </p>
             </div>
@@ -73,13 +75,13 @@ export default function CookieConsent() {
                 onClick={refuse}
                 className="text-[11px] font-mono text-paper/30 hover:text-paper/60 uppercase tracking-[0.15em] transition-colors duration-200"
               >
-                Refuser
+                {t('cookie.refuse')}
               </button>
               <button
                 onClick={accept}
                 className="text-[11px] font-mono bg-paper text-foreground px-4 py-2 uppercase tracking-[0.15em] hover:bg-primary hover:text-paper transition-colors duration-200"
               >
-                Accepter
+                {t('cookie.accept')}
               </button>
             </div>
           </div>

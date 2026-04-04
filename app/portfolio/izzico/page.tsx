@@ -7,12 +7,20 @@ import { useRef } from 'react';
 import ScrollReveal from '@/components/ScrollReveal';
 import DeviceMockup from '@/components/DeviceMockup';
 import { projects } from '@/app/data/projects';
+import { useLanguage } from '@/context/LanguageContext';
 
-const roles = [
-  { name: 'Searcher', description: 'Cherche un co-living', color: '#ffa000', textColor: '#1a1a1a' },
-  { name: 'Resident', description: 'Vit dans un co-living', color: '#e05747', textColor: '#ffffff' },
-  { name: 'Owner', description: 'Gère ses biens', color: '#9c5698', textColor: '#ffffff' },
+const rolesBase = [
+  { name: 'Searcher', color: '#ffa000', textColor: '#1a1a1a' },
+  { name: 'Resident', color: '#e05747', textColor: '#ffffff' },
+  { name: 'Owner', color: '#9c5698', textColor: '#ffffff' },
 ];
+
+const rolesDescriptions: Record<string, string[]> = {
+  fr: ['Cherche un co-living', 'Vit dans un co-living', 'Gère ses biens'],
+  en: ['Searches for co-living', 'Lives in a co-living', 'Manages their properties'],
+  nl: ['Zoekt een co-living', 'Woont in een co-living', 'Beheert zijn eigendommen'],
+  de: ['Sucht ein Co-Living', 'Lebt in einem Co-Living', 'Verwaltet sein Eigentum'],
+};
 
 const GRADIENT = 'linear-gradient(135deg, #9c5698, #e05747, #ffa000)';
 
@@ -43,10 +51,20 @@ function ParallaxImage({
 }
 
 export default function IzzicoPage() {
+  const { t, locale } = useLanguage();
   const project = projects.find((p) => p.id === 'izzico')!;
   const projectIndex = projects.findIndex((p) => p.id === 'izzico');
   const nextProject = projects[(projectIndex + 1) % projects.length];
   const prevProject = projects[(projectIndex - 1 + projects.length) % projects.length];
+
+  const localeKey = locale as keyof typeof rolesDescriptions;
+  const roles = rolesBase.map((r, i) => ({
+    ...r,
+    description: (rolesDescriptions[localeKey] ?? rolesDescriptions.fr)[i],
+  }));
+
+  const localeData = locale !== 'fr' ? project.translations?.[locale as 'en' | 'nl' | 'de'] : null;
+  const impact = localeData?.impact ?? project.impact;
 
   // Hero scroll parallax
   const heroRef = useRef<HTMLDivElement>(null);
@@ -87,7 +105,7 @@ export default function IzzicoPage() {
               className="inline-flex items-center text-xs font-mono uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors duration-300"
             >
               <span className="mr-2">←</span>
-              Retour
+              {t('portfolioDetail.back')}
             </Link>
           </motion.div>
 
@@ -99,7 +117,7 @@ export default function IzzicoPage() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-xs font-mono uppercase tracking-[0.2em] text-white/60 mb-6"
             >
-              BRANDING & PRODUCT · 2025
+              {t('izzico.categoryTag')}
             </motion.p>
 
             <motion.h1
@@ -123,7 +141,7 @@ export default function IzzicoPage() {
               transition={{ duration: 0.7, delay: 0.5 }}
               className="text-xl md:text-2xl text-white/70 font-light"
             >
-              Plateforme de co-living · Branding from scratch
+              {t('izzico.subtitle')}
             </motion.p>
           </motion.div>
         </div>
@@ -137,20 +155,17 @@ export default function IzzicoPage() {
             <div className="lg:col-span-8">
               <ScrollReveal>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
-                  Le projet
+                  {t('portfolioDetail.theProject')}
                 </p>
                 <p className="text-2xl leading-relaxed text-foreground font-light mb-16">
-                  Partir de zéro pour créer une marque tech complète — du naming au design system,
-                  de l&apos;interface web à l&apos;application iOS native. izzico est une plateforme
-                  de co-living pensée pour trois types d&apos;utilisateurs, chacun avec sa propre
-                  couleur, son propre parcours et ses propres besoins.
+                  {t('izzico.projectDescription')}
                 </p>
               </ScrollReveal>
 
               {/* Services */}
               <ScrollReveal delay={0.1}>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
-                  Services réalisés
+                  {t('portfolioDetail.servicesPerformed')}
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
                   {project.services.map((service, i) => (
@@ -171,7 +186,7 @@ export default function IzzicoPage() {
               {/* Roles */}
               <ScrollReveal delay={0.15}>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
-                  Trois rôles, trois univers
+                  {t('izzico.rolesTitle')}
                 </p>
                 <div className="grid grid-cols-3 gap-4 mb-16">
                   {roles.map((role, i) => (
@@ -198,10 +213,10 @@ export default function IzzicoPage() {
               {/* Impact */}
               <ScrollReveal delay={0.2}>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-8">
-                  Impact
+                  {t('portfolioDetail.impact')}
                 </p>
                 <p className="text-lg text-secondary/70 leading-relaxed font-light">
-                  {project.impact}
+                  {impact}
                 </p>
               </ScrollReveal>
             </div>
@@ -211,24 +226,24 @@ export default function IzzicoPage() {
               <ScrollReveal delay={0.3}>
                 <div className="glass-surface p-10 rounded-2xl sticky top-32">
                   <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-10">
-                    Détails
+                    {t('portfolioDetail.details')}
                   </p>
                   <div className="space-y-8">
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Projet</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.project')}</p>
                       <p className="text-lg font-display text-foreground">izzico</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Année</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.year')}</p>
                       <p className="text-lg font-display text-foreground">2025</p>
                     </div>
                     <div>
-                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">Stack</p>
+                      <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.stack')}</p>
                       <p className="text-lg font-display text-foreground">Next.js · SwiftUI</p>
                     </div>
                     <div>
                       <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
-                        Gradient signature
+                        {t('izzico.signatureGradient')}
                       </p>
                       <div
                         className="h-8 rounded-lg"
@@ -248,7 +263,7 @@ export default function IzzicoPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-paper/40 mb-20">
-              Identité de marque
+              {t('izzico.brandIdentity')}
             </p>
           </ScrollReveal>
 
@@ -264,10 +279,10 @@ export default function IzzicoPage() {
           {/* Logo grid */}
           <div className="grid grid-cols-2 gap-4 mb-4">
             {[
-              { src: '/projet-izzico/logo-primary.svg', alt: 'Logo principal', bg: 'bg-white/5', label: 'Lockup principal' },
-              { src: '/projet-izzico/logo-light.svg', alt: 'Logo blanc', bg: '', label: 'Variante clair', gradient: true },
-              { src: '/projet-izzico/logo-icon.svg', alt: 'Icône seule', bg: 'bg-white/5', label: 'Icône', icon: true },
-              { src: '/projet-izzico/logo-dark.svg', alt: 'Logo noir', bg: 'bg-paper', label: 'Variante sombre', dark: true },
+              { src: '/projet-izzico/logo-primary.svg', alt: 'Logo principal', bg: 'bg-white/5', labelKey: 'izzico.logoLockup' },
+              { src: '/projet-izzico/logo-light.svg', alt: 'Logo blanc', bg: '', labelKey: 'izzico.logoLight', gradient: true },
+              { src: '/projet-izzico/logo-icon.svg', alt: 'Icône seule', bg: 'bg-white/5', labelKey: 'izzico.logoIcon', icon: true },
+              { src: '/projet-izzico/logo-dark.svg', alt: 'Logo noir', bg: 'bg-paper', labelKey: 'izzico.logoDark', dark: true },
             ].map((logo, i) => (
               <ScrollReveal key={logo.src} delay={i * 0.08}>
                 <motion.div
@@ -286,7 +301,7 @@ export default function IzzicoPage() {
                     />
                   </div>
                   <p className="absolute bottom-4 left-4 text-xs font-mono uppercase tracking-[0.15em] opacity-40">
-                    {logo.label}
+                    {t(logo.labelKey)}
                   </p>
                 </motion.div>
               </ScrollReveal>
@@ -302,7 +317,7 @@ export default function IzzicoPage() {
             <ScrollReveal delay={0.1}>
               <div>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-6">
-                  Color system
+                  {t('portfolioDetail.colorSystem')}
                 </p>
                 <ParallaxImage
                   src="/projet-izzico/color-system.png"
@@ -315,7 +330,7 @@ export default function IzzicoPage() {
             <ScrollReveal delay={0.15}>
               <div>
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-6">
-                  Typographie
+                  {t('portfolioDetail.typography')}
                 </p>
                 <ParallaxImage
                   src="/projet-izzico/typography-specimen.png"
@@ -333,10 +348,12 @@ export default function IzzicoPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-3">
-              Application web
+              {t('izzico.webApp')}
             </p>
             <p className="text-4xl md:text-5xl font-display font-normal text-foreground mb-16 leading-tight">
-              Next.js 14 — design adaptatif<br />selon le rôle connecté
+              {t('izzico.webAppSubtitle').split('\n').map((line, i) => (
+                <span key={i}>{line}{i === 0 && <br />}</span>
+              ))}
             </p>
           </ScrollReveal>
 
@@ -385,13 +402,13 @@ export default function IzzicoPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-paper/40 mb-3">
-              Application iOS
+              {t('izzico.iosApp')}
             </p>
             <p className="text-4xl md:text-5xl font-display font-normal text-paper mb-4 leading-tight">
-              SwiftUI natif
+              {t('izzico.swiftUINative')}
             </p>
             <p className="text-lg text-paper/50 font-light mb-20">
-              iPhone 17 Pro · Trois rôles, trois interfaces
+              {t('izzico.iosSubtitle')}
             </p>
           </ScrollReveal>
 
@@ -474,12 +491,12 @@ export default function IzzicoPage() {
         <div className="max-w-4xl mx-auto px-6 lg:px-16 text-center">
           <ScrollReveal>
             <h2 className="text-4xl md:text-5xl font-display font-normal mb-10 text-balance leading-tight text-foreground">
-              Un projet ambitieux en tête ?
+              {t('izzico.ctaTitle')}
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
             <p className="text-xl text-secondary/60 mb-14 max-w-2xl mx-auto font-light leading-relaxed">
-              Du naming à l&apos;app — on construit des marques tech qui ont quelque chose à dire.
+              {t('izzico.ctaDescription')}
             </p>
           </ScrollReveal>
           <ScrollReveal delay={0.4}>
@@ -487,7 +504,7 @@ export default function IzzicoPage() {
               href="/contact"
               className="inline-block px-10 py-5 bg-foreground text-paper hover:opacity-80 transition-opacity duration-300 rounded-xl text-lg"
             >
-              Démarrer une conversation
+              {t('portfolioDetail.startConversation')}
             </Link>
           </ScrollReveal>
         </div>
@@ -498,14 +515,14 @@ export default function IzzicoPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-12">
-              Autres projets
+              {t('portfolioDetail.otherProjects')}
             </p>
           </ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
             <ScrollReveal delay={0.1}>
               <Link href={`/portfolio/${prevProject.id}`} className="group block">
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
-                  ← Précédent
+                  ← {t('portfolioDetail.previous')}
                 </p>
                 <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
                   {prevProject.title}
@@ -516,7 +533,7 @@ export default function IzzicoPage() {
             <ScrollReveal delay={0.2}>
               <Link href={`/portfolio/${nextProject.id}`} className="group block text-right">
                 <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
-                  Suivant →
+                  {t('portfolioDetail.next')} →
                 </p>
                 <h3 className="text-3xl font-display font-normal mb-3 group-hover:text-primary transition-colors duration-300">
                   {nextProject.title}

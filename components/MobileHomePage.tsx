@@ -66,12 +66,13 @@ export default function MobileHomePage() {
             transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/50 mb-5">
-              Studio cr&eacute;atif &middot; Bruxelles
+              {t('mobileHome.heroBadge')}
             </p>
             <h1 className="font-display font-normal leading-[1.08] tracking-[-0.02em] text-foreground" style={{ fontSize: 'clamp(2rem, 9vw, 3.5rem)' }}>
-              Identit&eacute;s visuelles<br />
-              &amp; sites web<br />
-              <span className="text-primary">sur-mesure.</span>
+              {t('mobileHome.heroTitle').split('\n').map((line, i) => (
+                <span key={i}>{line}{i < t('mobileHome.heroTitle').split('\n').length - 1 && <br />}</span>
+              ))}
+              <br /><span className="text-primary">{t('mobileHome.heroAccent')}</span>
             </h1>
           </motion.div>
         </div>
@@ -87,7 +88,7 @@ export default function MobileHomePage() {
             href="#projets"
             className="flex items-center justify-between px-6 py-4 border border-foreground/20 text-foreground text-sm font-mono uppercase tracking-[0.12em] active:bg-foreground/5 transition-colors duration-200"
           >
-            <span>Nos projets</span>
+            <span>{t('mobileHome.ourProjects')}</span>
             <span className="text-base leading-none text-secondary/40">↓</span>
           </a>
         </motion.div>
@@ -103,7 +104,7 @@ export default function MobileHomePage() {
           viewport={{ once: true, margin: '-8%' }}
           className="text-xs font-mono uppercase tracking-[0.25em] text-secondary/50 mb-10"
         >
-          Projets r&eacute;cents
+          {t('mobileHome.recentProjects')}
         </motion.p>
 
         <div className="flex flex-col gap-14">
@@ -169,7 +170,7 @@ export default function MobileHomePage() {
             href="/portfolio"
             className="flex items-center justify-between w-full px-6 py-4 border border-foreground/15 text-foreground text-sm font-mono uppercase tracking-[0.12em] active:bg-foreground/5 transition-colors duration-200"
           >
-            <span>Voir tous les projets</span>
+            <span>{t('mobileHome.viewAllProjects')}</span>
             <span className="text-base leading-none text-secondary/40">→</span>
           </Link>
         </motion.div>
@@ -188,7 +189,7 @@ export default function MobileHomePage() {
           viewport={{ once: true, margin: '-8%' }}
           className="text-xs font-mono uppercase tracking-[0.25em] text-paper/30 mb-8"
         >
-          Bruxelles, Belgique
+          {t('mobileHome.location')}
         </motion.p>
 
         <motion.h2
@@ -200,7 +201,9 @@ export default function MobileHomePage() {
           className="font-display font-normal leading-tight text-paper mb-12"
           style={{ fontSize: 'clamp(1.75rem, 8vw, 3rem)' }}
         >
-          Parlons de<br />votre projet.
+          {t('mobileHome.talkProject').split('\n').map((line, i, arr) => (
+            <span key={i}>{line}{i < arr.length - 1 && <br />}</span>
+          ))}
         </motion.h2>
 
         <motion.div
@@ -218,7 +221,7 @@ export default function MobileHomePage() {
           >
             <div>
               <span className="text-xs font-mono uppercase tracking-[0.15em] text-paper/40 block mb-1">
-                T&eacute;l&eacute;phone
+                {t('mobileHome.phone')}
               </span>
               <span className="text-lg font-light">+32 493 30 27 52</span>
             </div>
@@ -232,7 +235,7 @@ export default function MobileHomePage() {
           >
             <div>
               <span className="text-xs font-mono uppercase tracking-[0.15em] text-paper/40 block mb-1">
-                Email
+                {t('mobileHome.email')}
               </span>
               <span className="text-lg font-light">studio@sqwr.be</span>
             </div>
