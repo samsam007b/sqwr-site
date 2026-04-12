@@ -715,6 +715,12 @@ export default function ServicesPage() {
                 >
                   {t('services.ctaButton')}
                 </MagneticButton>
+                <Link
+                  href="/tarifs"
+                  className="text-sm font-mono uppercase tracking-[0.15em] text-paper/30 hover:text-paper/60 transition-colors duration-300 w-fit"
+                >
+                  Tarifs & FAQ →
+                </Link>
                 <a
                   href="mailto:studio@sqwr.be"
                   className="text-sm text-paper/30 font-light hover:text-paper/60 transition-colors duration-300 w-fit"

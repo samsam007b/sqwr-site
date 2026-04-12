@@ -21,6 +21,7 @@ export default function PortfolioDetailContent({ project, prevProject, nextProje
   const services = localeData?.services ?? project.services;
   const categoryLabel = localeData?.categoryLabel ?? project.categoryLabel;
   const metrics = localeData?.metrics ?? project.metrics;
+  const process = localeData?.process ?? project.process;
 
   return (
     <>
@@ -125,8 +126,41 @@ export default function PortfolioDetailContent({ project, prevProject, nextProje
                 </ScrollReveal>
               )}
 
-              {project.url && (
+              {process && process.length > 0 && (
                 <ScrollReveal delay={0.3}>
+                  <div className="mt-20">
+                    <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-10">
+                      {t('portfolioDetail.processLabel')}
+                    </h3>
+                    <div className="space-y-0">
+                      {process.map((step, index) => (
+                        <div
+                          key={index}
+                          className="border-t border-foreground/8 py-8 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8"
+                        >
+                          <div className="md:col-span-1">
+                            <span className="text-xs font-mono text-secondary/30">
+                              {String(index + 1).padStart(2, '0')}
+                            </span>
+                          </div>
+                          <div className="md:col-span-11">
+                            <h4 className="font-display font-normal text-lg text-foreground mb-3">
+                              {step.title}
+                            </h4>
+                            <p className="text-secondary/60 font-light leading-relaxed">
+                              {step.body}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                      <div className="border-t border-foreground/8" />
+                    </div>
+                  </div>
+                </ScrollReveal>
+              )}
+
+              {project.url && (
+                <ScrollReveal delay={0.35}>
                   <div className="mt-12">
                     <a
                       href={project.url}
