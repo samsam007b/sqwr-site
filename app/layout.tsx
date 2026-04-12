@@ -41,8 +41,8 @@ export const metadata: Metadata = {
     default: "SQWR Studio — Agence créative Bruxelles | Branding & Web sur-mesure",
     template: "%s | SQWR Studio",
   },
-  description: "Studio créatif familial à Bruxelles. Identités visuelles, sites web sur-mesure (React/Next.js), stratégie social media. Qualité agence, prix accessible.",
-  keywords: ["design", "graphique", "communication visuelle", "logo", "site web", "branding", "identité visuelle", "UI/UX", "agence créative", "Bruxelles", "Brussels", "Belgique", "Belgium", "sqwr", "sqwr studio", "React", "Next.js", "dashboards", "studio familial", "social media"],
+  description: "Studio créatif indépendant à Bruxelles. Identités visuelles, sites web sur-mesure (React/Next.js), stratégie social media. Qualité agence, prix accessible.",
+  keywords: ["design", "graphique", "communication visuelle", "logo", "site web", "branding", "identité visuelle", "UI/UX", "agence créative", "Bruxelles", "Brussels", "Belgique", "Belgium", "sqwr", "sqwr studio", "React", "Next.js", "dashboards", "studio fondateur", "social media"],
   authors: [{ name: "SQWR Studio" }],
   creator: "SQWR Studio",
   metadataBase: new URL('https://sqwr.be'),
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "SQWR Studio — Agence créative Bruxelles | Branding & Web sur-mesure",
-    description: "Studio créatif familial à Bruxelles. Identités visuelles, sites web sur-mesure (React/Next.js), stratégie social media. Qualité agence, prix accessible.",
+    description: "Studio créatif indépendant à Bruxelles. Identités visuelles, sites web sur-mesure (React/Next.js), stratégie social media. Qualité agence, prix accessible.",
     url: 'https://sqwr.be',
     siteName: 'SQWR Studio',
     locale: 'fr_BE',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: "SQWR Studio — Agence créative Bruxelles",
-    description: "Studio créatif familial à Bruxelles. Identités visuelles, sites web sur-mesure, stratégie social media.",
+    description: "Studio créatif indépendant à Bruxelles. Identités visuelles, sites web sur-mesure, stratégie social media.",
   },
   robots: {
     index: true,

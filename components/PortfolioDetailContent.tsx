@@ -20,6 +20,7 @@ export default function PortfolioDetailContent({ project, prevProject, nextProje
   const impact = localeData?.impact ?? project.impact;
   const services = localeData?.services ?? project.services;
   const categoryLabel = localeData?.categoryLabel ?? project.categoryLabel;
+  const metrics = localeData?.metrics ?? project.metrics;
 
   return (
     <>
@@ -110,6 +111,19 @@ export default function PortfolioDetailContent({ project, prevProject, nextProje
                   </p>
                 </div>
               </ScrollReveal>
+
+              {metrics && (
+                <ScrollReveal delay={0.25}>
+                  <div className="mt-10 p-6 glass-surface rounded-lg border-l-[3px] border-primary">
+                    <p className="text-xs font-mono uppercase tracking-[0.2em] text-primary/70 mb-3">
+                      {t('portfolioDetail.results')}
+                    </p>
+                    <p className="text-lg font-display font-normal text-foreground leading-relaxed">
+                      {metrics}
+                    </p>
+                  </div>
+                </ScrollReveal>
+              )}
 
               {project.url && (
                 <ScrollReveal delay={0.3}>

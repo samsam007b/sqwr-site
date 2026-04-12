@@ -83,6 +83,60 @@ function CustomVsTemplate({ t }: { t: (key: string) => string }) {
   );
 }
 
+/* ── Maintenance Section ────────────────────────────────────────────────────── */
+function MaintenanceSection({ t }: { t: (key: string) => string }) {
+  const features = [1, 2, 3, 4, 5].map(n => t(`services.maintenanceFeature${n}`));
+  return (
+    <section className="py-24 lg:py-32 px-6 lg:px-16 border-t border-secondary/10">
+      <div className="max-w-7xl mx-auto">
+        <div className="lg:grid lg:grid-cols-12 lg:gap-20 lg:items-start">
+          {/* Left */}
+          <ScrollReveal className="lg:col-span-5 mb-14 lg:mb-0">
+            <p className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/50 mb-6">
+              {t('services.maintenanceTitle')}
+            </p>
+            <h2 className="font-display font-normal text-4xl lg:text-5xl text-foreground leading-[0.95] mb-6">
+              {t('services.maintenanceSubtitle')}
+            </h2>
+            <p className="text-secondary/55 font-light leading-relaxed text-base max-w-md">
+              {t('services.maintenanceDescription')}
+            </p>
+          </ScrollReveal>
+          {/* Right */}
+          <ScrollReveal delay={0.15} className="lg:col-span-6 lg:col-start-7">
+            <ul className="space-y-0 mb-10 border-t border-secondary/10">
+              {features.map((feature, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-4 text-secondary/65 font-light text-base border-b border-secondary/8 py-5"
+                >
+                  <span
+                    style={{
+                      display: 'block',
+                      width: '20px',
+                      height: '1px',
+                      backgroundColor: 'var(--primary)',
+                      marginTop: '11px',
+                      flexShrink: 0,
+                    }}
+                  />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/contact?intent=maintenance"
+              className="inline-flex items-center gap-3 px-8 py-4 border border-foreground text-foreground text-sm font-mono uppercase tracking-[0.12em] hover:bg-foreground hover:text-paper transition-all duration-300"
+            >
+              {t('services.maintenanceCta')}
+            </Link>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Entry Point — Audit ────────────────────────────────────────────────────── */
 function EntryPoint({ t }: { t: (key: string) => string }) {
   const auditFeatures = [1, 2, 3, 4, 5, 6].map(n => t(`services.auditFeature${n}`));
@@ -629,6 +683,9 @@ export default function ServicesPage() {
 
       {/* ── ENTRY POINT — Audit ──────────────────────────────────────────────── */}
       <EntryPoint t={t} />
+
+      {/* ── MAINTENANCE ──────────────────────────────────────────────────────── */}
+      <MaintenanceSection t={t} />
 
       {/* ── CTA DARK ─────────────────────────────────────────────────────────── */}
       <section

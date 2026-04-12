@@ -51,7 +51,7 @@ export default function DemoBrutalPage() {
           background: "black"
         }}
         rightContent={{
-          title: "Studio Familial, Qualité Agence",
+          title: "Studio Fondateur, Qualité Agence",
           description: "Samuel (Stratégie & Relations Publiques), Jean-Pierre (Design & 15 ans d'expérience), Joakim (Direction Artistique & La Cambre). Trois générations, une vision.",
           background: "white"
         }}

@@ -69,7 +69,7 @@ export default function Image() {
               lineHeight: 1.2,
             }}
           >
-            Un studio familial bruxellois
+            Un studio fondateur bruxellois
           </div>
           <div
             style={{

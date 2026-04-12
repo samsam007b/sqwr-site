@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Blog SQWR Studio — Branding, Web & Stratégie',
     description:
-      'Articles sur le branding, le design et la stratégie créative par SQWR Studio, studio familial bruxellois.',
+      'Articles sur le branding, le design et la stratégie créative par SQWR Studio, studio fondateur bruxellois.',
     url: 'https://sqwr.be/blog',
     type: 'website',
   },

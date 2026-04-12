@@ -4,14 +4,14 @@ import ServicesPage from '@/components/pages/ServicesPage';
 export const metadata: Metadata = {
   title: 'Services — Branding & Web React/Next.js sur-mesure | SQWR Studio',
   description:
-    'Branding dès €1 500, sites web React/Next.js dès €1 500, apps web dès €3 500. Code propriétaire, prix transparents. Studio familial bruxellois.',
+    'Branding dès €1 500, sites web React/Next.js dès €1 500, apps web dès €3 500. Code propriétaire, prix transparents. Studio indépendant bruxellois.',
   alternates: {
     canonical: 'https://sqwr.be/services',
   },
   openGraph: {
     title: 'Services — Votre marque. Votre code. | SQWR Studio Bruxelles',
     description:
-      'Branding dès €1 500, sites web React/Next.js dès €1 500, apps web dès €3 500. Code propriétaire, prix transparents. Studio familial bruxellois.',
+      'Branding dès €1 500, sites web React/Next.js dès €1 500, apps web dès €3 500. Code propriétaire, prix transparents. Studio indépendant bruxellois.',
     url: 'https://sqwr.be/services',
     type: 'website',
   },

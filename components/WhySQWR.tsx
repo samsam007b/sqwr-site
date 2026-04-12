@@ -15,36 +15,42 @@ const WhySQWR = () => {
     criteria: string;
     agencies: ComparisonCell;
     freelances: ComparisonCell;
+    diy: ComparisonCell;
     sqwr: ComparisonCell;
   }> = [
     {
       criteria: t('home.criteriaQuality'),
       agencies: { text: t('home.qualityHigh'), status: 'positive' },
       freelances: { text: t('home.qualityVariable'), status: 'warning' },
+      diy: { text: t('home.diyQuality'), status: 'negative' },
       sqwr: { text: t('home.qualityPremium'), status: 'positive' },
     },
     {
       criteria: t('home.criteriaReactivity'),
       agencies: { text: t('home.reactivitySlow'), status: 'negative' },
       freelances: { text: t('home.reactivityFast'), status: 'positive' },
+      diy: { text: t('home.diyReactivity'), status: 'positive' },
       sqwr: { text: t('home.reactivityUltraFast'), status: 'positive' },
     },
     {
       criteria: t('home.criteriaPrice'),
       agencies: { text: t('home.priceHigh'), status: 'negative' },
       freelances: { text: t('home.priceAffordable'), status: 'positive' },
+      diy: { text: t('home.diyPrice'), status: 'positive' },
       sqwr: { text: t('home.priceFair'), status: 'positive' },
     },
     {
       criteria: t('home.criteriaSupport'),
       agencies: { text: t('home.supportAnonymous'), status: 'negative' },
       freelances: { text: t('home.supportDirect'), status: 'positive' },
+      diy: { text: t('home.diySupport'), status: 'negative' },
       sqwr: { text: t('home.supportFamily'), status: 'positive' },
     },
     {
       criteria: t('home.criteriaAI'),
       agencies: { text: t('home.aiRare'), status: 'warning' },
       freelances: { text: t('home.aiRare'), status: 'warning' },
+      diy: { text: t('home.diyAI'), status: 'warning' },
       sqwr: { text: t('home.aiIntegrated'), status: 'positive' },
     },
   ];
@@ -98,22 +104,27 @@ const WhySQWR = () => {
         <ScrollReveal delay={0.3}>
           <div className="hidden md:block">
             {/* Table Header */}
-            <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="grid grid-cols-5 gap-3 mb-6">
               <div className="font-mono text-xs uppercase tracking-[0.2em] text-secondary/60 flex items-end pb-4">
                 {t('home.comparisonCriteria')}
               </div>
-              <div className="text-center glass-surface rounded-t-lg p-4">
-                <p className="font-sans text-sm font-medium text-foreground">
+              <div className="text-center glass-surface rounded-t-lg p-3">
+                <p className="font-sans text-xs font-medium text-foreground">
                   {t('home.comparisonAgencies')}
                 </p>
               </div>
-              <div className="text-center glass-surface rounded-t-lg p-4">
-                <p className="font-sans text-sm font-medium text-foreground">
+              <div className="text-center glass-surface rounded-t-lg p-3">
+                <p className="font-sans text-xs font-medium text-foreground">
                   {t('home.comparisonFreelances')}
                 </p>
               </div>
-              <div className="text-center glass-surface rounded-t-lg p-4 bg-primary/5 border-2 border-primary/20">
-                <p className="font-sans text-sm font-bold text-primary">
+              <div className="text-center glass-surface rounded-t-lg p-3">
+                <p className="font-sans text-xs font-medium text-foreground">
+                  {t('home.comparisonDIY')}
+                </p>
+              </div>
+              <div className="text-center glass-surface rounded-t-lg p-3 bg-primary/5 border-2 border-primary/20">
+                <p className="font-sans text-xs font-bold text-primary">
                   {t('home.comparisonSqwr')}
                 </p>
               </div>
@@ -122,21 +133,25 @@ const WhySQWR = () => {
             {/* Table Rows */}
             <div className="space-y-3">
               {comparisonData.map((row, index) => (
-                <div key={index} className="grid grid-cols-4 gap-4 items-center">
+                <div key={index} className="grid grid-cols-5 gap-3 items-center">
                   <div className="font-sans text-sm font-medium text-foreground">
                     {row.criteria}
                   </div>
-                  <div className="glass-surface p-4 rounded-lg flex items-center justify-center gap-3">
+                  <div className="glass-surface p-3 rounded-lg flex items-center justify-center gap-2">
                     {getStatusIcon(row.agencies.status)}
-                    <span className="text-sm text-secondary/80">{row.agencies.text}</span>
+                    <span className="text-xs text-secondary/80">{row.agencies.text}</span>
                   </div>
-                  <div className="glass-surface p-4 rounded-lg flex items-center justify-center gap-3">
+                  <div className="glass-surface p-3 rounded-lg flex items-center justify-center gap-2">
                     {getStatusIcon(row.freelances.status)}
-                    <span className="text-sm text-secondary/80">{row.freelances.text}</span>
+                    <span className="text-xs text-secondary/80">{row.freelances.text}</span>
                   </div>
-                  <div className="glass-surface p-4 rounded-lg bg-primary/5 border-2 border-primary/20 flex items-center justify-center gap-3">
+                  <div className="glass-surface p-3 rounded-lg flex items-center justify-center gap-2">
+                    {getStatusIcon(row.diy.status)}
+                    <span className="text-xs text-secondary/80">{row.diy.text}</span>
+                  </div>
+                  <div className="glass-surface p-3 rounded-lg bg-primary/5 border-2 border-primary/20 flex items-center justify-center gap-2">
                     {getStatusIcon(row.sqwr.status)}
-                    <span className="text-sm font-medium text-foreground">{row.sqwr.text}</span>
+                    <span className="text-xs font-medium text-foreground">{row.sqwr.text}</span>
                   </div>
                 </div>
               ))}
@@ -165,6 +180,14 @@ const WhySQWR = () => {
                     <div className="flex items-center gap-2">
                       {getStatusIcon(row.freelances.status)}
                       <span className="text-sm text-foreground">{row.freelances.text}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-sm text-secondary/60">{t('home.comparisonDIY')}</span>
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(row.diy.status)}
+                      <span className="text-sm text-foreground">{row.diy.text}</span>
                     </div>
                   </div>
 
