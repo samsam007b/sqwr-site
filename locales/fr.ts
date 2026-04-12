@@ -214,7 +214,7 @@ export const fr = {
 
     // Maintenance
     maintenanceTitle: 'Besoin d\'un suivi continu ?',
-    maintenanceSubtitle: 'Suivi & Maintenance — €249/mois',
+    maintenanceSubtitle: 'Suivi & Maintenance — dès €99/mois',
     maintenanceDescription: 'Votre site tourne, vous dormez. Monitoring, mises à jour et modifications mineures incluses — un seul interlocuteur, une tranquillité totale.',
     maintenanceFeature1: 'Monitoring Vercel & uptime',
     maintenanceFeature2: 'Mises à jour sécurité dépendances',

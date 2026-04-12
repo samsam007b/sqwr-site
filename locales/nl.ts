@@ -214,7 +214,7 @@ export const nl = {
 
     // Maintenance
     maintenanceTitle: 'Behoefte aan doorlopende ondersteuning?',
-    maintenanceSubtitle: 'Onderhoud & Support — €249/maand',
+    maintenanceSubtitle: 'Onderhoud & Support — vanaf €99/maand',
     maintenanceDescription: 'Uw site draait, u slaapt. Monitoring, beveiligingsupdates en kleine wijzigingen inbegrepen — één aanspreekpunt, totale gemoedsrust.',
     maintenanceFeature1: 'Vercel monitoring & uptime',
     maintenanceFeature2: 'Beveiligingsupdates afhankelijkheden',

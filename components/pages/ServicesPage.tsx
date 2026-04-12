@@ -124,12 +124,20 @@ function MaintenanceSection({ t }: { t: (key: string) => string }) {
                 </li>
               ))}
             </ul>
-            <Link
-              href="/contact?intent=maintenance"
-              className="inline-flex items-center gap-3 px-8 py-4 border border-foreground text-foreground text-sm font-mono uppercase tracking-[0.12em] hover:bg-foreground hover:text-paper transition-all duration-300"
-            >
-              {t('services.maintenanceCta')}
-            </Link>
+            <div className="flex flex-wrap items-center gap-6">
+              <Link
+                href="/contact?intent=maintenance"
+                className="inline-flex items-center gap-3 px-8 py-4 border border-foreground text-foreground text-sm font-mono uppercase tracking-[0.12em] hover:bg-foreground hover:text-paper transition-all duration-300"
+              >
+                {t('services.maintenanceCta')}
+              </Link>
+              <Link
+                href="/tarifs#maintenance"
+                className="text-xs font-mono uppercase tracking-[0.15em] text-secondary/50 hover:text-secondary transition-colors duration-300"
+              >
+                Voir les 3 formules →
+              </Link>
+            </div>
           </ScrollReveal>
         </div>
       </div>

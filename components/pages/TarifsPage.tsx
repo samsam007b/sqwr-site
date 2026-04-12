@@ -132,8 +132,87 @@ export default function TarifsPage() {
         </div>
       </section>
 
+      {/* Maintenance tiers */}
+      <section id="maintenance" className="py-24 lg:py-32 bg-paper border-t border-foreground/6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-16">
+          <ScrollReveal>
+            <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-4">
+              Abonnements Maintenance
+            </p>
+            <h2 className="font-display font-normal text-4xl md:text-5xl mb-4 leading-[1.05]">
+              Votre site continue de tourner.<br />
+              <span className="text-secondary/40">Vous ne faites rien.</span>
+            </h2>
+            <p className="text-secondary/60 font-light text-lg mb-16 max-w-2xl">
+              Sans engagement de durée. Résiliable avec 30 jours de préavis. Modifications non utilisées non reportées.
+            </p>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              {
+                name: 'Essentiel',
+                price: '€99',
+                forProject: 'Sites Signature · €900–1 500',
+                items: ['Updates sécurité mensuelles', 'Monitoring uptime', '30 min de modifications/mois', 'Urgences : 72h'],
+                highlight: false,
+              },
+              {
+                name: 'Standard',
+                price: '€249',
+                forProject: 'Sites Flagship · Packs · €2 000–4 800',
+                items: ['Updates sécurité mensuelles', 'Monitoring uptime', '1h de modifications/mois', 'Rapport mensuel Lighthouse', 'Support prioritaire 24h', 'Urgences : 24h'],
+                highlight: true,
+              },
+              {
+                name: 'Premium',
+                price: '€449',
+                forProject: 'Apps · E-commerce · €3 500+',
+                items: ['Updates bihebdomadaires', 'Monitoring Vercel + Supabase', '2h de modifications/mois', 'Rapport mensuel détaillé', 'Call mensuel 30 min', 'Urgences : 4h'],
+                highlight: false,
+              },
+            ].map((tier, i) => (
+              <ScrollReveal key={i} delay={i * 0.08}>
+                <div className={`p-8 rounded-lg h-full flex flex-col ${tier.highlight ? 'bg-foreground text-paper' : 'glass-surface'}`}>
+                  <p className={`text-xs font-mono uppercase tracking-[0.2em] mb-3 ${tier.highlight ? 'text-paper/50' : 'text-secondary/50'}`}>
+                    {tier.forProject}
+                  </p>
+                  <div className="flex items-baseline gap-1 mb-2">
+                    <span className={`font-display text-4xl font-normal ${tier.highlight ? 'text-paper' : 'text-foreground'}`}>{tier.price}</span>
+                    <span className={`text-sm font-light ${tier.highlight ? 'text-paper/50' : 'text-secondary/50'}`}>/mois HT</span>
+                  </div>
+                  <p className={`font-display text-xl font-normal mb-6 ${tier.highlight ? 'text-paper' : 'text-foreground'}`}>{tier.name}</p>
+                  <ul className="space-y-2 flex-1">
+                    {tier.items.map((item, j) => (
+                      <li key={j} className={`flex items-start gap-3 text-sm font-light ${tier.highlight ? 'text-paper/70' : 'text-secondary/60'}`}>
+                        <span className={`flex-shrink-0 mt-0.5 ${tier.highlight ? 'text-primary' : 'text-green-500'}`}>✓</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-8">
+                    <Link
+                      href="/contact?intent=maintenance"
+                      className={`inline-block text-xs font-mono uppercase tracking-[0.15em] hover:opacity-70 transition-opacity duration-300 ${tier.highlight ? 'text-paper' : 'text-foreground'}`}
+                    >
+                      Souscrire →
+                    </Link>
+                  </div>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+
+          <ScrollReveal delay={0.3}>
+            <p className="text-xs text-secondary/40 font-light mt-8">
+              Au-delà du quota inclus : €75/h sur avenant. Hébergement & domaine non inclus (~€15–30/an, à votre nom).
+            </p>
+          </ScrollReveal>
+        </div>
+      </section>
+
       {/* FAQ */}
-      <section className="py-24 lg:py-32 bg-paper">
+      <section className="py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-4">

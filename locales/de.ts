@@ -214,7 +214,7 @@ export const de = {
 
     // Maintenance
     maintenanceTitle: 'Laufende Betreuung nötig?',
-    maintenanceSubtitle: 'Betreuung & Wartung — €249/Monat',
+    maintenanceSubtitle: 'Betreuung & Wartung — ab €99/Monat',
     maintenanceDescription: 'Ihre Website läuft, Sie schlafen. Monitoring, Sicherheitsupdates und kleine Änderungen inklusive — ein Ansprechpartner, totale Ruhe.',
     maintenanceFeature1: 'Vercel Monitoring & Uptime',
     maintenanceFeature2: 'Sicherheitsupdates für Abhängigkeiten',

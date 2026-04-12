@@ -214,7 +214,7 @@ export const en = {
 
     // Maintenance
     maintenanceTitle: 'Need ongoing support?',
-    maintenanceSubtitle: 'Support & Maintenance — €249/mo',
+    maintenanceSubtitle: 'Support & Maintenance — from €99/mo',
     maintenanceDescription: 'Your site runs, you sleep. Monitoring, dependency updates and minor changes included — one contact, total peace of mind.',
     maintenanceFeature1: 'Vercel monitoring & uptime',
     maintenanceFeature2: 'Security dependency updates',
