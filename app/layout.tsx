@@ -94,9 +94,10 @@ const jsonLd = {
       foundingDate: '2024',
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'Bruxelles',
+        streetAddress: 'Square Coghen 16',
+        addressLocality: 'Uccle',
         addressRegion: 'Bruxelles-Capitale',
-        postalCode: '1000',
+        postalCode: '1180',
         addressCountry: 'BE',
       },
       founders: [
@@ -130,15 +131,16 @@ const jsonLd = {
       currenciesAccepted: 'EUR',
       address: {
         '@type': 'PostalAddress',
-        addressLocality: 'Bruxelles',
+        streetAddress: 'Square Coghen 16',
+        addressLocality: 'Uccle',
         addressRegion: 'Bruxelles-Capitale',
-        postalCode: '1000',
+        postalCode: '1180',
         addressCountry: 'BE',
       },
       geo: {
         '@type': 'GeoCoordinates',
-        latitude: 50.8503,
-        longitude: 4.3517,
+        latitude: 50.8012,
+        longitude: 4.3613,
       },
       openingHoursSpecification: {
         '@type': 'OpeningHoursSpecification',

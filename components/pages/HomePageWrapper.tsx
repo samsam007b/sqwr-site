@@ -19,9 +19,11 @@ export default function HomePageWrapper() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  // SSR / first paint : fond neutre, même couleur que les deux versions
+  // SSR / first paint : render mobile version (Google mobile-first indexing)
+  // No hydration mismatch — client initial render is also MobileHomePage (same state)
+  // Desktop switches after useEffect fires (~100ms)
   if (isMobile === null) {
-    return <div className="min-h-screen bg-background" />;
+    return <MobileHomePage />;
   }
 
   if (isMobile) {

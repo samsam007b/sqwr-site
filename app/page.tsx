@@ -19,18 +19,14 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      {/* Contenu sémantique serveur-rendu pour Google (homepage = canvas GSAP, ssr:false) */}
-      <section className="sr-only">
-        <h1>SQWR Studio — Agence créative à Bruxelles</h1>
-        <p>Studio créatif indépendant à Bruxelles. Identités visuelles dès 800€, sites web React/Next.js dès 1000€. Samuel &amp; Joakim Baudon.</p>
-        <ul>
-          <li>Branding &amp; identité visuelle</li>
-          <li>Développement web sur-mesure</li>
-          <li>Studio basé à Bruxelles, Belgique</li>
-        </ul>
-        <p>Découvrez nos <Link href="/services">services</Link>, notre <Link href="/portfolio">portfolio</Link> et notre <Link href="/blog">blog branding &amp; web</Link>.</p>
-        <p>Contactez-nous : studio@sqwr.be · +32 493 30 27 52</p>
-      </section>
+      {/* Navigation sémantique supplémentaire pour le crawl */}
+      <nav className="sr-only" aria-label="Liens principaux SQWR Studio">
+        <Link href="/services">Services : branding, web, audit stratégique</Link>
+        <Link href="/portfolio">Portfolio : Villa Coladeira, izzico, Nanou Mendels, La Villa</Link>
+        <Link href="/about">À propos de SQWR Studio — Samuel &amp; Joakim Baudon</Link>
+        <Link href="/blog">Blog branding &amp; web Bruxelles</Link>
+        <Link href="/contact">Devis gratuit sous 48h</Link>
+      </nav>
       <HomePageWrapper />
     </>
   );
