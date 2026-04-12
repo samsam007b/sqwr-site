@@ -34,7 +34,11 @@ jobs:
       - name: ESLint
         run: npm run lint
 
-      # --- Gate 3 : Build Next.js ---
+      # --- Gate 3 : Tests ---
+      - name: Tests
+        run: npm run test
+
+      # --- Gate 4 : Build Next.js ---
       - name: Build Next.js
         run: npm run build
         env:

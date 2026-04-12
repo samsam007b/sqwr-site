@@ -5,8 +5,8 @@ import { articles } from './blog/data/articles';
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://sqwr.be';
 
-  // Date du dernier déploiement significatif
-  const SITE_LAST_UPDATED = new Date('2026-03-03');
+  // Date du build courant — auto-mise à jour à chaque déploiement
+  const SITE_LAST_UPDATED = new Date();
 
   // Static pages
   const staticPages = [

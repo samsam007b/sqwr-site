@@ -9,6 +9,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import ScatterText from '@/components/ScatterText';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 // sections are computed inside DesktopHomePage using t() for i18n
 
@@ -209,6 +210,7 @@ function CTACard() {
 // ── Section finale ─────────────────────────────────────────────────────────────
 function ClosingSection() {
   const { t } = useLanguage();
+  const reducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: '-12%' });
 
@@ -227,7 +229,7 @@ function ClosingSection() {
           className="font-display font-normal leading-none block"
           style={{ fontSize: '22rem', color: 'rgba(17,17,17,0.032)' }}
           animate={{ rotate: 360 }}
-          transition={{ duration: 120, ease: 'linear', repeat: Infinity }}
+          transition={{ duration: 120, ease: 'linear', repeat: reducedMotion ? 0 : Infinity }}
         >
           →
         </motion.span>

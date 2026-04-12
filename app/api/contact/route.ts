@@ -13,10 +13,9 @@ function getRatelimit(): RatelimitInstance | null {
   ratelimitInitialized = true;
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { Ratelimit } = require('@upstash/ratelimit');
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { Redis } = require('@upstash/redis');
+      // Dynamic require needed for optional peer dependency (no static import)
+      const { Ratelimit } = require('@upstash/ratelimit') as { Ratelimit: typeof import('@upstash/ratelimit').Ratelimit };
+      const { Redis } = require('@upstash/redis') as { Redis: typeof import('@upstash/redis').Redis };
       ratelimit = new Ratelimit({
         redis: Redis.fromEnv(),
         limiter: Ratelimit.slidingWindow(3, '60 s'),
@@ -51,6 +50,21 @@ async function isRateLimited(ip: string): Promise<boolean> {
   return false;
 }
 
+// ── Input security ────────────────────────────────────────────────────────────
+
+function sanitizeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+function isSuspiciousInput(value: string): boolean {
+  return /<script|javascript:|on\w+\s*=/i.test(value);
+}
+
 export async function POST(req: NextRequest) {
   // Rate limiting
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown';
@@ -81,46 +95,63 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Blocage des inputs suspects (XSS / injection)
+    const fieldsToCheck = [name, email, company ?? '', service, budget ?? '', message];
+    if (fieldsToCheck.some(isSuspiciousInput)) {
+      return NextResponse.json(
+        { error: 'Contenu invalide détecté.' },
+        { status: 400 }
+      );
+    }
+
+    // Sanitization avant interpolation HTML
+    const safeName    = sanitizeHtml(name);
+    const safeEmail   = sanitizeHtml(email);
+    const safeCompany = company ? sanitizeHtml(company) : '';
+    const safeService = sanitizeHtml(service);
+    const safeBudget  = budget ? sanitizeHtml(budget) : '';
+    const safeMessage = sanitizeHtml(message);
+
     // Email interne à SQWR — notif complète
     await resend.emails.send({
       from: 'SQWR Studio <contact@sqwr.be>',
       to: CONTACT_EMAIL,
       replyTo: email,
-      subject: `[sqwr.be] Nouveau message — ${name}`,
+      subject: `[sqwr.be] Nouveau message — ${safeName}`,
       html: `
         <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; background: #FAFAF8; padding: 40px;">
           <div style="border-left: 3px solid #E01919; padding-left: 24px; margin-bottom: 32px;">
             <p style="font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.2em; color: #999; margin: 0 0 8px;">Nouveau message via sqwr.be</p>
-            <h1 style="font-size: 28px; font-weight: 400; color: #111; margin: 0; line-height: 1.1;">${name}</h1>
+            <h1 style="font-size: 28px; font-weight: 400; color: #111; margin: 0; line-height: 1.1;">${safeName}</h1>
           </div>
 
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 32px;">
             <tr style="border-bottom: 1px solid #E6E6E6;">
               <td style="padding: 12px 0; font-family: monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: #999; width: 120px;">Email</td>
-              <td style="padding: 12px 0; font-size: 15px; color: #111;"><a href="mailto:${email}" style="color: #E01919; text-decoration: none;">${email}</a></td>
+              <td style="padding: 12px 0; font-size: 15px; color: #111;"><a href="mailto:${safeEmail}" style="color: #E01919; text-decoration: none;">${safeEmail}</a></td>
             </tr>
-            ${company ? `<tr style="border-bottom: 1px solid #E6E6E6;">
+            ${safeCompany ? `<tr style="border-bottom: 1px solid #E6E6E6;">
               <td style="padding: 12px 0; font-family: monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: #999;">Entreprise</td>
-              <td style="padding: 12px 0; font-size: 15px; color: #111;">${company}</td>
+              <td style="padding: 12px 0; font-size: 15px; color: #111;">${safeCompany}</td>
             </tr>` : ''}
             <tr style="border-bottom: 1px solid #E6E6E6;">
               <td style="padding: 12px 0; font-family: monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: #999;">Service</td>
-              <td style="padding: 12px 0; font-size: 15px; color: #111;">${service}</td>
+              <td style="padding: 12px 0; font-size: 15px; color: #111;">${safeService}</td>
             </tr>
-            ${budget ? `<tr style="border-bottom: 1px solid #E6E6E6;">
+            ${safeBudget ? `<tr style="border-bottom: 1px solid #E6E6E6;">
               <td style="padding: 12px 0; font-family: monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: #999;">Budget</td>
-              <td style="padding: 12px 0; font-size: 15px; color: #111;">${budget}</td>
+              <td style="padding: 12px 0; font-size: 15px; color: #111;">${safeBudget}</td>
             </tr>` : ''}
           </table>
 
           <div style="background: white; border: 1px solid #E6E6E6; padding: 24px; margin-bottom: 32px;">
             <p style="font-family: monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: #999; margin: 0 0 12px;">Message</p>
-            <p style="font-size: 16px; color: #333; line-height: 1.7; margin: 0; white-space: pre-wrap;">${message}</p>
+            <p style="font-size: 16px; color: #333; line-height: 1.7; margin: 0; white-space: pre-wrap;">${safeMessage}</p>
           </div>
 
-          <a href="mailto:${email}?subject=Re: Votre demande chez SQWR Studio"
+          <a href="mailto:${safeEmail}?subject=Re: Votre demande chez SQWR Studio"
              style="display: inline-block; background: #E01919; color: white; padding: 14px 32px; font-family: monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; text-decoration: none;">
-            Répondre à ${name}
+            Répondre à ${safeName}
           </a>
 
           <p style="margin-top: 40px; font-family: monospace; font-size: 10px; color: #bbb; text-transform: uppercase; letter-spacing: 0.1em;">
@@ -139,7 +170,7 @@ export async function POST(req: NextRequest) {
         <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; background: #FAFAF8; padding: 40px;">
           <div style="border-left: 3px solid #E01919; padding-left: 24px; margin-bottom: 32px;">
             <p style="font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.2em; color: #999; margin: 0 0 8px;">SQWR Studio</p>
-            <h1 style="font-size: 28px; font-weight: 400; color: #111; margin: 0; line-height: 1.1;">Message bien reçu,<br>${name}.</h1>
+            <h1 style="font-size: 28px; font-weight: 400; color: #111; margin: 0; line-height: 1.1;">Message bien reçu,<br>${safeName}.</h1>
           </div>
 
           <p style="font-size: 16px; color: #555; line-height: 1.7; margin-bottom: 16px;">

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import HomePageWrapper from '@/components/pages/HomePageWrapper';
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ export default function Home() {
           <li>Développement web sur-mesure</li>
           <li>Studio basé à Bruxelles, Belgique</li>
         </ul>
-        <p>Découvrez nos <a href="/services">services</a>, notre <a href="/portfolio">portfolio</a> et notre <a href="/blog">blog branding &amp; web</a>.</p>
+        <p>Découvrez nos <Link href="/services">services</Link>, notre <Link href="/portfolio">portfolio</Link> et notre <Link href="/blog">blog branding &amp; web</Link>.</p>
         <p>Contactez-nous : studio@sqwr.be · +32 493 30 27 52</p>
       </section>
       <HomePageWrapper />

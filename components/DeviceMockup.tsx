@@ -3,6 +3,7 @@
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import { useRef } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface DeviceMockupProps {
   src: string;
@@ -21,6 +22,7 @@ export default function DeviceMockup({
   className = '',
   sizes = '(max-width: 768px) 80vw, 33vw',
 }: DeviceMockupProps) {
+  const reducedMotion = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
 
   const mouseX = useMotionValue(0);
@@ -56,14 +58,14 @@ export default function DeviceMockup({
       onMouseLeave={handleMouseLeave}
     >
       <motion.div
-        animate={{ y: [0, -floatAmplitude, 0] }}
-        transition={{
+        animate={reducedMotion ? {} : { y: [0, -floatAmplitude, 0] }}
+        transition={reducedMotion ? {} : {
           duration: 5,
           repeat: Infinity,
           ease: 'easeInOut',
           delay: floatDelay,
         }}
-        style={{ rotateX, rotateY }}
+        style={{ rotateX: reducedMotion ? 0 : rotateX, rotateY: reducedMotion ? 0 : rotateY }}
         className="drop-shadow-[0_40px_60px_rgba(0,0,0,0.35)]"
       >
         <div className="relative aspect-[9/19.5]">
