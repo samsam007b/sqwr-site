@@ -184,7 +184,7 @@ export const projects: Project[] = [
     metrics: 'Branding complet + app iOS & web — de la page blanche au TestFlight',
     services: ['Brand Identity', 'Design System', 'Font & Color System', 'UI/UX Design', 'Web App', 'iOS App'],
     color: '#9c5698',
-    colors: ['#9c5698', '#E87C4E', '#F2C94C', '#4A90D9'],
+    colors: ['#9c5698', '#c85570', '#d15659', '#e05747', '#ff7c10', '#ffa000'],
     image: '/projet-izzico/web-hero-live.png',
     mockup: {
       navLeft: ['Seekers', 'Residents'],
@@ -271,7 +271,7 @@ export const projects: Project[] = [
     metrics: '70+ chantiers réalisés · 5 ans d\'activité — traduits en un site qui convertit',
     services: ['Web Design', 'Développement Next.js', 'Direction Artistique', 'SEO local', 'Galerie chantiers', 'Devis en ligne'],
     color: '#0D0C0A',
-    colors: ['#0D0C0A', '#E4DFD5', '#7A3322', '#5E5B54', '#BDB7AE'],
+    colors: ['#0D0C0A', '#010F48', '#E4DFD5', '#5E5B54', '#7A3322'],
     image: '/projet-aw-construct/hero.png',
     mockup: {
       navLeft: ['Réalisations', 'Services'],
@@ -320,8 +320,8 @@ export const projects: Project[] = [
     impact: 'Un territoire "luxe nautique feutré" — navy profond, calcaire, laiton — qui restitue le niveau d\'exigence attendu par une clientèle charter international sans jamais tomber dans le cliché doré du yachting. Le dashboard admin donne à l\'équipe à terre un outil de gestion quotidien pensé pour l\'usage mobile.',
     metrics: '28,8m Blue Coast 95 · 9 pages site · Dashboard admin bilingue + PWA iOS',
     services: ['Brand Identity', 'Web Design', 'Développement Next.js', 'Dashboard Admin', 'PWA iOS', 'Bilingue EN/FR'],
-    color: '#0B1C2C',
-    colors: ['#0B1C2C', '#F3EEE7', '#B89B5E', '#2A2A2A', '#F0E8D8'],
+    color: '#070708',
+    colors: ['#070708', '#F9F9F7', '#D9B86A', '#ADADAA', '#D0D0CC'],
     image: '/projet-cartouche/hero.png',
     url: 'https://cartouche95.com',
     featured: true,

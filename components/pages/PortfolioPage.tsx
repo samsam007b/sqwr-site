@@ -35,15 +35,16 @@ function PixelRowCanvas({
   project,
   isHovered,
 }: {
-  project: Pick<Project, 'color'>;
+  project: Pick<Project, 'color' | 'colors'>;
   isHovered: boolean;
 }) {
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const rafRef       = useRef<number>(0);
   const fillRef      = useRef<number>(0);
+  const palette      = project.colors && project.colors.length > 0 ? project.colors : [project.color];
 
-  // drawAtLevel — pur pixel, couleur projet, légère variation de texture
+  // drawAtLevel — pixels puisant dans la palette dominante du projet
   const drawAtLevel = useCallback(
     (level: number) => {
       const canvas = canvasRef.current;
@@ -77,12 +78,14 @@ function PixelRowCanvas({
           // Variation d'opacité par cellule (texture organique, déterministe)
           const noise  = (Math.sin(c * 1.7 + r * 2.3) + 1) / 2; // 0–1
           const alpha  = (0.55 + noise * 0.40) * scale;
-          ctx.fillStyle = hexToRgba(project.color, alpha);
+          // Chaque cellule pioche dans la palette dominante (mosaïque déterministe, pas de flicker)
+          const swatch = palette[(c * 3 + r * 7) % palette.length];
+          ctx.fillStyle = hexToRgba(swatch, alpha);
           ctx.fillRect(x, y, sz, sz);
         }
       }
     },
-    [project.color],
+    [palette],
   );
 
   // Dimensions du canvas
