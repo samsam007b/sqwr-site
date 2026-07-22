@@ -445,7 +445,7 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         // Play/pause videos (images need no playback)
         for (let k = 0; k < N; k++) {
           const v = videoRefs.current[k];
-          if (!v) continue;
+          if (!v || !(v instanceof HTMLVideoElement)) continue;
           const start = flipStartFrac[k] - 0.02;
           const end = k < N - 1 ? flipEndFrac[k + 1] : exitEndFrac;
           if (scroll >= start && scroll <= end) {
@@ -544,7 +544,12 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         for (let k = 0; k < N; k++) {
           if (!hasClip[k]) continue;
           const v = videoRefs.current[k];
-          const ready = v && (v.readyState >= 2);
+          const media: unknown = v;
+          const ready = media instanceof HTMLVideoElement
+            ? media.readyState >= 2
+            : media instanceof HTMLImageElement
+              ? media.complete && media.naturalWidth > 0
+              : false;
           if (!v || !ready) continue;
           ctx.save();
           ctx.clip(paths[k]);
