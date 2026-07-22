@@ -352,6 +352,13 @@ export default function DesktopHomePage() {
             projectHref: '/portfolio/villa-coladeira',
             year: getProjectById('villa-coladeira')!.year,
           },
+          {
+            imageSrc: '/projet-aw-construct/hero.png',
+            mockup: getProjectById('aw-construct')!.mockup!,
+            projectColor: getProjectById('aw-construct')!.color,
+            projectHref: '/portfolio/aw-construct',
+            year: getProjectById('aw-construct')!.year,
+          },
         ]}
       />
       <ClosingSection />

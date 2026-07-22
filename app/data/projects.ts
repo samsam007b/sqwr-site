@@ -185,7 +185,7 @@ export const projects: Project[] = [
     services: ['Brand Identity', 'Design System', 'Font & Color System', 'UI/UX Design', 'Web App', 'iOS App'],
     color: '#9c5698',
     colors: ['#9c5698', '#E87C4E', '#F2C94C', '#4A90D9'],
-    image: '/projet-izzico/hero.png',
+    image: '/projet-izzico/web-hero-live.png',
     mockup: {
       navLeft: ['Seekers', 'Residents'],
       navRight: ['Owners', 'Contact'],
@@ -273,6 +273,16 @@ export const projects: Project[] = [
     color: '#0D0C0A',
     colors: ['#0D0C0A', '#E4DFD5', '#7A3322', '#5E5B54', '#BDB7AE'],
     image: '/projet-aw-construct/hero.png',
+    mockup: {
+      navLeft: ['Réalisations', 'Services'],
+      navRight: ['À propos', 'Devis'],
+      brandName: 'A.W Construct',
+      brandSub: 'Bruxelles, Belgique',
+      eyebrow: 'Construction générale · Bruxelles',
+      heroTitle: 'La rigueur du\nchantier, en ligne',
+      heroSub: '5 ans d\'activité · 70+ chantiers réalisés',
+      cta: 'Voir le site',
+    },
     url: 'https://aw-construct.com',
     featured: true,
     translations: {

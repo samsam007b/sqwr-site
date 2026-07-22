@@ -22,7 +22,7 @@ export default function IzzicoPage() {
     '@context': 'https://schema.org',
     '@type': 'CreativeWork',
     name: 'izzico — Brand Identity & App Design',
-    description: 'Identité de marque complète et design UI/UX pour une plateforme de co-living. Web app Next.js + iOS app SwiftUI.',
+    description: 'Identité de marque complète et design UI/UX pour une plateforme de co-living. Web app Next.js + app mobile iOS via Capacitor.',
     creator: {
       '@type': 'Organization',
       name: 'SQWR Studio',
@@ -42,8 +42,8 @@ export default function IzzicoPage() {
       <div className="sr-only">
         <h1>izzico — Brand Identity & Design Système — Projet SQWR Studio</h1>
         <p>Identité visuelle complète pour izzico : plateforme de co-living et colocation. Logo, palette de couleurs (violet, rouge, orange), typographie, design système complet.</p>
-        <p>Services réalisés : brand identity, design système, UI/UX web app (Next.js), UI/UX iOS app (SwiftUI), iconographie, motion design.</p>
-        <p>Trois rôles utilisateur : Searcher (cherche un co-living), Resident (vit dans un co-living), Owner (gère ses biens).</p>
+        <p>Services réalisés : brand identity, design système, UI/UX web app (Next.js), app mobile iOS (Capacitor), iconographie, motion design.</p>
+        <p>Trois rôles utilisateur : Seeker (cherche un co-living), Resident (vit dans un co-living), Owner (gère ses biens).</p>
         <p>Réalisé par SQWR Studio — Agence créative Bruxelles — sqwr.be</p>
       </div>
       <IzzicoContent />
