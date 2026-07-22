@@ -337,12 +337,12 @@ export default function DesktopHomePage() {
       <PixelFlipReveal
         projects={[
           {
-            videoSrc: '/projet-nanou/hero-massage.mp4',
-            webmSrc: '/projet-nanou/hero-massage.webm',
-            mockup: getProjectById('nanou')!.mockup!,
-            projectColor: getProjectById('nanou')!.color,
-            projectHref: '/portfolio/nanou',
-            year: getProjectById('nanou')!.year,
+            videoSrc: '/projet-izzico/hero-static.mp4',
+            webmSrc: '/projet-izzico/hero-static.webm',
+            mockup: getProjectById('izzico')!.mockup!,
+            projectColor: getProjectById('izzico')!.color,
+            projectHref: '/portfolio/izzico',
+            year: getProjectById('izzico')!.year,
           },
           {
             videoSrc: '/projet-villa-coladeira/hero-cinemagraph.mp4',
