@@ -13,45 +13,24 @@ const BG_COLOR = '#FAFAF8';
 const BG_OP = 0.04; // matches PixelGridHero background cell opacity
 const GRID_COL = 'rgba(17,17,17,'; // dark cells on light bg, like PixelGridHero
 
-/* ── HD dissolve: canvas fades out to reveal real video when flip completes ── */
+/* ── HD dissolve: canvas fades out to reveal real media when flip completes ── */
 const DISSOLVE_START = 0.88; // start dissolving canvas at 88% of flip wave
 const DISSOLVE_END = 1.0;    // fully dissolved at 100%
 
-/* ── Scroll-phase boundaries (fraction of section scroll 0-1) ── */
-/* Section = 500vh → each 1% = 5vh ≈ 0.4s of scroll                */
-const P = {
-  // Phase 0: breathing grid visible (15vh)
-  breathEnd: 0.03,
-  // Phase 1: flip top-right → reveal video 1 (85vh)
-  flip1Start: 0.03,
-  flip1End: 0.20,
-  // Phase 2: video 1 fully visible + mockup (~100vh viewing ≈ 8s)
-  mock1Start: 0.18,
-  mock1End: 0.38,
-  // Phase 3: flip top-left → reveal video 2 (85vh)
-  flip2Start: 0.40,
-  flip2End: 0.57,
-  // Phase 4: video 2 fully visible + mockup (~100vh viewing ≈ 8s)
-  mock2Start: 0.55,
-  mock2End: 0.75,
-  // Phase 5: reverse flip → back to white (60vh)
-  exitStart: 0.77,
-  exitEnd: 0.89,
-};
+/* ── Phase timings, expressed in vh (tuned for the original 2-project cut,
+ * then reused as fixed building blocks so N projects extend the section
+ * height instead of squeezing the choreography). ── */
+const BREATH_VH = 15;   // initial breathing-grid zone
+const FLIP_VH = 85;     // width of a single flip animation
+const VIEW_VH = 100;    // width of a project's viewing window
+const OVERLAP_VH = 10;  // view starts this many vh before its flip fully ends
+const GAP_VH = 10;      // pause between a view ending and the next flip starting
+const EXIT_VH = 60;     // final flip back to white
+const TAIL_VH = 55;     // settle zone after the exit flip
 
-/* ── Animation zones — fixed maximum playback duration (seconds) ──
- * During these zones, scroll can only slow the animation down, never speed it up.
- * Contemplation zones (between animations) follow scroll directly.
- */
-const ANIMATION_ZONES = [
-  { start: P.flip1Start, end: P.flip1End, duration: 1.6 },
-  { start: P.flip2Start, end: P.flip2End, duration: 1.6 },
-  { start: P.exitStart,  end: P.exitEnd,  duration: 1.2 },
-];
-
-/* ── Flip animation params ── */
-const FLIP_WINDOW = 0.5; // each cell takes 50% of the wave duration to flip
-const GAP_CLOSE_START = 0.15; // start closing gaps at 15% of flip wave
+/* ── Corner used for each entrance/mid-transition flip, cycling if N > 3.
+ * 'BL' (bottom-left) is reserved for the exit flip. ── */
+const FLIP_CORNER_CYCLE: Array<'TR' | 'TL' | 'BR'> = ['TR', 'TL', 'BR'];
 
 interface FlipCell {
   x: number;
@@ -64,13 +43,17 @@ interface FlipCell {
   delayTR: number;
   /** Normalized delay from top-left corner (0-1) */
   delayTL: number;
+  /** Normalized delay from bottom-right corner (0-1) */
+  delayBR: number;
   /** Normalized delay from bottom-left corner (0-1) */
   delayBL: number;
 }
 
 export interface FlipProject {
-  videoSrc: string;
-  webmSrc: string;
+  /** Either a looping video (videoSrc/webmSrc) or a static image (imageSrc) can be supplied. */
+  videoSrc?: string;
+  webmSrc?: string;
+  imageSrc?: string;
   mockup: ProjectMockup;
   projectColor: string;
   projectHref: string;
@@ -78,7 +61,7 @@ export interface FlipProject {
 }
 
 interface PixelFlipRevealProps {
-  projects: [FlipProject, FlipProject];
+  projects: FlipProject[];
 }
 
 /* ── Helpers ── */
@@ -90,25 +73,26 @@ function easeInOutCubic(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 
-/** Draw a video onto the canvas using object-cover mapping */
-function drawVideoObjectCover(
+/** Draw a video or image onto the canvas using object-cover mapping */
+function drawMediaObjectCover(
   ctx: CanvasRenderingContext2D,
-  video: HTMLVideoElement,
+  media: HTMLVideoElement | HTMLImageElement,
   W: number,
   H: number,
 ) {
-  const vw = video.videoWidth;
-  const vh = video.videoHeight;
-  if (!vw || !vh) return;
-  const va = vw / vh;
+  const isVideo = media instanceof HTMLVideoElement;
+  const mw = isVideo ? media.videoWidth : media.naturalWidth;
+  const mh = isVideo ? media.videoHeight : media.naturalHeight;
+  if (!mw || !mh) return;
+  const ma = mw / mh;
   const ca = W / H;
   let dw: number, dh: number, dx: number, dy: number;
-  if (ca > va) {
-    dw = W; dh = W / va; dx = 0; dy = (H - dh) / 2;
+  if (ca > ma) {
+    dw = W; dh = W / ma; dx = 0; dy = (H - dh) / 2;
   } else {
-    dh = H; dw = H * va; dx = (W - dw) / 2; dy = 0;
+    dh = H; dw = H * ma; dx = (W - dw) / 2; dy = 0;
   }
-  ctx.drawImage(video, dx, dy, dw, dh);
+  ctx.drawImage(media, dx, dy, dw, dh);
 }
 
 /* ── Pixel font for year display — 5×7 bitmap per digit, scaled up ── */
@@ -166,12 +150,73 @@ function computeYearMask(year: string, cols: number, rows: number): Set<number> 
   return mask;
 }
 
+/* ── Phase geometry, generalized to N projects ──
+ * flip[k] transitions from state k (0 = white, k>0 = project k-1) to project k.
+ * view[k] is project k's viewing window. A final exit flip returns to white. */
+interface Phases {
+  breathEnd: number;
+  flipStart: number[];
+  flipEnd: number[];
+  viewStart: number[];
+  viewEnd: number[];
+  exitStart: number;
+  exitEnd: number;
+  totalVh: number;
+}
+
+function computePhases(n: number): Phases {
+  const flipStart: number[] = [];
+  const flipEnd: number[] = [];
+  const viewStart: number[] = [];
+  const viewEnd: number[] = [];
+
+  let pos = BREATH_VH;
+  for (let k = 0; k < n; k++) {
+    const fs = pos;
+    const fe = fs + FLIP_VH;
+    const vs = fe - OVERLAP_VH;
+    const ve = vs + VIEW_VH;
+    flipStart.push(fs);
+    flipEnd.push(fe);
+    viewStart.push(vs);
+    viewEnd.push(ve);
+    pos = ve + GAP_VH;
+  }
+  const exitStart = pos;
+  const exitEnd = exitStart + EXIT_VH;
+  const totalVh = exitEnd + TAIL_VH;
+
+  return { breathEnd: BREATH_VH, flipStart, flipEnd, viewStart, viewEnd, exitStart, exitEnd, totalVh };
+}
+
+function getDelay(cell: FlipCell, corner: 'TR' | 'TL' | 'BR' | 'BL'): number {
+  switch (corner) {
+    case 'TR': return cell.delayTR;
+    case 'TL': return cell.delayTL;
+    case 'BR': return cell.delayBR;
+    case 'BL': return cell.delayBL;
+  }
+}
+
 /* ── Component ── */
 const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
+  const N = projects.length;
+  const phasesRef = useRef<Phases>(computePhases(N));
+  const P = phasesRef.current;
+  const totalVh = P.totalVh;
+
+  // Fractions of total scroll range (0-1), derived from the vh phase geometry.
+  const flipStartFrac = P.flipStart.map(v => v / totalVh);
+  const flipEndFrac = P.flipEnd.map(v => v / totalVh);
+  const viewStartFrac = P.viewStart.map(v => v / totalVh);
+  const viewEndFrac = P.viewEnd.map(v => v / totalVh);
+  const exitStartFrac = P.exitStart / totalVh;
+  const exitEndFrac = P.exitEnd / totalVh;
+
   const sectionRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([null, null]);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>(new Array(N).fill(null));
   const cellsRef = useRef<FlipCell[]>([]);
   const colsRef = useRef(0);
   const rowsRef = useRef(0);
@@ -181,16 +226,12 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
   const t0Ref = useRef(0);
   const sectionTopRef = useRef(0);
   const sectionHeightRef = useRef(0);
-  const yearMask1Ref = useRef<Set<number>>(new Set());
-  const yearMask2Ref = useRef<Set<number>>(new Set());
+  const yearMasksRef = useRef<Set<number>[]>([]);
 
-  const [mockup1Opacity, setMockup1Opacity] = useState(0);
-  const [mockup2Opacity, setMockup2Opacity] = useState(0);
-  const [hdVideo1Opacity, setHdVideo1Opacity] = useState(0);
-  const [hdVideo2Opacity, setHdVideo2Opacity] = useState(0);
+  const [mockupOpacities, setMockupOpacities] = useState<number[]>(() => new Array(N).fill(0));
+  const [hdOpacities, setHdOpacities] = useState<number[]>(() => new Array(N).fill(0));
   const [canvasOpacity, setCanvasOpacity] = useState(1);
-  const [year1Opacity, setYear1Opacity] = useState(0);
-  const [year2Opacity, setYear2Opacity] = useState(0);
+  const [yearOpacities, setYearOpacities] = useState<number[]>(() => new Array(N).fill(0));
 
   /* ── Init grid cells ── */
   const initGrid = useCallback((width: number, height: number) => {
@@ -201,9 +242,7 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
 
     const maxCol = cols - 1;
     const maxRow = rows - 1;
-    const maxDistTR = maxCol + maxRow;
-    const maxDistTL = maxCol + maxRow;
-    const maxDistBL = maxCol + maxRow;
+    const maxDist = maxCol + maxRow;
 
     const cells: FlipCell[] = [];
     for (let row = 0; row < rows; row++) {
@@ -215,9 +254,10 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
           row,
           breathPhase: Math.random() * Math.PI * 2,
           breathSpeed: 0.3 + Math.random() * 0.4,
-          delayTR: ((maxCol - col) + row) / maxDistTR,
-          delayTL: (col + row) / maxDistTL,
-          delayBL: ((maxRow - row) + col) / maxDistBL,
+          delayTR: ((maxCol - col) + row) / maxDist,
+          delayTL: (col + row) / maxDist,
+          delayBR: ((maxCol - col) + (maxRow - row)) / maxDist,
+          delayBL: ((maxRow - row) + col) / maxDist,
         });
       }
     }
@@ -254,15 +294,13 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       ctx.scale(dpr, dpr);
 
       initGrid(W, H);
-      yearMask1Ref.current = computeYearMask(projects[0].year, colsRef.current, rowsRef.current);
-      yearMask2Ref.current = computeYearMask(projects[1].year, colsRef.current, rowsRef.current);
+      yearMasksRef.current = projects.map(p => computeYearMask(p.year, colsRef.current, rowsRef.current));
       measureSection();
       t0Ref.current = performance.now();
 
       /* ── Scroll handler ── */
       const onScroll = () => {
         measureSection();
-        const vh = window.innerHeight;
         const rangeStart = sectionTopRef.current;
         const rangeEnd = sectionTopRef.current + sectionHeightRef.current;
         const totalRange = rangeEnd - rangeStart;
@@ -274,6 +312,9 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       onScroll();
 
       /* ── Compute per-cell flip progress for a given phase ── */
+      const FLIP_WINDOW = 0.5; // each cell takes 50% of the wave duration to flip
+      const GAP_CLOSE_START = 0.15; // start closing gaps at 15% of flip wave
+
       const cellFlipProgress = (
         globalProgress: number,
         delay: number,
@@ -284,6 +325,12 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         return easeInOutCubic(raw);
       };
 
+      /* ── Animation zones — bounded max playback duration per transition ── */
+      const ANIMATION_ZONES = [
+        ...flipStartFrac.map((s, k) => ({ start: s, end: flipEndFrac[k], duration: 1.6 })),
+        { start: exitStartFrac, end: exitEndFrac, duration: 1.2 },
+      ];
+
       /* ── Render loop ── */
       let prevTime = performance.now();
 
@@ -292,15 +339,10 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         prevTime = time;
         const t = (time - t0Ref.current) / 1000;
 
-        // Advance displayScroll with velocity cap in animation zones.
-        // Fast scroll → animation is capped at its defined duration.
-        // Slow scroll → animation follows scroll naturally.
-        // Backward scroll → follows directly.
         const rawScroll = scrollRef.current;
         let disp = displayScrollRef.current;
 
         if (rawScroll < disp) {
-          // Scrolling backward — follow directly
           disp = rawScroll;
         } else if (rawScroll > disp) {
           const zone = ANIMATION_ZONES.find(z => disp >= z.start && disp < z.end);
@@ -319,18 +361,14 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         const W = canvas.width / (window.devicePixelRatio || 1);
         const H = canvas.height / (window.devicePixelRatio || 1);
 
-        // Determine active phase and visibility
         const isVisible = scroll > 0.001 && scroll < 0.999;
 
-        // Control PixelGridHero visibility
-        const gridHeroOpacity = scroll < 0.02 ? 1 : scroll > 0.91 ? 1 : 0;
+        const gridHeroOpacity = scroll < 0.02 ? 1 : scroll > exitEndFrac + 0.02 ? 1 : 0;
         window.dispatchEvent(new CustomEvent('videoRevealGridOpacity', { detail: gridHeroOpacity }));
 
-        // Control header visibility
-        const anyVideoVisible = scroll > P.flip1Start + 0.15 && scroll < P.exitEnd - 0.04;
+        const anyVideoVisible = scroll > flipStartFrac[0] + 0.15 && scroll < exitEndFrac - 0.04;
         window.dispatchEvent(new CustomEvent('videoRevealUIHidden', { detail: anyVideoVisible ? 1 : 0 }));
 
-        // Grain suppression
         if (anyVideoVisible) {
           document.body.classList.add('video-reveal-active');
         } else {
@@ -344,160 +382,142 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         }
         container.style.opacity = '1';
 
-        // Mockup overlay opacity
-        const m1 = scroll >= P.mock1Start && scroll <= P.mock1End
-          ? clamp((scroll - P.mock1Start) / 0.04, 0, 1) * clamp((P.mock1End - scroll) / 0.04, 0, 1)
-          : 0;
-        const m2 = scroll >= P.mock2Start && scroll <= P.mock2End
-          ? clamp((scroll - P.mock2Start) / 0.04, 0, 1) * clamp((P.mock2End - scroll) / 0.04, 0, 1)
-          : 0;
-        setMockup1Opacity(m1);
-        setMockup2Opacity(m2);
+        // Mockup overlay opacities — symmetric bump within each view window
+        const mockupOps = viewStartFrac.map((vs, k) => {
+          const ve = viewEndFrac[k];
+          return scroll >= vs && scroll <= ve
+            ? clamp((scroll - vs) / 0.04, 0, 1) * clamp((ve - scroll) / 0.04, 0, 1)
+            : 0;
+        });
+        setMockupOpacities(mockupOps);
 
-        // Year overlay — visible from mid-flip through entire viewing phase
-        const y1 = scroll >= P.flip1Start + 0.08 && scroll < P.flip2Start
-          ? clamp((scroll - P.flip1Start - 0.08) / 0.04, 0, 1) * clamp((P.flip2Start - scroll) / 0.04, 0, 1)
-          : 0;
-        const y2 = scroll >= P.flip2Start + 0.08 && scroll < P.exitStart
-          ? clamp((scroll - P.flip2Start - 0.08) / 0.04, 0, 1) * clamp((P.exitStart - scroll) / 0.04, 0, 1)
-          : 0;
-        setYear1Opacity(y1);
-        setYear2Opacity(y2);
+        // Year overlays — visible from mid-flip through the whole viewing phase
+        const yearOps = flipStartFrac.map((fs, k) => {
+          const nextStart = k < N - 1 ? flipStartFrac[k + 1] : exitStartFrac;
+          return scroll >= fs + 0.08 && scroll < nextStart
+            ? clamp((scroll - fs - 0.08) / 0.04, 0, 1) * clamp((nextStart - scroll) / 0.04, 0, 1)
+            : 0;
+        });
+        setYearOpacities(yearOps);
 
-        // ── HD video dissolve logic ──
-        const flip1Ratio = scroll >= P.flip1Start && scroll <= P.flip1End
-          ? clamp((scroll - P.flip1Start) / (P.flip1End - P.flip1Start), 0, 1)
-          : scroll > P.flip1End && scroll < P.flip2Start ? 1 : 0;
-        const dissolve1 = clamp((flip1Ratio - DISSOLVE_START) / (DISSOLVE_END - DISSOLVE_START), 0, 1);
-
-        const flip2Ratio = scroll >= P.flip2Start && scroll <= P.flip2End
-          ? clamp((scroll - P.flip2Start) / (P.flip2End - P.flip2Start), 0, 1)
-          : scroll > P.flip2End && scroll < P.exitStart ? 1 : 0;
-        const dissolve2 = clamp((flip2Ratio - DISSOLVE_START) / (DISSOLVE_END - DISSOLVE_START), 0, 1);
-
-        const exitRatio = scroll >= P.exitStart
-          ? clamp((scroll - P.exitStart) / (P.exitEnd - P.exitStart), 0, 1)
+        // Flip ratio per transition (0→1 across its own range, 1 once passed)
+        const flipRatio = flipStartFrac.map((fs, k) => {
+          const fe = flipEndFrac[k];
+          return scroll >= fs && scroll <= fe
+            ? clamp((scroll - fs) / (fe - fs), 0, 1)
+            : scroll > fe ? 1 : 0;
+        });
+        const exitRatio = scroll >= exitStartFrac
+          ? clamp((scroll - exitStartFrac) / (exitEndFrac - exitStartFrac), 0, 1)
           : 0;
 
+        // Dissolve per project — HD media fades in as its own flip completes
+        const dissolve = flipRatio.map(r => clamp((r - DISSOLVE_START) / (DISSOLVE_END - DISSOLVE_START), 0, 1));
+
+        // Canvas opacity — opaque during the pixel-flip effect, fades to reveal HD media
         let cOpacity = 1;
-        if (dissolve1 > 0 && flip2Ratio === 0 && exitRatio === 0) {
-          cOpacity = 1 - dissolve1;
-        } else if (dissolve2 > 0 && exitRatio === 0) {
-          cOpacity = 1 - dissolve2;
-        } else if (exitRatio > 0) {
+        for (let k = 0; k < N; k++) {
+          const nextRatio = k < N - 1 ? flipRatio[k + 1] : exitRatio;
+          if (dissolve[k] > 0 && nextRatio === 0 && exitRatio === 0) {
+            cOpacity = 1 - dissolve[k];
+          }
+        }
+        if (exitRatio > 0) {
           cOpacity = exitRatio > 0.1 ? 1 : exitRatio / 0.1;
         }
-        if (scroll >= P.flip2Start - 0.02 && scroll <= P.flip2Start + 0.04) {
-          cOpacity = 1;
+        for (let k = 1; k < N; k++) {
+          if (scroll >= flipStartFrac[k] - 0.02 && scroll <= flipStartFrac[k] + 0.04) {
+            cOpacity = 1;
+          }
         }
-
         setCanvasOpacity(cOpacity);
-        setHdVideo1Opacity(dissolve1 > 0 && flip2Ratio === 0 ? dissolve1 : (flip2Ratio > 0 ? 1 - clamp(flip2Ratio / 0.1, 0, 1) : 0));
-        setHdVideo2Opacity(dissolve2 > 0 ? dissolve2 : (exitRatio > 0 ? 1 - exitRatio : 0));
 
-        // Play/pause videos
-        const v1 = videoRefs.current[0];
-        const v2 = videoRefs.current[1];
-        if (v1) {
-          if (scroll >= P.flip1Start - 0.02 && scroll <= P.flip2End) {
-            v1.play().catch(() => {});
+        // HD media opacity per project
+        const hdOps = dissolve.map((d, k) => {
+          if (k < N - 1) {
+            const nextRatio = flipRatio[k + 1];
+            return nextRatio === 0 ? d : 1 - clamp(nextRatio / 0.1, 0, 1);
+          }
+          return d > 0 ? d : (exitRatio > 0 ? 1 - exitRatio : 0);
+        });
+        setHdOpacities(hdOps);
+
+        // Play/pause videos (images need no playback)
+        for (let k = 0; k < N; k++) {
+          const v = videoRefs.current[k];
+          if (!v) continue;
+          const start = flipStartFrac[k] - 0.02;
+          const end = k < N - 1 ? flipEndFrac[k + 1] : exitEndFrac;
+          if (scroll >= start && scroll <= end) {
+            v.play().catch(() => {});
           } else {
-            v1.pause();
+            v.pause();
           }
         }
-        if (v2) {
-          if (scroll >= P.flip2Start - 0.02 && scroll <= P.exitEnd) {
-            v2.play().catch(() => {});
-          } else {
-            v2.pause();
-          }
-        }
 
-        // ── Determine flip states ──
-        const flip1Global = scroll >= P.flip1Start && scroll <= P.flip1End
-          ? clamp((scroll - P.flip1Start) / (P.flip1End - P.flip1Start), 0, 1)
-          : scroll > P.flip1End ? 1 : 0;
-
-        const flip2Global = scroll >= P.flip2Start && scroll <= P.flip2End
-          ? clamp((scroll - P.flip2Start) / (P.flip2End - P.flip2Start), 0, 1)
-          : scroll > P.flip2End ? 1 : 0;
-
-        const exitGlobal = scroll >= P.exitStart
-          ? clamp((scroll - P.exitStart) / (P.exitEnd - P.exitStart), 0, 1)
-          : 0;
-
-        // ── Gap closing ──
-        const gapCloseRaw = exitGlobal > 0
-          ? 1 - easeInOutCubic(clamp(exitGlobal / 0.35, 0, 1))
-          : flip1Global >= 1
+        // ── Determine flip states (highest-index active transition wins) ──
+        const gapCloseRaw = exitRatio > 0
+          ? 1 - easeInOutCubic(clamp(exitRatio / 0.35, 0, 1))
+          : flipRatio[0] >= 1
             ? 1
-            : flip1Global > GAP_CLOSE_START
-              ? easeInOutCubic(clamp((flip1Global - GAP_CLOSE_START) / (1 - GAP_CLOSE_START), 0, 1))
+            : flipRatio[0] > GAP_CLOSE_START
+              ? easeInOutCubic(clamp((flipRatio[0] - GAP_CLOSE_START) / (1 - GAP_CLOSE_START), 0, 1))
               : 0;
 
         // ── Clear canvas ──
         ctx.fillStyle = BG_COLOR;
         ctx.fillRect(0, 0, W, H);
 
-        // ── Build clip paths for HD video + draw white cells ──
-        const v1Path = new Path2D();
-        const v2Path = new Path2D();
-        let hasV1Clip = false;
-        let hasV2Clip = false;
+        // ── Build clip paths for HD media + draw white cells ──
+        const paths: Path2D[] = Array.from({ length: N }, () => new Path2D());
+        const hasClip = new Array(N).fill(false);
 
         for (let i = 0; i < cells.length; i++) {
           const cell = cells[i];
           const cellIdx = cell.row * cols + cell.col;
 
-          // Year mask: cells forming the year text stay white during flip
-          const inYearMask =
-            (flip1Global > 0 && flip2Global === 0 && exitGlobal === 0 && yearMask1Ref.current.has(cellIdx))
-            || (flip2Global > 0 && exitGlobal === 0 && yearMask2Ref.current.has(cellIdx));
+          let inYearMask = false;
+          for (let k = N - 1; k >= 0; k--) {
+            const activeThis = flipRatio[k] > 0 && (k === N - 1 ? exitRatio === 0 : flipRatio[k + 1] === 0);
+            if (activeThis && yearMasksRef.current[k]?.has(cellIdx)) { inYearMask = true; break; }
+          }
 
-          let videoNum = 0; // 0=white, 1=video1, 2=video2
+          let mediaNum = 0; // 0 = white, 1..N = project index+1
           let scaleX = 1;
 
           if (inYearMask) {
             // Force white — skip all flip logic
-          } else if (exitGlobal > 0) {
-            // Phase 5: video 2 → white (bottom-left propagation)
-            const p = cellFlipProgress(exitGlobal, cell.delayBL);
+          } else if (exitRatio > 0) {
+            const p = cellFlipProgress(exitRatio, cell.delayBL);
             if (p > 0 && p < 1) {
               const angle = p * Math.PI;
               scaleX = Math.abs(Math.cos(angle));
-              videoNum = p < 0.5 ? 2 : 0;
+              mediaNum = p < 0.5 ? N : 0;
             } else if (p >= 1) {
-              videoNum = 0;
+              mediaNum = 0;
             } else {
-              videoNum = 2;
+              mediaNum = N;
             }
-          } else if (flip2Global > 0) {
-            // Phase 3: video 1 → video 2 (top-left propagation)
-            const p = cellFlipProgress(flip2Global, cell.delayTL);
-            if (p > 0 && p < 1) {
-              const angle = p * Math.PI;
-              scaleX = Math.abs(Math.cos(angle));
-              videoNum = p < 0.5 ? 1 : 2;
-            } else if (p >= 1) {
-              videoNum = 2;
-            } else {
-              videoNum = 1;
+          } else {
+            for (let k = N - 1; k >= 0; k--) {
+              if (flipRatio[k] > 0) {
+                const corner = k === 0 ? 'TR' : FLIP_CORNER_CYCLE[(k - 1) % FLIP_CORNER_CYCLE.length];
+                const p = cellFlipProgress(flipRatio[k], getDelay(cell, corner));
+                if (p > 0 && p < 1) {
+                  const angle = p * Math.PI;
+                  scaleX = Math.abs(Math.cos(angle));
+                  mediaNum = p >= 0.5 ? k + 1 : k;
+                } else if (p >= 1) {
+                  mediaNum = k + 1;
+                } else {
+                  mediaNum = k;
+                }
+                break;
+              }
             }
-          } else if (flip1Global > 0) {
-            // Phase 1: white → video 1 (top-right propagation)
-            const p = cellFlipProgress(flip1Global, cell.delayTR);
-            if (p > 0 && p < 1) {
-              const angle = p * Math.PI;
-              scaleX = Math.abs(Math.cos(angle));
-              videoNum = p >= 0.5 ? 1 : 0;
-            } else if (p >= 1) {
-              videoNum = 1;
-            }
-            // else p===0: white cell (no flip started)
           }
 
-          if (videoNum > 0) {
-            // Video cell — add to clip path (with gap closing expansion)
+          if (mediaNum > 0) {
             const expand = GAP * gapCloseRaw;
             const fullW = CELL_SIZE + expand;
             const fullH = CELL_SIZE + expand;
@@ -505,15 +525,10 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
             const vidX = cell.x - expand / 2 + (fullW - vidW) / 2;
             const vidY = cell.y - expand / 2;
 
-            if (videoNum === 1) {
-              v1Path.rect(vidX, vidY, vidW, fullH);
-              hasV1Clip = true;
-            } else {
-              v2Path.rect(vidX, vidY, vidW, fullH);
-              hasV2Clip = true;
-            }
+            const idx = mediaNum - 1;
+            paths[idx].rect(vidX, vidY, vidW, fullH);
+            hasClip[idx] = true;
           } else {
-            // White / breathing cell
             const bt = t * cell.breathSpeed + cell.breathPhase;
             const op = BG_OP + Math.sin(bt) * 0.01;
             if (op <= 0.001) continue;
@@ -525,18 +540,15 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
           }
         }
 
-        // ── Draw HD videos through clip paths ──
-        if (hasV1Clip && v1 && v1.readyState >= 2) {
+        // ── Draw HD media through clip paths ──
+        for (let k = 0; k < N; k++) {
+          if (!hasClip[k]) continue;
+          const v = videoRefs.current[k];
+          const ready = v && (v.readyState >= 2);
+          if (!v || !ready) continue;
           ctx.save();
-          ctx.clip(v1Path);
-          drawVideoObjectCover(ctx, v1, W, H);
-          ctx.restore();
-        }
-
-        if (hasV2Clip && v2 && v2.readyState >= 2) {
-          ctx.save();
-          ctx.clip(v2Path);
-          drawVideoObjectCover(ctx, v2, W, H);
+          ctx.clip(paths[k]);
+          drawMediaObjectCover(ctx, v, W, H);
           ctx.restore();
         }
 
@@ -554,6 +566,7 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
 
     setup();
     return () => cleanup?.();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initGrid, measureSection]);
 
   /* ── Resize handler ── */
@@ -575,8 +588,7 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         canvas.style.height = `${H}px`;
         ctx.scale(dpr, dpr);
         initGrid(W, H);
-        yearMask1Ref.current = computeYearMask(projects[0].year, colsRef.current, rowsRef.current);
-        yearMask2Ref.current = computeYearMask(projects[1].year, colsRef.current, rowsRef.current);
+        yearMasksRef.current = projects.map(p => computeYearMask(p.year, colsRef.current, rowsRef.current));
         measureSection();
       }, 200);
     };
@@ -585,51 +597,50 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
       clearTimeout(timeout);
       window.removeEventListener('resize', onResize);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initGrid, measureSection]);
 
   return (
-    <section ref={sectionRef} id="work" className="relative" style={{ height: '500vh' }}>
-      {/* Snap checkpoints — at peak of each video viewing window */}
-      <div data-snap-section className="absolute" style={{ top: '28%' }} />
-      <div data-snap-section className="absolute" style={{ top: '65%' }} />
+    <section ref={sectionRef} id="work" className="relative" style={{ height: `${totalVh}vh` }}>
+      {/* Snap checkpoints — at the peak of each project's viewing window */}
+      {viewStartFrac.map((vs, k) => (
+        <div key={k} data-snap-section className="absolute" style={{ top: `${((vs + viewEndFrac[k]) / 2) * 100}%` }} />
+      ))}
 
-      {/* HD video layers — positioned behind canvas, revealed on dissolve */}
-      <div
-        className="fixed inset-0 pointer-events-none overflow-hidden"
-        style={{ zIndex: -2, opacity: hdVideo1Opacity }}
-      >
-        <video
-          ref={el => { videoRefs.current[0] = el; }}
-          loop
-          muted
-          playsInline
-          preload="auto"
-          crossOrigin="anonymous"
-          className="w-full h-full object-cover"
+      {/* HD media layers — positioned behind canvas, revealed on dissolve */}
+      {projects.map((project, k) => (
+        <div
+          key={k}
+          className="fixed inset-0 pointer-events-none overflow-hidden"
+          style={{ zIndex: -2, opacity: hdOpacities[k] ?? 0 }}
         >
-          <source src={projects[0].webmSrc} type="video/webm" />
-          <source src={projects[0].videoSrc} type="video/mp4" />
-        </video>
-      </div>
-      <div
-        className="fixed inset-0 pointer-events-none overflow-hidden"
-        style={{ zIndex: -2, opacity: hdVideo2Opacity }}
-      >
-        <video
-          ref={el => { videoRefs.current[1] = el; }}
-          loop
-          muted
-          playsInline
-          preload="auto"
-          crossOrigin="anonymous"
-          className="w-full h-full object-cover"
-        >
-          <source src={projects[1].webmSrc} type="video/webm" />
-          <source src={projects[1].videoSrc} type="video/mp4" />
-        </video>
-      </div>
+          {project.videoSrc || project.webmSrc ? (
+            <video
+              ref={el => { videoRefs.current[k] = el; }}
+              loop
+              muted
+              playsInline
+              preload="auto"
+              crossOrigin="anonymous"
+              className="w-full h-full object-cover"
+            >
+              {project.webmSrc && <source src={project.webmSrc} type="video/webm" />}
+              {project.videoSrc && <source src={project.videoSrc} type="video/mp4" />}
+            </video>
+          ) : project.imageSrc ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              ref={el => { videoRefs.current[k] = el as unknown as HTMLVideoElement; }}
+              src={project.imageSrc}
+              alt=""
+              crossOrigin="anonymous"
+              className="w-full h-full object-cover"
+            />
+          ) : null}
+        </div>
+      ))}
 
-      {/* Fixed canvas — fades out to reveal HD video */}
+      {/* Fixed canvas — fades out to reveal HD media */}
       <div
         ref={containerRef}
         className="fixed inset-0 pointer-events-none overflow-hidden"
@@ -638,52 +649,34 @@ const PixelFlipReveal = ({ projects }: PixelFlipRevealProps) => {
         <canvas ref={canvasRef} className="block" style={{ opacity: canvasOpacity }} />
       </div>
 
-
-      {/* Mockup overlay — Project 1 */}
-      <div className="sticky top-0 h-screen pointer-events-none" style={{ zIndex: 10 }}>
-        <div
-          className="absolute inset-0 flex flex-col transition-opacity duration-300"
-          style={{ opacity: mockup1Opacity }}
-        >
-          <MockupOverlay mockup={projects[0].mockup} href={projects[0].projectHref} />
+      {/* Mockup overlays */}
+      {projects.map((project, k) => (
+        <div key={k} className="sticky top-0 h-screen pointer-events-none" style={{ zIndex: 10 }}>
+          <div
+            className="absolute inset-0 flex flex-col transition-opacity duration-300"
+            style={{ opacity: mockupOpacities[k] ?? 0 }}
+          >
+            <MockupOverlay mockup={project.mockup} href={project.projectHref} />
+          </div>
         </div>
-      </div>
+      ))}
 
-      {/* Mockup overlay — Project 2 */}
-      <div className="sticky top-0 h-screen pointer-events-none" style={{ zIndex: 10 }}>
+      {/* Year overlays — DOM-based, persist through entire viewing phase */}
+      {projects.map((project, k) => (
         <div
-          className="absolute inset-0 flex flex-col transition-opacity duration-300"
-          style={{ opacity: mockup2Opacity }}
+          key={k}
+          className="fixed bottom-[6%] right-[4%] pointer-events-none font-mono text-white/90 tracking-[0.25em]"
+          style={{
+            zIndex: 11,
+            fontSize: 'clamp(0.65rem, 1vw, 0.85rem)',
+            opacity: yearOpacities[k] ?? 0,
+            transition: 'opacity 0.3s ease',
+            mixBlendMode: 'difference',
+          }}
         >
-          <MockupOverlay mockup={projects[1].mockup} href={projects[1].projectHref} />
+          {project.year}
         </div>
-      </div>
-
-      {/* Year overlay — DOM-based, persists through entire video viewing */}
-      <div
-        className="fixed bottom-[6%] right-[4%] pointer-events-none font-mono text-white/90 tracking-[0.25em]"
-        style={{
-          zIndex: 11,
-          fontSize: 'clamp(0.65rem, 1vw, 0.85rem)',
-          opacity: year1Opacity,
-          transition: 'opacity 0.3s ease',
-          mixBlendMode: 'difference',
-        }}
-      >
-        {projects[0].year}
-      </div>
-      <div
-        className="fixed bottom-[6%] right-[4%] pointer-events-none font-mono text-white/90 tracking-[0.25em]"
-        style={{
-          zIndex: 11,
-          fontSize: 'clamp(0.65rem, 1vw, 0.85rem)',
-          opacity: year2Opacity,
-          transition: 'opacity 0.3s ease',
-          mixBlendMode: 'difference',
-        }}
-      >
-        {projects[1].year}
-      </div>
+      ))}
     </section>
   );
 };

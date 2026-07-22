@@ -10,7 +10,7 @@ import { projects } from '@/app/data/projects';
 import { useLanguage } from '@/context/LanguageContext';
 
 const rolesBase = [
-  { name: 'Searcher', color: '#ffa000', textColor: '#1a1a1a' },
+  { name: 'Seeker', color: '#ffa000', textColor: '#1a1a1a' },
   { name: 'Resident', color: '#e05747', textColor: '#ffffff' },
   { name: 'Owner', color: '#9c5698', textColor: '#ffffff' },
 ];
@@ -22,7 +22,8 @@ const rolesDescriptions: Record<string, string[]> = {
   de: ['Sucht ein Co-Living', 'Lebt in einem Co-Living', 'Verwaltet sein Eigentum'],
 };
 
-const GRADIENT = 'linear-gradient(135deg, #9c5698, #e05747, #ffa000)';
+const GRADIENT =
+  'linear-gradient(135deg, #9c5698 0%, #c85570 20%, #d15659 35%, #e05747 50%, #ff7c10 75%, #ffa000 100%)';
 
 // Parallax wrapper — ties image position to scroll
 function ParallaxImage({
@@ -82,7 +83,7 @@ export default function IzzicoContent() {
         {/* Parallax background */}
         <motion.div style={{ y: heroY }} className="absolute inset-0 scale-[1.15]">
           <Image
-            src="/projet-izzico/hero.png"
+            src="/projet-izzico/web-hero-live.png"
             alt="izzico — homepage"
             fill
             className="object-cover"
@@ -235,11 +236,11 @@ export default function IzzicoContent() {
                     </div>
                     <div>
                       <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.year')}</p>
-                      <p className="text-lg font-display text-foreground">2025</p>
+                      <p className="text-lg font-display text-foreground">{project.year}</p>
                     </div>
                     <div>
                       <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">{t('portfolioDetail.stack')}</p>
-                      <p className="text-lg font-display text-foreground">Next.js · SwiftUI</p>
+                      <p className="text-lg font-display text-foreground">Next.js · Capacitor</p>
                     </div>
                     <div>
                       <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/70 mb-3">
@@ -365,8 +366,8 @@ export default function IzzicoContent() {
               className="relative aspect-[16/10] overflow-hidden rounded-2xl grain-overlay mb-6"
             >
               <Image
-                src="/projet-izzico/web-01.png"
-                alt="izzico web app — vue principale"
+                src="/projet-izzico/web-hero-live.png"
+                alt="izzico web app — homepage"
                 fill
                 className="object-cover"
                 sizes="100vw"
@@ -374,26 +375,22 @@ export default function IzzicoContent() {
             </motion.div>
           </ScrollReveal>
 
-          {/* Two smaller */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {['/projet-izzico/web-02.png', '/projet-izzico/web-03.png'].map((src, i) => (
-              <ScrollReveal key={src} delay={i * 0.1}>
-                <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative aspect-[16/10] overflow-hidden rounded-2xl grain-overlay"
-                >
-                  <Image
-                    src={src}
-                    alt={`izzico web app — vue ${i + 2}`}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                </motion.div>
-              </ScrollReveal>
-            ))}
-          </div>
+          {/* Gallery screenshot */}
+          <ScrollReveal delay={0.1}>
+            <motion.div
+              whileHover={{ scale: 1.01 }}
+              transition={{ duration: 0.3 }}
+              className="relative aspect-[16/10] overflow-hidden rounded-2xl grain-overlay"
+            >
+              <Image
+                src="/projet-izzico/web-gallery-live.png"
+                alt="izzico web app — galerie de moments partagés"
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+            </motion.div>
+          </ScrollReveal>
         </div>
       </section>
 
