@@ -22,7 +22,7 @@ export default function Home() {
       {/* Navigation sémantique supplémentaire pour le crawl */}
       <nav className="sr-only" aria-label="Liens principaux SQWR Studio">
         <Link href="/services">Services : branding, web, audit stratégique</Link>
-        <Link href="/portfolio">Portfolio : Villa Coladeira, izzico, Nanou Mendels, La Villa</Link>
+        <Link href="/portfolio">Portfolio : Villa Coladeira, izzico, La Villa, A.W Construct, Cartouche, Flows Studio</Link>
         <Link href="/about">À propos de SQWR Studio — Samuel &amp; Joakim Baudon</Link>
         <Link href="/blog">Blog branding &amp; web Bruxelles</Link>
         <Link href="/contact">Devis gratuit sous 48h</Link>

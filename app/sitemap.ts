@@ -40,14 +40,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly' as const,
       priority: 0.7,
     },
+    {
+      url: `${baseUrl}/tarifs`,
+      lastModified: SITE_LAST_UPDATED,
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
   ];
 
   // Dates réelles de livraison par projet
   const projectDates: Record<string, Date> = {
     'la-villa':        new Date('2024-12-01'),
-    'nanou':           new Date('2025-04-01'),
     'izzico':          new Date('2025-06-01'),
     'villa-coladeira': new Date('2025-09-01'),
+    'aw-construct':    new Date('2026-01-01'),
+    'cartouche':       new Date('2026-01-01'),
+    'flows-studio':    new Date('2026-01-01'),
   };
 
   // Dynamic project pages
