@@ -6,6 +6,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import ScrollReveal from '@/components/ScrollReveal';
 import DeviceMockup from '@/components/DeviceMockup';
+import WebsiteTourVideo from '@/components/WebsiteTourVideo';
 import { projects } from '@/app/data/projects';
 import { useLanguage } from '@/context/LanguageContext';
 
@@ -145,6 +146,31 @@ export default function IzzicoContent() {
               {t('izzico.subtitle')}
             </motion.p>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ─── WEBSITE TOUR ──────────────────────────────────────────────────── */}
+      <section className="py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-6 lg:px-16">
+          <ScrollReveal>
+            <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-3">
+              {t('izzico.websiteTour')}
+            </p>
+            <p className="text-4xl md:text-5xl font-display font-normal text-foreground mb-6 leading-tight">
+              {t('izzico.websiteTourTitle')}
+            </p>
+            <p className="text-lg text-secondary/60 font-light leading-relaxed max-w-3xl mb-12">
+              {t('izzico.websiteTourDescription')}
+            </p>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <WebsiteTourVideo
+              src="/projet-izzico/website-tour.mp4"
+              unmuteLabel={t('izzico.unmuteVideo')}
+              muteLabel={t('izzico.muteVideo')}
+              className="aspect-video"
+            />
+          </ScrollReveal>
         </div>
       </section>
 
