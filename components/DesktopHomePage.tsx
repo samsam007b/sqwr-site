@@ -4,6 +4,7 @@ import Link from 'next/link';
 import PixelGridHero from '@/components/PixelGridHero';
 import ScrollProgress from '@/components/ScrollProgress';
 import PixelFlipReveal from '@/components/PixelFlipReveal';
+import WebsiteTourVideo from '@/components/WebsiteTourVideo';
 import { getProjectById } from '@/app/data/projects';
 import { useLanguage } from '@/context/LanguageContext';
 import ScatterText from '@/components/ScatterText';
@@ -310,6 +311,62 @@ function ClosingSection() {
   );
 }
 
+function IzzicoTourSection() {
+  const { t } = useLanguage();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: '-15% 0px' });
+
+  return (
+    <section ref={sectionRef} className="relative py-32 lg:py-44 px-6 lg:px-16">
+      <div className="max-w-6xl mx-auto w-full">
+        <motion.p
+          className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+        >
+          izzico &middot; {t('izzico.websiteTour')}
+        </motion.p>
+        <motion.h2
+          className="font-display font-normal text-4xl md:text-5xl leading-[0.95] text-foreground mb-6 max-w-2xl"
+          initial={{ opacity: 0, y: 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.1 }}
+        >
+          {t('izzico.websiteTourTitle')}
+        </motion.h2>
+        <motion.p
+          className="text-lg text-secondary/50 font-light leading-relaxed max-w-xl mb-12"
+          initial={{ opacity: 0, y: 12 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          {t('izzico.websiteTourDescription')}
+        </motion.p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <WebsiteTourVideo
+            src="/projet-izzico/website-tour.mp4"
+            unmuteLabel={t('izzico.unmuteVideo')}
+            muteLabel={t('izzico.muteVideo')}
+            className="aspect-video"
+          />
+          <Link
+            href="/portfolio/izzico"
+            className="inline-flex items-center gap-2 mt-8 text-sm font-mono uppercase tracking-[0.15em] text-foreground hover:text-primary transition-colors duration-300"
+          >
+            {t('izzico.watchCaseStudy')}
+            <span>→</span>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 export default function DesktopHomePage() {
   const { t } = useLanguage();
 
@@ -361,6 +418,7 @@ export default function DesktopHomePage() {
           },
         ]}
       />
+      <IzzicoTourSection />
       <ClosingSection />
     </>
   );
