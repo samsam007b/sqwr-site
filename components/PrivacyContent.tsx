@@ -7,17 +7,10 @@ export default function PrivacyContent() {
 
   const h1Lines = t('privacy.h1').split('\n');
 
-  // Withdraw consent: drop the stored choice and the GA cookies, then reload so the banner asks again
+  // Withdraw consent: drop the stored choice, then reload so the banner asks again
+  // (CookieConsent removes the GA cookies on load while consent is not given)
   const resetCookieChoice = () => {
     localStorage.removeItem('sqwr_cookie_consent');
-    const domain = window.location.hostname.replace(/^www\./, '');
-    document.cookie.split(';').forEach((cookie) => {
-      const name = cookie.split('=')[0].trim();
-      if (name.startsWith('_ga')) {
-        document.cookie = `${name}=; Max-Age=0; path=/; domain=.${domain}`;
-        document.cookie = `${name}=; Max-Age=0; path=/`;
-      }
-    });
     window.location.reload();
   };
 
