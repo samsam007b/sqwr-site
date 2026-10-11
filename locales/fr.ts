@@ -363,10 +363,10 @@ export const fr = {
     error: 'Erreur',
   },
   cookie: {
-    message: 'Nous utilisons Google Analytics pour mesurer l\'audience de ce site.',
+    message: 'Ce site utilise des cookies pour mesurer son audience. En acceptant, vous autorisez l\'ensemble de ces cookies.',
     privacyLink: 'Politique de confidentialité',
     refuse: 'Refuser',
-    accept: 'Accepter',
+    accept: 'Tout accepter',
   },
   mobileCta: {
     getQuote: 'Obtenir un devis',
