@@ -363,10 +363,10 @@ export const en = {
     error: 'Error',
   },
   cookie: {
-    message: 'We use Google Analytics to measure the audience of this site.',
+    message: 'This site uses cookies to measure its audience. By accepting, you allow all of these cookies.',
     privacyLink: 'Privacy policy',
     refuse: 'Decline',
-    accept: 'Accept',
+    accept: 'Accept all',
   },
   mobileCta: {
     getQuote: 'Get a quote',

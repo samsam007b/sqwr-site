@@ -363,10 +363,10 @@ export const nl = {
     error: 'Fout',
   },
   cookie: {
-    message: 'We gebruiken Google Analytics om het publiek van deze site te meten.',
+    message: 'Deze site gebruikt cookies om het bezoek te meten. Door te accepteren staat u al deze cookies toe.',
     privacyLink: 'Privacybeleid',
     refuse: 'Weigeren',
-    accept: 'Accepteren',
+    accept: 'Alles accepteren',
   },
   mobileCta: {
     getQuote: 'Offerte aanvragen',
