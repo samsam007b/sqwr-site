@@ -94,7 +94,7 @@ export const fr = {
     service1: {
       title: 'Branding',
       tagline: 'Votre marque devient inoubliable.',
-      priceSignature: '€1 400', priceFlagship: 'à partir de €3 200',
+      priceSignature: 'à partir de €1 400', priceFlagship: 'à partir de €3 200',
       labelSignature: 'Signature', labelFlagship: 'Sur-mesure',
       description: 'Un logo ne fait pas une marque. Nous construisons le système complet qui fait que les gens se souviennent de vous — et vous choisissent à nouveau.',
       included: 'Signature — ce que vous obtenez',
@@ -114,7 +114,7 @@ export const fr = {
     service2: {
       title: 'Site web',
       tagline: 'Votre vitrine existe dès le J7.',
-      priceSignature: '€2 200', priceFlagship: 'à partir de €4 500',
+      priceSignature: 'à partir de €2 200', priceFlagship: 'à partir de €4 500',
       labelSignature: 'Signature', labelFlagship: 'Sur-mesure',
       description: 'Pas de maquettes figées. Votre site est en ligne dès la première semaine — vous le testez sur votre téléphone, le partagez, on l\'améliore ensemble en conditions réelles.',
       included: 'Signature — ce que vous obtenez',
@@ -134,7 +134,7 @@ export const fr = {
     service3: {
       title: 'SaaS',
       tagline: 'Votre produit, fonctionnel dès la semaine 2.',
-      priceSignature: '€5 500', priceFlagship: 'à partir de €8 000',
+      priceSignature: 'à partir de €5 500', priceFlagship: 'à partir de €8 000',
       labelSignature: 'Signature', labelFlagship: 'Sur-mesure',
       description: 'De la logique métier à l\'interface — nous développons l\'application qui correspond exactement à vos besoins, avec un prototype live en production dès le début.',
       included: 'Signature — ce que vous obtenez',

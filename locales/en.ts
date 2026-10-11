@@ -94,7 +94,7 @@ export const en = {
     service1: {
       title: 'Branding',
       tagline: 'Your brand becomes unforgettable.',
-      priceSignature: '€1,400', priceFlagship: 'from €3,200',
+      priceSignature: 'from €1,400', priceFlagship: 'from €3,200',
       labelSignature: 'Signature', labelFlagship: 'Custom',
       description: 'A logo doesn\'t make a brand. We build the complete system that makes people remember you — and choose you again.',
       included: 'Signature — what you get',
@@ -114,7 +114,7 @@ export const en = {
     service2: {
       title: 'Website',
       tagline: 'Your site is live by day 7.',
-      priceSignature: '€2,200', priceFlagship: 'from €4,500',
+      priceSignature: 'from €2,200', priceFlagship: 'from €4,500',
       labelSignature: 'Signature', labelFlagship: 'Custom',
       description: 'No static mockups. Your site is live in the first week — test it on your phone, share it, we improve it together in real conditions.',
       included: 'Signature — what you get',
@@ -134,7 +134,7 @@ export const en = {
     service3: {
       title: 'SaaS',
       tagline: 'Your product, functional by week 2.',
-      priceSignature: '€5,500', priceFlagship: 'from €8,000',
+      priceSignature: 'from €5,500', priceFlagship: 'from €8,000',
       labelSignature: 'Signature', labelFlagship: 'Custom',
       description: 'From business logic to interface — we develop the application that exactly matches your needs, with a live prototype in production from day one.',
       included: 'Signature — what you get',

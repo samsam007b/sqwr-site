@@ -94,7 +94,7 @@ export const nl = {
     service1: {
       title: 'Branding',
       tagline: 'Uw merk wordt onvergetelijk.',
-      priceSignature: '€1.400', priceFlagship: 'vanaf €3.200',
+      priceSignature: 'vanaf €1.400', priceFlagship: 'vanaf €3.200',
       labelSignature: 'Signature', labelFlagship: 'Op maat',
       description: 'Een logo maakt geen merk. We bouwen het complete systeem dat ervoor zorgt dat mensen u onthouden — en u opnieuw kiezen.',
       included: 'Signature — wat u krijgt',
@@ -114,7 +114,7 @@ export const nl = {
     service2: {
       title: 'Website',
       tagline: 'Uw site is live op dag 7.',
-      priceSignature: '€2.200', priceFlagship: 'vanaf €4.500',
+      priceSignature: 'vanaf €2.200', priceFlagship: 'vanaf €4.500',
       labelSignature: 'Signature', labelFlagship: 'Op maat',
       description: 'Geen statische mockups. Uw site is live in de eerste week — test het op uw telefoon, deel het, we verbeteren samen in echte omstandigheden.',
       included: 'Signature — wat u krijgt',
@@ -134,7 +134,7 @@ export const nl = {
     service3: {
       title: 'SaaS',
       tagline: 'Uw product, functioneel vanaf week 2.',
-      priceSignature: '€5.500', priceFlagship: 'vanaf €8.000',
+      priceSignature: 'vanaf €5.500', priceFlagship: 'vanaf €8.000',
       labelSignature: 'Signature', labelFlagship: 'Op maat',
       description: 'Van bedrijfslogica tot interface — we ontwikkelen de applicatie die precies aan uw behoeften voldoet, met een live prototype in productie vanaf het begin.',
       included: 'Signature — wat u krijgt',
