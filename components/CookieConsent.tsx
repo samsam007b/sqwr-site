@@ -17,7 +17,18 @@ export default function CookieConsent() {
     const consent = localStorage.getItem(STORAGE_KEY);
     if (consent === 'accepted') {
       setAccepted(true);
-    } else if (!consent) {
+      return;
+    }
+    // No consent (never given, refused or withdrawn): remove any GA cookie left behind
+    const domain = window.location.hostname.replace(/^www\./, '');
+    document.cookie.split(';').forEach((cookie) => {
+      const name = cookie.split('=')[0].trim();
+      if (name.startsWith('_ga')) {
+        document.cookie = `${name}=; Max-Age=0; path=/; domain=.${domain}`;
+        document.cookie = `${name}=; Max-Age=0; path=/`;
+      }
+    });
+    if (!consent) {
       setVisible(true);
     }
   }, []);
