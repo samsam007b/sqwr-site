@@ -1047,9 +1047,8 @@ export const articles: Article[] = [
   briefing structuré, jalons de validation, livrables documentés, guide d'utilisation.
 </p>
 <p>
-  Résultat : la proximité du freelance avec la rigueur de l'agence. C'est ce que nos clients comme
-  <a href="/portfolio/villa-coladeira">Villa Coladeira</a> et
-  <a href="/portfolio/nanou">Massages et Naissance</a> apprécient.
+  Résultat : la proximité du freelance avec la rigueur de l'agence. C'est ce qu'un client comme
+  <a href="/portfolio/villa-coladeira">Villa Coladeira</a> apprécie.
 </p>
 
 <h2>Comment choisir selon votre projet ?</h2>

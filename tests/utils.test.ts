@@ -41,10 +41,10 @@ describe('hexToRgba', () => {
 // ─── getProjectById ────────────────────────────────────────────────────────────
 describe('getProjectById', () => {
   it('returns the correct project', () => {
-    const project = getProjectById('nanou');
+    const project = getProjectById('villa-coladeira');
     expect(project).toBeDefined();
-    expect(project?.id).toBe('nanou');
-    expect(project?.client).toBe('Nanou Mendels');
+    expect(project?.id).toBe('villa-coladeira');
+    expect(project?.client).toBe('Villa Coladeira');
   });
 
   it('returns undefined for unknown id', () => {
