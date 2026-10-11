@@ -7,6 +7,20 @@ export default function PrivacyContent() {
 
   const h1Lines = t('privacy.h1').split('\n');
 
+  // Withdraw consent: drop the stored choice and the GA cookies, then reload so the banner asks again
+  const resetCookieChoice = () => {
+    localStorage.removeItem('sqwr_cookie_consent');
+    const domain = window.location.hostname.replace(/^www\./, '');
+    document.cookie.split(';').forEach((cookie) => {
+      const name = cookie.split('=')[0].trim();
+      if (name.startsWith('_ga')) {
+        document.cookie = `${name}=; Max-Age=0; path=/; domain=.${domain}`;
+        document.cookie = `${name}=; Max-Age=0; path=/`;
+      }
+    });
+    window.location.reload();
+  };
+
   return (
     <main className="max-w-3xl mx-auto px-6 lg:px-8 pt-36 pb-24">
       <p aria-hidden="true" className="text-xs font-mono uppercase tracking-[0.3em] text-secondary/40 mb-8">
@@ -52,6 +66,13 @@ export default function PrivacyContent() {
             <a href="https://plausible.io/data-policy" className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">
               plausible.io/data-policy
             </a>.
+          </p>
+          <p className="mt-4">{t('privacy.gaText')}</p>
+          <p className="mt-4">
+            {t('privacy.cookieChoiceText')}{' '}
+            <button type="button" onClick={resetCookieChoice} className="text-primary hover:underline">
+              {t('privacy.cookieChoiceButton')}
+            </button>
           </p>
         </section>
 
