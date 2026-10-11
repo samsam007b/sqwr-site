@@ -21,6 +21,12 @@ const NEVER_INCLUDED_KEYS = [
   'neverIncluded4',
 ] as const;
 
+const MAINTENANCE_TIERS = [
+  { id: 'Essentiel', features: 4, highlight: false },
+  { id: 'Standard', features: 6, highlight: true },
+  { id: 'Premium', features: 6, highlight: false },
+] as const;
+
 const FAQ_COUNT = 8;
 
 export default function TarifsPage() {
@@ -137,41 +143,27 @@ export default function TarifsPage() {
         <div className="max-w-7xl mx-auto px-6 lg:px-16">
           <ScrollReveal>
             <p className="text-xs font-mono uppercase tracking-[0.2em] text-secondary/60 mb-4">
-              Abonnements Maintenance
+              {t('tarifs.maintenanceLabel')}
             </p>
             <h2 className="font-display font-normal text-4xl md:text-5xl mb-4 leading-[1.05]">
-              Votre site continue de tourner.<br />
-              <span className="text-secondary/40">Vous ne faites rien.</span>
+              {t('tarifs.maintenanceTitle')}<br />
+              <span className="text-secondary/40">{t('tarifs.maintenanceTitleFaded')}</span>
             </h2>
             <p className="text-secondary/60 font-light text-lg mb-16 max-w-2xl">
-              Sans engagement de durée. Résiliable avec 30 jours de préavis. Modifications non utilisées non reportées.
+              {t('tarifs.maintenanceDesc')}
             </p>
           </ScrollReveal>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              {
-                name: 'Essentiel',
-                price: '€99',
-                forProject: 'Sites Signature · €900–1 500',
-                items: ['Updates sécurité mensuelles', 'Monitoring uptime', '30 min de modifications/mois', 'Urgences : 72h'],
-                highlight: false,
-              },
-              {
-                name: 'Standard',
-                price: '€249',
-                forProject: 'Sites Flagship · Packs · €2 000–4 800',
-                items: ['Updates sécurité mensuelles', 'Monitoring uptime', '1h de modifications/mois', 'Rapport mensuel Lighthouse', 'Support prioritaire 24h', 'Urgences : 24h'],
-                highlight: true,
-              },
-              {
-                name: 'Premium',
-                price: '€449',
-                forProject: 'Apps · E-commerce · €3 500+',
-                items: ['Updates bihebdomadaires', 'Monitoring Vercel + Supabase', '2h de modifications/mois', 'Rapport mensuel détaillé', 'Call mensuel 30 min', 'Urgences : 4h'],
-                highlight: false,
-              },
-            ].map((tier, i) => (
+            {MAINTENANCE_TIERS.map((tier) => ({
+              name: t(`tarifs.tier${tier.id}Name` as Parameters<typeof t>[0]),
+              price: t(`tarifs.tier${tier.id}Price` as Parameters<typeof t>[0]),
+              forProject: t(`tarifs.tier${tier.id}For` as Parameters<typeof t>[0]),
+              items: Array.from({ length: tier.features }, (_, j) =>
+                t(`tarifs.tier${tier.id}F${j + 1}` as Parameters<typeof t>[0])
+              ),
+              highlight: tier.highlight,
+            })).map((tier, i) => (
               <ScrollReveal key={i} delay={i * 0.08}>
                 <div className={`p-8 rounded-lg h-full flex flex-col ${tier.highlight ? 'bg-foreground text-paper' : 'glass-surface'}`}>
                   <p className={`text-xs font-mono uppercase tracking-[0.2em] mb-3 ${tier.highlight ? 'text-paper/50' : 'text-secondary/50'}`}>
@@ -179,7 +171,7 @@ export default function TarifsPage() {
                   </p>
                   <div className="flex items-baseline gap-1 mb-2">
                     <span className={`font-display text-4xl font-normal ${tier.highlight ? 'text-paper' : 'text-foreground'}`}>{tier.price}</span>
-                    <span className={`text-sm font-light ${tier.highlight ? 'text-paper/50' : 'text-secondary/50'}`}>/mois HT</span>
+                    <span className={`text-sm font-light ${tier.highlight ? 'text-paper/50' : 'text-secondary/50'}`}>{t('tarifs.tierPriceUnit')}</span>
                   </div>
                   <p className={`font-display text-xl font-normal mb-6 ${tier.highlight ? 'text-paper' : 'text-foreground'}`}>{tier.name}</p>
                   <ul className="space-y-2 flex-1">
@@ -195,7 +187,7 @@ export default function TarifsPage() {
                       href="/contact?intent=maintenance"
                       className={`inline-block text-xs font-mono uppercase tracking-[0.15em] hover:opacity-70 transition-opacity duration-300 ${tier.highlight ? 'text-paper' : 'text-foreground'}`}
                     >
-                      Souscrire →
+                      {t('tarifs.tierCta')}
                     </Link>
                   </div>
                 </div>
@@ -205,7 +197,7 @@ export default function TarifsPage() {
 
           <ScrollReveal delay={0.3}>
             <p className="text-xs text-secondary/40 font-light mt-8">
-              Au-delà du quota inclus : €75/h sur avenant. Hébergement & domaine non inclus (~€15–30/an, à votre nom).
+              {t('tarifs.tierFootnote')}
             </p>
           </ScrollReveal>
         </div>

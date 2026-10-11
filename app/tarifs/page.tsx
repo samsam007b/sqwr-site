@@ -3,7 +3,7 @@ import TarifsPage from '@/components/pages/TarifsPage';
 
 export const metadata: Metadata = {
   title: 'Tarifs & FAQ — Branding et Web sur-mesure',
-  description: 'Tarifs transparents SQWR Studio : branding dès €1 500, site web dès €1 500, audit €750. Modalités de paiement, révisions incluses, propriété du code. FAQ complète.',
+  description: 'Tarifs transparents SQWR Studio : branding dès €1 400, site web dès €2 200, audit €750. Modalités de paiement, révisions incluses, propriété du code. FAQ complète.',
   alternates: {
     canonical: 'https://sqwr.be/tarifs',
   },
